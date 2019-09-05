@@ -31,6 +31,7 @@ module.exports.showAllUsers = (req, res) => {
         .catch(err => {
             handler(err, res, 404)
         })
+}
 
 module.exports.signup = (req, res) => {
 
