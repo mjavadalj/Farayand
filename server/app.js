@@ -3,14 +3,17 @@ const mongoose = require('mongoose')
 const cors = require('cors')
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
+const passport = require('passport');
 const app = express()
 const router = require('./api/routes/router');
+app.use(passport.initialize());
 app.use(cors())
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.use('', router);
+
 
 const db_name = 'basij_asatid'
 let x = `mongodb://localhost:27017/${db_name}`
