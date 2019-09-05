@@ -4,6 +4,7 @@ const cors = require('cors')
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const passport = require('passport');
+require('./api/middlewares/passportJWTConfig')(passport);
 const app = express()
 const router = require('./api/routes/router');
 app.use(passport.initialize());
@@ -12,7 +13,7 @@ app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.use('', router);
+app.use('/api', router);
 
 
 const db_name = 'basij_asatid'

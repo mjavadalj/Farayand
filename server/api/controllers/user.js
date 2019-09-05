@@ -38,18 +38,46 @@ module.exports.signup = (req, res) => {
     User.find({
         email: req.body.email
     }).then((user) => {
-        if (user) {
+        if (user.length > 0) {
             return res.status(401).json({
                 message: "email already exist"
             })
         }
         else {
-            new User({
-                _id: mongoose.Types.ObjectId,
-                email: req.body.email
-            }).save().then(user => {
 
+            bcrypt.hash(req.body.password, 10, (err, hash) => {
+                if (err) {
+                    return res.status(500).json({
+                        err
+                    })
+                }
+                else {
+
+
+                    new User({
+                        _id: mongoose.Types.ObjectId(),
+                        email: req.body.email,
+                        username: req.body.username,
+                        password: hash,
+                        role: "normal"
+                    }).save().then(user => {
+                        return res.status(200).json({
+                            message: "sign up compelete"
+                        })
+                    }).catch(err => {
+                        return res.status(500).json({
+                            err
+                        })
+                    })
+                }
+            }).catch(err => {
+                return res.status(500).json({
+                    err
+                })
             })
+
+
+
         }
     })
 
@@ -59,7 +87,7 @@ module.exports.signup = (req, res) => {
 
 module.exports.signin = (req, res) => {
 
-    User.find({
+    User.findOne({
         email: req.body.email
     }).exec().then((user) => {
         if (!user) {
@@ -68,6 +96,7 @@ module.exports.signin = (req, res) => {
             })
         }
         else {
+            console.log(user)
             bcrypt.compare(req.body.password, user.password, (err, same) => {
                 if (err) {
                     return res.status(500).json({
@@ -77,10 +106,11 @@ module.exports.signin = (req, res) => {
                 else if (same) {
 
                     const jwtpayload = {
-                        name: firstuser.name,
-                        email: firstuser.email,
-                        userId: firstuser.userId,
-                        userName: firstuser.userName
+                        name: user.name,
+                        email: user.email,
+                        userId: user._id,
+                        userName: user.username,
+                        role: user.role
                     };
                     jwt.sign(
                         jwtpayload,
