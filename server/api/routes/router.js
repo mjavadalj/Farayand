@@ -1,19 +1,17 @@
 const router = require('express').Router();
-const session = require('./session')
-const lesson = require('./lesson')
-const course = require('./course')
 const university = require('./university')
-const teacher = require('./teacher')
-const quiz = require('./quiz');
-// const user = require('./user');
+const user = require('./user')
+const eCourse=require('./eCourse')
+const eLesson=require('./eLesson')
+const eSession=require('./eSession')
+const eQuestion=require('./eQuestion')
 
-router.use('/quiz', quiz)
-router.use('/session', session)
-router.use('/lesson', lesson)
-router.use('/course', course)
+router.use('/course', eCourse)
+router.use('/lesson', eLesson)
+router.use('/session', eSession)
+router.use('/question', eQuestion)
+
 router.use('/university', university)
-router.use('/teacher', teacher)
-
-// router.use('/user', user)
+router.use('/user', user)
 
 module.exports = router;

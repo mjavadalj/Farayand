@@ -1,137 +1,137 @@
 const mongoose = require("mongoose");
-const Lesson = require("../models/lesson");
-const Session = require("../models/session");
-const moment = require("moment-jalaali");
-
+const Embed = require("../models/embed");
 const handler = (json, res, code) => {
-    res.status(code).json(json);
+  res.status(code).json(json);
+};
+const mong = id => {
+  return mongoose.Types.ObjectId(id);
+};
+const editItems = (req, text = "") => {
+  json = {};
+  if (req.body.title != undefined) json[`${text}title`] = req.body.title;
+  if (req.body.duration != undefined)
+    json[`${text}duration`] = req.body.duration;
+  if (req.body.minScore != undefined)
+    json[`${text}minScore`] = req.body.minScore;
+  if (req.body.content != undefined) json[`${text}content`] = req.body.content;
+  if (req.body.secondChance != undefined)
+    json[`${text}secondChance`] = req.body.secondChance;
+  if (req.body.publishable != undefined)
+    json[`${text}publishable`] = req.body.publishable;
+  if (req.body.forAllUniversities != undefined)
+    json[`${text}forAllUniversities`] = req.body.forAllUniversities;
+  return json;
+};
+module.exports.addLesson = (req, res) => {
+    Embed.findByIdAndUpdate(req.body.courseId, {
+        $push: {
+          lessons: req.body.lesson
+        }
+      })
+        .exec()
+        .then(result => {
+          handler(result, res, 200);
+        })
+        .catch(err => {
+          handler(err, res, 500);
+        });
 };
 
-module.exports.addLesson = (req, res) => {
-    const lesson = new Lesson({
-        _id: mongoose.Types.ObjectId(),
-        date_jalali: moment(),
-        title: req.body.title,
-        content: req.body.content,
-        publishable: req.body.publishable
-    })
-        .save()
-        .then(result => {
-            res.status(200).json(result);
-        })
-        .catch(err => {
-            handler(err, res, 500);
-        });
-}
-
 module.exports.showAllLessons = (req, res) => {
-    Lesson.find({})
-        .exec()
-        .then(result => {
-            handler(result, res, 200);
-        })
-        .catch(err => {
-            handler(err, res, 404);
-        });
-}
+    Embed.findById(req.body.courseId)
+    .select("-lessons.sessions")
+    .exec()
+    .then(result => {
+      handler(result, res, 200);
+    })
+    .catch(err => {
+      handler(err, res, 500);
+    });
+};
 
 module.exports.showSingleLesson = (req, res) => {
-    Lesson.findById(req.params.id)
-        .populate("sessions")
+    find = {
+        _id: mongoose.Types.ObjectId(req.body.courseId),
+        "lessons._id": mongoose.Types.ObjectId(req.body.lessonId)
+      };
+      Embed.aggregate([
+        {
+          $unwind: {
+            path: "$lessons",
+            includeArrayIndex: "index"
+            // "preserveNullAndEmptyArrays": true
+          }
+        },
+        {
+          $match: find
+        }
+      ])
+        .lean()
         .exec()
         .then(result => {
-            handler(result, res, 200);
+          handler(result, res, 200);
         })
         .catch(err => {
-            handler(err, res, 404);
+          handler(err, res, 200);
         });
-}
+};
 
 module.exports.deleteAllLessons = (req, res) => {
-    Lesson.remove({})
+    find = {
+        _id: req.body.courseId
+      };
+      Embed.findOneAndUpdate(find, {
+        $set: {
+          lessons: []
+        }
+      })
         .exec()
         .then(result => {
-            handler(result, res, 200);
+          handler(result, res, 200);
         })
         .catch(err => {
-            handler(err, res, 404);
+          handler(err, res, 500);
         });
-}
+};
 
 module.exports.deleteALesson = (req, res) => {
-    Lesson.deleteOne({ _id: req.params.id })
+    find = {
+        _id: req.body.courseId
+      };
+      Embed.findOneAndUpdate(find, {
+        $pull: {
+          lessons: {
+            _id: req.body.lessonId
+          }
+        }
+      })
         .exec()
         .then(result => {
-            handler(result, res, 200);
+          handler(result, res, 200);
         })
         .catch(err => {
-            handler(err, res, 404);
+          handler(err, res, 500);
         });
-}
+};
 
 module.exports.editLesson = (req, res) => {
-    temp = {};
-    if (req.body.title) temp.title = req.body.title;
-    if (req.body.content) temp.content = req.body.content;
-    if (req.body.publishable) temp.publishable = req.body.publishable;
-    if (req.body.courseParent) temp.courseParent = req.body.courseParent;
-    Lesson.findByIdAndUpdate(req.params.id, {
-        $set: temp
+    newItems = editItems(req, "lessons.$.");
+    find = {
+      _id: req.body.courseId,
+      "lessons._id": req.body.lessonId
+    };
+    Embed.findOneAndUpdate(find, {
+      $set: newItems
     })
-        .exec()
-        .then(result => {
-            handler(result, res, 200);
-        })
-        .catch(err => {
-            handler(err, res, 500);
-        });
-}
+      .exec()
+      .then(result => {
+        handler(result, res, 200);
+      })
+      .catch(err => {
+        handler(err, res, 500);
+      });
+};
 
-module.exports.addSessionToLesson = (req, res) => {
-    Lesson.findOneAndUpdate(
-        { _id: req.params.id },
-        {
-            $addToSet: {
-                sessions: req.body.session
-            }
-        },
-        { new: true }
-    )
-        .exec()
-        .then(result => {
-            var index = 0;
-            if (result.sessions.length != 0) index = result.sessions.length - 1;
-            const sessionId = result.sessions[index];
-            console.log(sessionId);
 
-            Session.findByIdAndUpdate(sessionId, {
-                $set: {
-                    lessonParent: req.params.id
-                }
-            })
-                .exec()
-                .then()
-                .catch(err => handler(err, res, 500));
-            handler(result, res, 200);
-        })
-        .catch(err => {
-            handler(err, res, 500);
-        });
-}
 
-module.exports.deleteSessonFromLesson = (req, res) => {
-    Lesson.findByIdAndUpdate(req.params.id, {
-        $pull: {
-            sessions: req.params.sessionId
-        }
-    })
-        .exec()
-        .then(result => {
-            handler(result, res, 200);
-        })
-        .catch(err => {
-            console.log(err.message);
 
-            handler(err, res, 500);
-        });
-}
