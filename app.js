@@ -6,8 +6,6 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const app = express()
 const moment = require('moment-jalaali')
-const member=require('./routes/member')
-const meeting=require('./routes/meeting')
 const quiz=require('./routes/quiz')
 const session=require('./routes/session')
 const lesson=require('./routes/lesson')
@@ -19,8 +17,6 @@ app.use(cors())
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use('',member)
-app.use('/meeting',meeting)
 app.use('/quiz',quiz)
 app.use('/session',session)
 app.use('/lesson',lesson)
