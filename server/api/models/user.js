@@ -1,5 +1,5 @@
 const mongoose=require('mongoose')
-const teacherSchema=mongoose.Schema({
+const userSchema=mongoose.Schema({
     _id:{type:mongoose.Schema.Types.ObjectId,require:true},
     username:{type:String,default: null},
     password:{type:String,default: null},
@@ -15,5 +15,5 @@ const teacherSchema=mongoose.Schema({
 
 })
 
-module.exports=mongoose.model('Teacher',teacherSchema)
+module.exports=mongoose.model('User',userSchema)
 //default null for testing

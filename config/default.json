@@ -1,0 +1,20 @@
+{
+    "app": {
+        "webServer": {
+            "port": 3000,
+            "jwtSecret": "ersfvervf8812w&%&*@lcdsait*&@Nxalxd5&DG@#$#@%$#%$#@#$#@$#@",
+            "baseUrl": "http://localhost:3000"
+        },
+        "mail": {
+            "mail": "",
+            "password": "",
+            "servise": ""
+        }
+    },
+    "noSql": {
+        "name": "",
+        "userName": "",
+        "password": "",
+        "host": "localhost"
+    }
+}
