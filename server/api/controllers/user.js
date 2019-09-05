@@ -4,7 +4,7 @@ const config = require('config')
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const jwtSecret = config.get('app.webServer.jwtSecret');
-
+const { validationResult } = require('express-validator');
 const handler = (json, res, code) => {
     res.status(code).json(json);
 };
@@ -34,7 +34,9 @@ module.exports.showAllUsers = (req, res) => {
 }
 
 module.exports.signup = (req, res) => {
-
+    if (validationResult(req).errors.length > 0) {
+        return res.status(422).json(validationResult(req));
+    }
     User.find({
         email: req.body.email
     }).then((user) => {
@@ -44,7 +46,6 @@ module.exports.signup = (req, res) => {
             })
         }
         else {
-
             bcrypt.hash(req.body.password, 10, (err, hash) => {
                 if (err) {
                     return res.status(500).json({
@@ -52,8 +53,6 @@ module.exports.signup = (req, res) => {
                     })
                 }
                 else {
-
-
                     new User({
                         _id: mongoose.Types.ObjectId(),
                         email: req.body.email,
