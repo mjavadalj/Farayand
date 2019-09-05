@@ -1,8 +1,5 @@
 const express = require("express");
 const mongoose = require("mongoose");
-// const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const Joi = require("@hapi/joi");
 const router = express.Router();
 const Embed = require("../models/embed");
 const moment = require("moment-jalaali");
@@ -438,7 +435,7 @@ router.patch("/course/lesson/session/question/deleteall", (req, res) => {
 });
 //edit a question
 router.patch("/course/lesson/session/question/edit", (req, res) => {
-  newQuestion=questionItems(req,"lessons.$[].sessions.$[].questions.$[elem].")
+  newQuestion = questionItems(req, "lessons.$[].sessions.$[].questions.$[elem].")
   find = {
     // _id: req.body.courseId,
     // "lessons._id": req.body.lessonId,
