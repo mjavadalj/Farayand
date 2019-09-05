@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const Embed = require("../models/embed");
-const moment = require("moment-jalaali");
 
 const handler = (json, res, code) => {
   res.status(code).json(json);
