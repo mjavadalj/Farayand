@@ -12,7 +12,10 @@ const lesson=require('./routes/lesson')
 const course=require('./routes/course')
 const university=require('./routes/university')
 const teacher=require('./routes/teacher')
-const embed=require('./routes/embed')
+const eCourse=require('./routes/eCourse')
+const eLesson=require('./routes/eLesson')
+const eSession=require('./routes/eSession')
+const eQuestion=require('./routes/eQuestion')
 app.use(cors())
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -23,7 +26,10 @@ app.use('/lesson',lesson)
 app.use('/course',course)
 app.use('/university',university)
 app.use('/teacher',teacher)
-app.use('/embed',embed)
+app.use('/embed/course',eCourse)
+app.use('/embed/course/lesson',eLesson)
+app.use('/embed/course/lesson/session',eSession)
+app.use('/embed/course/lesson/session/question',eQuestion)
 const db_name='basij_asatid'
 let x = `mongodb://localhost:27017/${db_name}`
 // let y='mongodb+srv://cesium:cesium@cluster0-jexk6.mongodb.net/test?retryWrites=true'
