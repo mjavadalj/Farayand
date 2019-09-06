@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Embed = require("../models/embed");
 const moment = require("moment-jalaali");
 
+
 const handler = (json, res, code) => {
   res.status(code).json(json);
 };
@@ -26,148 +27,152 @@ const editItems = (req, text = "") => {
 };
 
 module.exports.addASession = (req, res) => {
-    find = {
-        _id: req.body.courseId,
-        "lessons._id": req.body.lessonId
-      };
-      Embed.findOneAndUpdate(find, {
-        $push: {
-          "lessons.$.sessions": req.body.session
-        }
-      })
-        .exec()
-        .then(result => {
-          handler(result, res, 200);
-        })
-        .catch(err => {
-          handler(err, res, 500);
-        });
+  find = {
+    _id: req.body.courseId,
+    "lessons._id": req.body.lessonId
+  };
+  Embed.findOneAndUpdate(find, {
+    $push: {
+      "lessons.$.sessions": req.body.session
+    }
+  })
+    .exec()
+    .then(result => {
+      handler(result, res, 200);
+    })
+    .catch(err => {
+      handler(err, res, 500);
+    });
 };
 
 module.exports.showAllSessions = (req, res) => {
-    find = {
-        _id: mong(req.body.courseId),
-        "lessons._id": mong(req.body.lessonId)
-      };
-      Embed.aggregate([
-        {
-          $unwind: {
-            path: "$lessons",
-            includeArrayIndex: "index"
-            // "preserveNullAndEmptyArrays": true
-          }
-        },
-        {
-          $match: find
-        }
-      ])
-        .exec()
-        .then(result => {
-          handler(result, res, 200);
-        })
-        .catch(err => {
-          handler(err, res, 200);
-        });
+  find = {
+    _id: mong(req.body.courseId),
+    "lessons._id": mong(req.body.lessonId)
+  };
+  Embed.aggregate([
+    {
+      $unwind: {
+        path: "$lessons",
+        includeArrayIndex: "index"
+        // "preserveNullAndEmptyArrays": true
+      }
+    },
+    {
+      $match: find
+    }
+  ])
+    .exec()
+    .then(result => {
+      handler(result, res, 200);
+    })
+    .catch(err => {
+      handler(err, res, 200);
+    });
 };
 
 module.exports.showSingleSession = (req, res) => {
-    find = {
-        _id: mongoose.Types.ObjectId(req.body.courseId),
-        "lessons._id": mongoose.Types.ObjectId(req.body.lessonId),
-        "lessons.sessions._id": mongoose.Types.ObjectId(req.body.sessionId)
-      };
-      Embed.aggregate([
-        {
-          $unwind: {
-            path: "$lessons",
-            includeArrayIndex: "index"
-            // "preserveNullAndEmptyArrays": true
-          }
-        },
-        {
-          $unwind: {
-            path: "$lessons.sessions",
-            includeArrayIndex: "index"
-            // "preserveNullAndEmptyArrays": true
-          }
-        },
-        {
-          $match: find
-        }
-      ])
-        .exec()
-        .then(result => {
-          handler(result, res, 200);
-        })
-        .catch(err => {
-          handler(err, res, 200);
-        });
+  find = {
+    _id: mongoose.Types.ObjectId(req.body.courseId),
+    "lessons._id": mongoose.Types.ObjectId(req.body.lessonId),
+    "lessons.sessions._id": mongoose.Types.ObjectId(req.body.sessionId)
+  };
+  Embed.aggregate([
+    {
+      $unwind: {
+        path: "$lessons",
+        includeArrayIndex: "index"
+        // "preserveNullAndEmptyArrays": true
+      }
+    },
+    {
+      $unwind: {
+        path: "$lessons.sessions",
+        includeArrayIndex: "index"
+        // "preserveNullAndEmptyArrays": true
+      }
+    },
+    {
+      $match: find
+    }
+  ])
+    .exec()
+    .then(result => {
+      handler(result, res, 200);
+    })
+    .catch(err => {
+      handler(err, res, 200);
+    });
 };
 
 module.exports.deleteAllSessons = (req, res) => {
-    find = {
-        _id: req.body.courseId,
-        "lessons._id": req.body.lessonId
-      };
-      Embed.findOneAndUpdate(find, {
-        $set: {
-          "lessons.$.sessions": []
-        }
-      })
-        .exec()
-        .then(result => {
-          handler(result, res, 200);
-        })
-        .catch(err => {
-          handler(err, res, 500);
-        });
+  find = {
+    _id: req.body.courseId,
+    "lessons._id": req.body.lessonId
+  };
+  Embed.findOneAndUpdate(find, {
+    $set: {
+      "lessons.$.sessions": []
+    }
+  })
+    .exec()
+    .then(result => {
+      handler(result, res, 200);
+    })
+    .catch(err => {
+      handler(err, res, 500);
+    });
 };
 
 module.exports.deleteSingleSession = (req, res) => {
-    find = {
-        _id: req.body.courseId,
-        "lessons._id": req.body.lessonId
-      };
-      Embed.findOneAndUpdate(find, {
-        $pull: {
-          "lessons.$.sessions": {
-            _id: req.body.sessionId
-          }
-        }
-      })
-        .exec()
-        .then(result => {
-          handler(result, res, 200);
-        })
-        .catch(err => {
-          handler(err, res, 500);
-        });
+  find = {
+    _id: req.body.courseId,
+    "lessons._id": req.body.lessonId
+  };
+  Embed.findOneAndUpdate(find, {
+    $pull: {
+      "lessons.$.sessions": {
+        _id: req.body.sessionId
+      }
+    }
+  })
+    .exec()
+    .then(result => {
+      handler(result, res, 200);
+    })
+    .catch(err => {
+      handler(err, res, 500);
+    });
 };
 
 module.exports.editASession = (req, res) => {
-    newItems = editItems(req, "lessons.$[].sessions.$[elem].");
+  newItems = editItems(req, "lessons.$[].sessions.$[elem].");
 
-    find = {
-      _id: req.body.courseId,
-      "lessons._id": req.body.lessonId,
-      "lessons.sessions._id": mong(req.body.sessionId)
-    };
-    Embed.updateOne(
-      find,
-      {
-        $set: newItems
-      },
-      {
-        new: true,
-        arrayFilters: [{ "elem._id": mong(req.body.sessionId) }]
-      }
-    )
-      .exec()
-      .then(result => {
-        handler(result, res, 200);
-      })
-      .catch(err => {
-        handler(err, res, 500);
-      });
+  find = {
+    _id: req.body.courseId,
+    "lessons._id": req.body.lessonId,
+    "lessons.sessions._id": mong(req.body.sessionId)
+  };
+  Embed.updateOne(
+    find,
+    {
+      $set: newItems
+    },
+    {
+      new: true,
+      arrayFilters: [{ "elem._id": mong(req.body.sessionId) }]
+    }
+  )
+    .exec()
+    .then(result => {
+      handler(result, res, 200);
+    })
+    .catch(err => {
+      handler(err, res, 500);
+    });
 };
 
+
+module.exports.addFile = (req, res) => {
+  console.log(req.file.mimetype, '\n', req.file)
+}
