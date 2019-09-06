@@ -10,7 +10,6 @@ router.use('/course', eCourse)
 router.use('/lesson', eLesson)
 router.use('/session', eSession)
 router.use('/question', eQuestion)
-
 router.use('/university', university)
 router.use('/user', user)
 
