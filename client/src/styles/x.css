@@ -1,0 +1,149 @@
+li {
+  display: inline;
+}
+div.item {
+  cursor: pointer;
+  vertical-align: top;
+  display: inline-block;
+  text-align: center;
+  width: 93px;
+}
+.navimage {
+  width: 50;
+  height: 50px;
+  /* background-color: grey; */
+}
+.caption {
+  display: block;
+  font-family: "iransans-bold";
+}
+nav {
+  z-index: 999;
+  margin-top: 20px;
+  position: absolute;
+  left: 50%;
+  /* top: 50%; */
+  transform: translate(-50%, 0);
+}
+body {
+  background-image: url("../image/bg.jpg");
+}
+@font-face {
+  font-family: "iransans-bold";
+  src: url("../font/IRANSans-Bold-web.ttf");
+}
+@font-face {
+  font-family: "yekan";
+  src: url("../font/Yekan.ttf");
+}
+@font-face {
+  font-family: "iransans-light";
+  src: url("../font/IRANSans-Light-web.ttf");
+}
+@font-face {
+  font-family: "iranyekan";
+  src: url("../font/iranyekan.woff");
+}
+@font-face {
+  font-family: "iranyekan-bold";
+  src: url("../font/iranyekan_bold.woff");
+}
+@font-face {
+  font-family: "gilory";
+  src: url("../font/Gilroylight.woff");
+}
+@font-face {
+  font-family: "gilory-b";
+  src: url("../font/Gilroy-Bold.woff");
+}
+.border {
+  width: 93px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #707070;
+}
+.navborder {
+  border-bottom: 3px solid;
+  padding-left: 50px;
+  width: 450px;
+}
+.homeimage {
+  margin-top: 120px;
+}
+.cont {
+  font-family: "iransans-light";
+  /* width: 500px; */
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  float: right;
+}
+.newmeetinglogo {
+  font-family: "iransans-bold";
+  /* width: 500px; */
+  position: absolute;
+  left: 50%;
+  top: 20%;
+  transform: translate(-50%, -50%);
+  float: right;
+}
+.tables {
+  max-height: 500px;
+  overflow: auto;
+}
+.test {
+  border-radius: 25px;
+  display: inline;
+  width: 200px;
+  background: #fffdfd;
+  border-collapse: black;
+  text-align: center;
+  font-family: "yekan";
+}
+.number {
+  font-family: gilory-b;
+  font-size: 1.5em;
+}
+.information {
+  padding: 5px;
+  /* border-spacing: 15px; */
+  margin-top: 5px;
+  margin-right: 5px;
+  float: right;
+  width: 300px;
+  /* height: 100px; */
+  border-style: solid;
+  border-width: 1px;
+  border-color: #707070;
+}
+.iransans {
+  font-family: iransans;
+  float: right;
+}
+.iransans-b {
+  font-family: iransans-bold;
+  float: right;
+}
+.iranyekan {
+  font-family: iranyekan;
+  float: right;
+}.iranyekan-bold {
+  font-family: iranyekan-bold;
+  float: right;
+}
+.yekan {
+  font-family: yekan;
+  font-size: 1.25em;
+  /* float: right; */
+}
+.gilory {
+  font-family: gilory;
+  font-size: 1.25em;
+  /* float: right; */
+}
+.gilory-b {
+  font-family: gilory-b;
+  font-size: 1.25em;
+  /* float: right; */
+}
