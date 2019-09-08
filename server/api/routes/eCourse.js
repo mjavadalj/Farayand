@@ -24,4 +24,5 @@ router.delete("/delete", courseController.deleteACourse);
 //edit an embed course
 router.patch("/edit", courseController.editACourse);
 
+
 module.exports = router;
