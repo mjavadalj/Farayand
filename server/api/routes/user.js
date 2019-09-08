@@ -3,6 +3,7 @@ const router = express.Router();
 const userController = require("../controllers/user");
 const passport = require("passport");
 const validation = require("../middlewares/validation");
+const delete_ref = require("../middlewares/delete_ref");
 
 //new user
 router.post("/add", userController.addAUser);
@@ -31,4 +32,12 @@ router.patch('/session/register',userController.sessionRegister)
 router.patch('/session/complete',userController.sessionComplete)
 //delete all users
 router.delete('/deleteall',userController.deleteAllUsers)
+//show all teachers
+router.get('/teacher/showall',userController.showAllTeachers)
+//show all students
+router.get('/student/showall',userController.showAllStudents)
+//edit user
+router.patch('/edit',userController.editUser)
+//delete a user
+router.post('/delete',delete_ref.course,userController.deleteAUser)
 module.exports = router;

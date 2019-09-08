@@ -1,7 +1,9 @@
-const Course = require("../models/course");
-const Lesson = require("../models/lesson");
-const Session = require("../models/session");
-const Quiz = require("../models/quiz");
+// const Course = require("../models/course");
+// const Lesson = require("../models/lesson");
+// const Session = require("../models/session");
+// const Quiz = require("../models/quiz");
+const Embed = require("../models/embed");
+
 const lesson = (req, res, next) => {
   try {
     Course.findById(req.params.id)
@@ -96,6 +98,16 @@ const quiz = (req, res, next) => {
     });
   }
 };
+const course = (req, res, next) => {
+  try {    
+    Embed.deleteMany({ user: req.body.userId }, next);
+  } catch (err) {
+    return res.status(500).json({
+      message: "delete Failed "
+    });
+  }
+};
 exports.lesson = lesson;
 exports.session = session;
 exports.quiz = quiz;
+exports.course = course;

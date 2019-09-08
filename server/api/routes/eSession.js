@@ -3,7 +3,7 @@ const router = express.Router();
 const sessionController = require('../controllers/session')
 
 //show all sessions
-router.get("/showall",sessionController.showAllSessions);
+router.post("/showall",sessionController.showAllSessions);
 //show a session || show all questions
 router.get("/show",sessionController.showSingleSession);
 //add session

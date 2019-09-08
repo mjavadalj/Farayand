@@ -4,7 +4,7 @@ const router = express.Router();
 const lessonController = require('../controllers/lesson')
 
 //show all lessons
-router.get("/showall", lessonController.showAllLessons);
+router.post("/showall", lessonController.showAllLessons);
 //show a lesson
 router.get("/show",lessonController.showSingleLesson);
 //add lesson

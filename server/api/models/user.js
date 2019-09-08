@@ -15,7 +15,9 @@ const userSchema = mongoose.Schema({
   reg_lessons: [
     {
       title: { type: String, default: null },
+      sessionLength: { type: Number, require: true },
       lessonId: { type: mongoose.Schema.Types.ObjectId, require: true },
+      courseId: { type: mongoose.Schema.Types.ObjectId, require: true },
       reg_sessions: [
         {
           title: { type: String, require: true },

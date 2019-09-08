@@ -61,9 +61,10 @@ module.exports.showAllSessions = (req, res) => {
           $match: find
         }
       ])
+        // sort('-lessons.date')
         .exec()
         .then(result => {
-          handler(result, res, 200);
+          handler(result[0], res, 200);
         })
         .catch(err => {
           handler(err, res, 200);
