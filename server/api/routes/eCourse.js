@@ -10,7 +10,7 @@ const courseController = require("../controllers/course");
 router.post("/add", courseController.addCourse);
 
 //Show all embed courses
-router.get("/showall", courseController.showAllCourses);
+router.post("/showall", courseController.showAllCourses);
 
 //Show an embed course
 router.get("/show/", courseController.showSingleCourse);

@@ -46,29 +46,32 @@ module.exports.addASession = (req, res) => {
 };
 
 module.exports.showAllSessions = (req, res) => {
-  find = {
-    _id: mong(req.body.courseId),
-    "lessons._id": mong(req.body.lessonId)
-  };
-  Embed.aggregate([
-    {
-      $unwind: {
-        path: "$lessons",
-        includeArrayIndex: "index"
-        // "preserveNullAndEmptyArrays": true
-      }
-    },
-    {
-      $match: find
-    }
-  ])
-    .exec()
-    .then(result => {
-      handler(result, res, 200);
-    })
-    .catch(err => {
-      handler(err, res, 200);
-    });
+
+    find = {
+        _id: mong(req.body.courseId),
+        "lessons._id": mong(req.body.lessonId)
+      };
+      Embed.aggregate([
+        {
+          $unwind: {
+            path: "$lessons",
+            includeArrayIndex: "index"
+            // "preserveNullAndEmptyArrays": true
+          }
+        },
+        {
+          $match: find
+        }
+      ])
+        // sort('-lessons.date')
+        .exec()
+        .then(result => {
+          handler(result[0], res, 200);
+        })
+        .catch(err => {
+          handler(err, res, 200);
+        });
+
 };
 
 module.exports.showSingleSession = (req, res) => {

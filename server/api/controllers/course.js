@@ -13,7 +13,8 @@ module.exports.addCourse = (req, res) => {
     date_jalali: moment(),
     title: req.body.title,
     content: req.body.content,
-    publishable: req.body.publishable
+    publishable: req.body.publishable,
+    user:req.body.user
   })
     .save()
     .then(result => {
@@ -26,7 +27,8 @@ module.exports.addCourse = (req, res) => {
 
 module.exports.showAllCourses = (req, res) => {
   Embed.find({})
-    .select("lessons")
+    .select("-lessons")
+    .populate('user','name')
     .lean()
     .exec()
     .then(result => {

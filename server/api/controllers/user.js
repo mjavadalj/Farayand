@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const User = require("../models/user");
+const Embed = require("../models/embed");
 const config = require("config");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
@@ -13,20 +14,29 @@ const mong = id => {
 };
 const editItems = (req, text = "") => {
   json = {};
-  if (req.body.score != undefined) json[`${text}score`] = req.body.score;
-  if (req.body.date != undefined) json[`${text}date`] = req.body.date;
-  if (req.body.passed != undefined) json[`${text}passed`] = req.body.passed;
-  if (req.body.tryCount != undefined)
-    json[`${text}tryCount`] = req.body.tryCount;
-  if (req.body.anotherChanceDate != undefined)
-    json[`${text}anotherChanceDate`] = req.body.anotherChanceDate;
+  if (req.body.username != undefined) json[`${text}username`] = req.body.username;
+  if (req.body.password != undefined) json[`${text}password`] = req.body.password;
+  if (req.body.email != undefined) json[`${text}email`] = req.body.email;
+  if (req.body.confirmed != undefined) json[`${text}confirmed`] = req.body.confirmed;
+  if (req.body.name != undefined)
+    json[`${text}name`] = req.body.name;
+  if (req.body.phoneNumber != undefined)
+    json[`${text}phoneNumber`] = req.body.phoneNumber;
   return json;
 };
 
 module.exports.addAUser = (req, res) => {
   const user = new User({
     _id: mongoose.Types.ObjectId(),
-    name: req.body.name
+    name: req.body.name,
+    role: req.body.role,
+    confirmed: req.body.confirmed,
+    username: req.body.username,
+    password: req.body.password,
+    phoneNumber: req.body.phoneNumber,
+    gender: req.body.gender,
+    email: req.body.email,
+
   })
     .save()
     .then(result => {
@@ -39,6 +49,8 @@ module.exports.addAUser = (req, res) => {
 
 module.exports.showAllUsers = (req, res) => {
   User.find({})
+    
+    .select("-reg_lessons")
     .exec()
     .then(result => {
       handler(result, res, 200);
@@ -153,7 +165,9 @@ module.exports.lessonRegister = (req, res) => {
     {
       $push: {
         reg_lessons: {
-          lessonId: req.body.lessonId
+          lessonId: req.body.lessonId,
+          courseId: req.body.courseId,
+          sessionLength: req.body.sessionLength
         }
       }
     },
@@ -219,6 +233,49 @@ module.exports.sessionComplete = (req, res) => {
 };
 module.exports.deleteAllUsers = (req, res) => {
   User.deleteMany({})
+    .exec()
+    .then(result => {
+      res.status(200).json(result);
+    })
+    .catch(err => {
+      handler(err, res, 500);
+    });
+};
+module.exports.showAllTeachers = (req, res) => {
+  User.find({ role: "teacher" }).select('-reg_lessons').sort('-date')
+    .exec()
+    .then(result => {
+      res.status(200).json(result);
+    })
+    .catch(err => {
+      handler(err, res, 500);
+    });
+};
+module.exports.showAllStudents = (req, res) => {
+  User.find({ role: "student" }).select('-reg_lessons')
+    .exec()
+    .then(result => {
+      res.status(200).json(result);
+    })
+    .catch(err => {
+      handler(err, res, 500);
+    });
+};
+module.exports.editUser = (req, res) => {
+  newItems=editItems(req)
+  User.updateOne({_id:req.body.userId},{
+    $set:newItems
+  })
+    .exec()
+    .then(result => {
+      res.status(200).json(result);
+    })
+    .catch(err => {
+      handler(err, res, 500);
+    });
+};
+module.exports.deleteAUser = (req, res) => {
+  User.deleteOne({_id:req.body.userId})
     .exec()
     .then(result => {
       res.status(200).json(result);
