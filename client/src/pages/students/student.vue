@@ -1,9 +1,3 @@
-
-// TODO: route confirm user nadarim !!!
-
-
-
-
 <template>
   <div id="users">
     <b-breadcrumb>
@@ -46,16 +40,41 @@
           </tr>
         </thead>
         <tbody id="myTable">
-          <tr
-            v-for="(user,index) in users"
-            :key="user._id"
-          >
+          <tr v-for="(user,index) in users" :key="user._id">
             <td>
-                <b-button variant="danger" @click = "deleteUser(user)"><span class="glyphicon glyphicon-trash"/></b-button>
-                <b-button variant="warning" @click= "editUser(user)"><span class="glyphicon glyphicon-pencil" /></b-button>
-                <b-button v-if="!user.confirmed" @click= "confirmUser(user)" variant="success"><span class="glyphicon glyphicon-ok" /></b-button>
-                </td>
-            <td>{{user.confirmed}}</td>
+              <i
+                @click="deleteUser(user)"
+                class="fa fa-remove action-icon"
+                style="font-size: 1.5em;"
+              />
+              <i @click="editUser(user)" class="fa fa-edit action-icon" style="font-size: 1.5em;" />
+              <i
+                v-if="user.confirmed"
+                @click="confirmUser(user)"
+                class="fa fa-check action-icon"
+                style="font-size: 1.5em;"
+              />
+              <i
+                v-else
+                @click="confirmUser(user)"
+                class="fa fa-ban action-icon"
+                style="font-size: 1.5em;"
+              />
+            </td>
+            <td>
+              <button
+                v-if="!user.confirmed"
+                data-v-17b74d76
+                type="button"
+                class="btn p-1 px-3 btn-xs btn-danger"
+              >تایید نشده</button>
+              <button
+                v-if="user.confirmed"
+                data-v-17b74d76
+                type="button"
+                class="btn p-1 px-3 btn-xs btn-success"
+              >فعال</button>
+            </td>
             <td>{{user.email}}</td>
             <td>{{user.date}}</td>
             <td>
@@ -79,9 +98,9 @@
     </div>
     <br />
     <br />
-    <button id="fixedbutton" class="btn btn-primary" type="button" @click="addUser">
-        <i class="fa fa-plus" />
-      </button>
+    <button id="fixedbutton" class="btn btn-primary" type="button" @click="s()">
+      <i class="fa fa-plus" />
+    </button>
     <div></div>
   </div>
 </template>
@@ -98,161 +117,451 @@ const { Messenger } = window;
 
 /* eslint-enable */
 export default {
-
-
-
   data() {
     return {
-      users:[]
+      users: []
     };
   },
 
-    mounted() {
-        
+  mounted() {
     this.axios
-      .get(`http://localhost:3000/api/user/showall`)
+      .get(`http://localhost:3000/api/user/student/showall`)
       .then(res => {
-        console.log(res.data);
         this.users = res.data;
         // this.addSuccessNotification();
-      })
-
-    },
-
+      });
+  },
 
   methods: {
-      async confirmUser(index){
-
-
-      },
-      deleteUser(user){
-        this.axios
-            .post(`http://localhost:3000/api/user/delete/`,{
-                userId: user._id
-                }
-            )
-            .then(res => {
-                let userIndex = this.users.indexOf(user);
-                this.users.splice(userIndex,1);
-                this.$swal.fire({
-                type: 'success',
-                title: 'موفق',
-                text: 'کاربر با موفقیت ویرایش شد',
-                })
-            })
-            .catch(err=>{
-                console.log(err)
-            })
-
-      },
-      async editUser(user){
-        //   console.log(index)
-          const { value: formValues } = await this.$swal.fire({
-            title: 'ویرایش کاربر',
-            html:
-                '<input id="swal-input1" class="swal2-input" required="true" placeholder = "نام کاربری">' +
-                '<input id="swal-input2" class="swal2-input" placeholder = "دانشگاه فعلا نه!!!">'+
-                '<input id="swal-input3" class="swal2-input" placeholder = "ایمیل">'+
-                '<input id="swal-input4" class="swal2-input" placeholder = "نام">',
-            focusConfirm: false,
-            preConfirm: () => {
-                return [
-                    document.getElementById('swal-input1').value,
-                    document.getElementById('swal-input2').value,
-                    document.getElementById('swal-input3').value,
-                    document.getElementById('swal-input4').value
-                ]
-            }
+    async confirmUser(user) {
+      var flag = false;
+      if (!user.confirmed) {
+        flag = true;
+      }
+      this.axios
+        .patch(`http://localhost:3000/api/user/edit`, {
+          userId: user._id,
+          confirmed: flag
         })
-
-        // if (formValues) {
-        // // console.log(formValues)
-
-        // this.$swal.fire(JSON.stringify(formValues))
-        // }
-
-        // console.log(this.users[index]._id);
-        // TODO: university ezafe she
-        this.axios
-            .patch(`http://localhost:3000/api/user/edit`,{
-                userId: user._id,
-                username: formValues[0],
-                email: formValues[2],
-                name: formValues[3]
-            })
-            .then(res => {
-                this.$swal.fire({
-                type: 'success',
-                title: 'موفق',
-                text: 'کاربر با موفقیت ویرایش شد',
-                })
-            console.log(res.data);
-            })
-            .catch(err=>{
-                console.log(err)
-            })
+        .then(res => {
+          user.confirmed = flag;
+          this.$swal.fire({
+            type: "success",
+            title: "موفق",
+            text: "کاربر با موفقیت ویرایش شد"
+          });
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
-
-//TODO: university ezafe she
-     async addUser(user){
-        // console.log(this.$store.state.test)
-        
-        const { value: formValues2 } = await this.$swal.fire({
-        title: 'افزودن کاربر',
-        html:
-            '<input id="swal-input1" class="swal2-input" required="true" placeholder = "نام کاربری">' +
-            '<input id="swal-input2" class="swal2-input" placeholder = "ایمیل">'+
-            '<input id="swal-input3" class="swal2-input" placeholder = "دانشگاه فعلا نه">'+
-            '<input id="swal-input4" class="swal2-input" placeholder = "نقش">'+
-            '<input id="swal-input5" class="swal2-input" placeholder = "نام">',
-            // '<input id="swal-input6" class="swal2-input" placeholder = "جنسیت>',
+    deleteUser(user) {
+      this.$swal
+        .fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, delete it!"
+        })
+        .then(result => {
+          if (result.value) {
+            this.axios
+              .post(`http://localhost:3000/api/user/delete/`, {
+                userId: user._id
+              })
+              .then(res => {
+                let userIndex = this.users.indexOf(user);
+                this.users.splice(userIndex, 1);
+                this.$swal.fire({
+                  type: "success",
+                  title: "موفق",
+                  text: "کاربر با موفقیت حذف شد"
+                });
+              })
+              .catch(err => {
+                console.log(err);
+              });
+          }
+        });
+    },
+    async editUser(user) {
+      const { value: formValues } = await this.$swal.fire({
+        html: `<div class="col-X-6">
+        <div class="card">
+          <div class="card-header">
+            <strong>ویرایش دانشجو </strong>
+          </div>
+          <div class="card-body card-block">
+            <form class="form-horizontal needs-validation">
+              <div class="row form-group text-center">
+                <div class="col-12 col-md-9">
+                  <input
+                    value="${user.name}"
+                    type="text"
+                    id="name"
+                    name="name"
+                    placeholder="نام دانشجو را وارد کنید"
+                    class="form-control"
+                  />
+                </div>
+                <div class="col col-md-3">
+                  <label for="name" class="form-control-label">نام دانشجو</label>
+                </div>
+              </div>
+              <div class="row form-group text-center">
+                <div class="col-12 col-md-9">
+                  <input
+                  value="${user.phoneNumber}"
+                    type="number"
+                    id="number"
+                    name="number"
+                    placeholder="شماره همراه را وارد کنید"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <div class="col col-md-3">
+                  <label for="number" class="form-control-label">شماره همراه</label>
+                </div>
+              </div>
+              <div class="row form-group text-center">
+                <div class="col-12 col-md-9">
+                  <input
+                  value="${user.email}"
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="ایمیل دانشجو را وارد کنید"
+                    class="form-control"
+                  />
+                </div>
+                <div class="col col-md-3">
+                  <label for="email" class="form-control-label">ایمیل</label>
+                </div>
+              </div>
+              <div class="row form-group text-center">
+                <div class="col-12 col-md-9">
+                  <input
+                  value="${user.username}"
+                    type="text"
+                    id="username"
+                    name="username"
+                    placeholder="نام کاربری را وارد کنید"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <div class="col col-md-3">
+                  <label for="username" class="form-control-label">نام کاربری</label>
+                </div>
+              </div>
+              <div class="row form-group text-center">
+                <div class="col-12 col-md-9">
+                  <input
+                  value="${user.password}"
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="رمز"
+                    class="form-control"
+                  />
+                </div>
+                <div class="col col-md-3">
+                  <label for="password" class="form-control-label">رمز</label>
+                </div>
+              </div>
+              <div class="row form-group text-center">
+                <div class="col col-md-9">
+                  <div class="form-check-inline form-check">
+                    <label for="inline-radio2" class="form-check-label">
+                      <input
+                        
+                        type="radio"
+                        id="inline-radio2"
+                        name="inline-radios"
+                        value="option2"
+                        class="form-check-input"
+                      />خانم
+                    </label>
+                    <label for="inline-radio3" class="form-check-label">
+                      <input
+                      
+                        type="radio"
+                        id="inline-radio3"
+                        name="inline-radios"
+                        value="option3"
+                        class="form-check-input"
+                      />آقا
+                    </label>
+                  </div>
+                </div>
+                <div class="col col-md-3">
+                  <label class="form-control-label">جنسیت</label>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>`,
+        // '<input id="swal-input6" class="swal2-input" placeholder = "جنسیت>',
         focusConfirm: false,
         preConfirm: () => {
-            return [
-            document.getElementById('swal-input1').value,
-            document.getElementById('swal-input2').value,
-            document.getElementById('swal-input3').value,
-            document.getElementById('swal-input4').value,
-            document.getElementById('swal-input5').value
-            // document.getElementById('swal-input6').value
-            ]
+          var name = document.getElementById("name").value;
+          var username = document.getElementById("username").value;
+          var email = document.getElementById("email").value;
+          var number = document.getElementById("number").value;
+          var password = document.getElementById("password").value;
+          var ok = false;
+          var gender = "";
+          if ($("#inline-radio3").is(":checked")) {
+            gender = "man";
+          } else if ($("#inline-radio2").is(":checked")) {
+            gender = "woman";
+          }
+          if (
+            name == "" ||
+            username == "" ||
+            email == "" ||
+            password == "" ||
+            gender == ""
+          ) {
+            setTimeout(() => {
+              this.editUser(user);
+            }, 0);
+          } else {
+            ok = true;
+          }
+          return {
+            ok,
+            name,
+            username,
+            number,
+            email,
+            gender,
+            password
+          };
         }
+      });
+      if (formValues == undefined || formValues.ok == false) {
+        return;
+      }
+      // TODO: university ezafe she
+      this.axios
+        .patch(`http://localhost:3000/api/user/edit`, {
+          userId: user._id,
+          username: formValues.username,
+          name: formValues.name,
+          phoneNumber: formValues.number,
+          email: formValues.email,
+          gender: formValues.gender,
+          password: formValues.password
         })
-
-        this.axios
-            .post(`http://localhost:3000/api/user/add`,{
-                userId: user._id,
-                username: formValues2[0],
-                email: formValues2[1],
-                name: formValues2[4],
-                role: formValues2[3],
-                gender: formValues2[5]
-            })
-            .then(res => {
-                // console.log(res)
-                this.$swal.fire({
-                type: 'success',
-                title: 'موفق',
-                text: 'کاربر با موفقیت ویرایش شد',
-                })
-            // console.log(res.data);
-            this.users.push(res.data)
-            })
-            .catch(err=>{
-                console.log(err)
-            })
-
-
-
+        .then(res => {
+          user = res.data;
+          this.$swal.fire({
+            type: "success",
+            title: "موفق",
+            text: "کاربر با موفقیت ویرایش شد"
+          });
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
 
+    //TODO: university ezafe she
 
+    async s(name = "", username = "", number = "", email = "") {
+      const { value: formValues2 } = await this.$swal.fire({
+        html: `<div class="col-X-6">
+        <div class="card">
+          <div class="card-header">
+            <strong>دانشجوی جدید</strong>
+          </div>
+          <div class="card-body card-block">
+            <form class="form-horizontal needs-validation">
+              <div class="row form-group text-center">
+                <div class="col-12 col-md-9">
+                  <input
+                    value="${name}"
+                    type="text"
+                    id="name"
+                    name="name"
+                    placeholder="نام دانشجو را وارد کنید"
+                    class="form-control"
+                  />
+                </div>
+                <div class="col col-md-3">
+                  <label for="name" class="form-control-label">نام دانشجو</label>
+                </div>
+              </div>
+              <div class="row form-group text-center">
+                <div class="col-12 col-md-9">
+                  <input
+                  value="${number}"
+                    type="number"
+                    id="number"
+                    name="number"
+                    placeholder="شماره همراه را وارد کنید"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <div class="col col-md-3">
+                  <label for="number" class="form-control-label">شماره همراه</label>
+                </div>
+              </div>
+              <div class="row form-group text-center">
+                <div class="col-12 col-md-9">
+                  <input
+                  value="${email}"
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="ایمیل دانشجو را وارد کنید"
+                    class="form-control"
+                  />
+                </div>
+                <div class="col col-md-3">
+                  <label for="email" class="form-control-label">ایمیل</label>
+                </div>
+              </div>
+              <div class="row form-group text-center">
+                <div class="col-12 col-md-9">
+                  <input
+                  value="${username}"
+                    type="text"
+                    id="username"
+                    name="username"
+                    placeholder="نام کاربری را وارد کنید"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <div class="col col-md-3">
+                  <label for="username" class="form-control-label">نام کاربری</label>
+                </div>
+              </div>
+              <div class="row form-group text-center">
+                <div class="col-12 col-md-9">
+                  <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="رمز"
+                    class="form-control"
+                  />
+                </div>
+                <div class="col col-md-3">
+                  <label for="password" class="form-control-label">رمز</label>
+                </div>
+              </div>
+              <div class="row form-group text-center">
+                <div class="col col-md-9">
+                  <div class="form-check-inline form-check">
+                    <label for="inline-radio2" class="form-check-label">
+                      <input
+                        
+                        type="radio"
+                        id="inline-radio2"
+                        name="inline-radios"
+                        value="option2"
+                        class="form-check-input"
+                      />خانم
+                    </label>
+                    <label for="inline-radio3" class="form-check-label">
+                      <input
+                      
+                        type="radio"
+                        id="inline-radio3"
+                        name="inline-radios"
+                        value="option3"
+                        class="form-check-input"
+                      />آقا
+                    </label>
+                  </div>
+                </div>
+                <div class="col col-md-3">
+                  <label class="form-control-label">جنسیت</label>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>`,
+        // '<input id="swal-input6" class="swal2-input" placeholder = "جنسیت>',
+        focusConfirm: false,
+        preConfirm: () => {
+          var name = document.getElementById("name").value;
+          var username = document.getElementById("username").value;
+          var email = document.getElementById("email").value;
+          var number = document.getElementById("number").value;
+          var password = document.getElementById("password").value;
+          var ok = false;
+          var gender = "";
+          if ($("#inline-radio3").is(":checked")) {
+            gender = "man";
+          } else if ($("#inline-radio2").is(":checked")) {
+            gender = "woman";
+          }
+          if (
+            name == "" ||
+            username == "" ||
+            email == "" ||
+            password == "" ||
+            gender == ""
+          ) {
+            setTimeout(() => {
+              this.s(name, username, number, email);
+            }, 0);
+          } else {
+            ok = true;
+          }
+          return {
+            ok,
+            name,
+            username,
+            number,
+            email,
+            gender,
+            password
+          };
+        }
+      });
+      if (formValues2 == undefined || formValues2.ok == false) {
+        return;
+      }
+      this.axios
+        .post(`http://localhost:3000/api/user/add`, {
+          username: formValues2.username,
+          phoneNumber: formValues2.number,
+          email: formValues2.email,
+          name: formValues2.name,
+          role: "student",
+          gender: formValues2.gender,
+          password: formValues2.password,
+          confirmed: true
+        })
+        .then(res => {
+          this.$swal.fire({
+            type: "success",
+            title: "موفق",
+            text: "کاربر با موفقیت ثبت شد"
+          });
+          this.users.push(res.data);
+          console.log(res.data);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
 
     formData(teacher, index) {
       return teacher[index];
     },
-
-
 
     search(e, temp = null) {
       var value = $("#myInput")
@@ -268,12 +577,8 @@ export default {
       });
       console.log(value);
     }
-
-
-
-
-    }
   }
+};
 </script>
 
 <style>
@@ -298,5 +603,8 @@ input::-webkit-inner-spin-button {
 
 input[type="number"] {
   -moz-appearance: textfield; /* Firefox */
+}
+.action-icon {
+  margin-right: 5px;
 }
 </style>

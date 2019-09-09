@@ -27,6 +27,7 @@
           <tr>
             <th class>وضعیت انتشار</th>
             <th class>تاریخ</th>
+            <th class>تعداد دروس</th>
             <th class>استاد</th>
             <th class>عنوان</th>
             <th class>#</th>
@@ -34,8 +35,22 @@
         </thead>
         <tbody id="myTable">
           <tr v-for="(course,index) in courses" :key="course._id" @click="push(course)">
-            <td>{{course.publishable}}</td>
+            <td>
+              <button
+                v-if="!course.publishable"
+                data-v-17b74d76
+                type="button"
+                class="btn p-1 px-3 btn-xs btn-danger"
+              >عدم انتشار</button>
+              <button
+                v-if="course.publishable"
+                data-v-17b74d76
+                type="button"
+                class="btn p-1 px-3 btn-xs btn-success"
+              >منتشر شده</button>
+            </td>
             <td>{{course.date}}</td>
+            <td>{{course.lessons.length}}</td>
             <td>{{course.user.name}}</td>
             <td>{{course.title}}</td>
             <td>{{index+1}}</td>
@@ -104,33 +119,7 @@ export default {
     return {
       locationClasses: "messenger-fixed messenger-on-bottom messenger-on-right",
       courses: null,
-      tableStyles: [
-        {
-          date: "1398/02/34",
-          teacher: "حسن خدادی",
-          title: "انقلاب اسلامی"
-        },
-        {
-          date: "1398/02/58",
-          teacher: "حسین خدادی",
-          title: "انقلاب اسلامی"
-        },
-        {
-          date: "1398/02/58",
-          teacher: "حسن خدادی",
-          title: "انقلاب اسلامی"
-        },
-        {
-          date: "1398/02/58",
-          teacher: "حسن خدادی",
-          title: "انقلاب اسلامی"
-        },
-        {
-          date: "1398/02/58",
-          teacher: "حسن خدادی",
-          title: "انقلاب اسلامی"
-        }
-      ]
+      
     };
   },
   methods: {
@@ -167,43 +156,6 @@ export default {
         );
       });
       console.log(value);
-    },
-    parseDate(date) {
-      const dateSet = date.toDateString().split(" ");
-      return `${date.toLocaleString("en-us", { month: "long" })} ${
-        dateSet[2]
-      }, ${dateSet[3]}`;
-    },
-    checkAll(ev, checkbox) {
-      const checkboxArr = new Array(this[checkbox].length).fill(
-        ev.target.checked
-      );
-      Vue.set(this, checkbox, checkboxArr);
-    },
-    changeCheck(ev, checkbox, id) {
-      this[checkbox][id] = ev.target.checked;
-      if (!ev.target.checked) {
-        this[checkbox][0] = false;
-      }
-    },
-    getRandomData() {
-      const result = [];
-
-      for (let i = 0; i <= 8; i += 1) {
-        result.push(Math.floor(Math.random() * 20) + 1);
-      }
-
-      return result;
-    },
-    initCharts() {
-      const colors = ["#547fff", "#9964e3", "#f55d5d", "#ffc247", "#3abf94"];
-
-      $.each($(".sparkline-chart"), (id, chart) => {
-        $(chart).sparkline(this.getRandomData(), {
-          type: "bar",
-          barColor: colors[Math.floor(Math.random() * colors.length)]
-        });
-      });
     }
   },
   mounted() {

@@ -19,7 +19,7 @@ router.get("/show/", courseController.showSingleCourse);
 router.delete("/deleteall", courseController.deleteAllCourses);
 
 //Delete an embed course
-router.delete("/delete", courseController.deleteACourse);
+router.post("/delete", courseController.deleteACourse);
 
 //edit an embed course
 router.patch("/edit", courseController.editACourse);

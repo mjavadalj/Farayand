@@ -18,14 +18,14 @@
       <NavLink
         header="Teachers"
         link="/app/teacher"
-        iconName="flaticon-users"
+        iconName="flaticon-user"
         index="notifications"
         isHeader
       />
       <NavLink
         header="Students"
         link="/app/student"
-        iconName="flaticon-users"
+        iconName="fa fa-graduation-cap"
         index="students"
         isHeader
       />

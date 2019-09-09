@@ -27,6 +27,8 @@ module.exports.addLesson = (req, res) => {
         $push: {
           lessons: req.body.lesson
         }
+      },{
+        new:true
       })
         .exec()
         .then(result => {
@@ -122,7 +124,7 @@ module.exports.editLesson = (req, res) => {
     };
     Embed.findOneAndUpdate(find, {
       $set: newItems
-    })
+    },{new:true})
       .exec()
       .then(result => {
         handler(result, res, 200);

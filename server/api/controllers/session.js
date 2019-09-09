@@ -35,7 +35,7 @@ module.exports.addASession = (req, res) => {
     $push: {
       "lessons.$.sessions": req.body.session
     }
-  })
+  },{new:true})
     .exec()
     .then(result => {
       handler(result, res, 200);
@@ -156,7 +156,7 @@ module.exports.editASession = (req, res) => {
     "lessons._id": req.body.lessonId,
     "lessons.sessions._id": mong(req.body.sessionId)
   };
-  Embed.updateOne(
+  Embed.findOneAndUpdate(
     find,
     {
       $set: newItems
