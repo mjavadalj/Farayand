@@ -20,7 +20,7 @@ const embedSchema = mongoose.Schema({
           title: { type: String, require: true },
           content: { type: String, default: null },
           date_jalali: { type: Object, default: null },
-          date: { type: mongoose.Schema.Types.Date, default: Date.now },
+          quizDate: { type: mongoose.Schema.Types.Date, default: Date.now },
           publishable: { type: Boolean, default: false },
           duration: { type: Number, default: null  },
           minScore: { type: Number, default: null },

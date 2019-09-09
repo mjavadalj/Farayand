@@ -27,7 +27,7 @@ module.exports.addCourse = (req, res) => {
 
 module.exports.showAllCourses = (req, res) => {
   Embed.find({})
-    .select("-lessons")
+    .select("-lessons.sessions")
     .populate('user','name')
     .lean()
     .exec()

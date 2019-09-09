@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Router from "vue-router";
-
+import TeacherLayout from "@/components/Layout/teacherLayout";
 import Layout from "@/components/Layout/Layout";
 import Login from "@/pages/Login/Login";
 import ErrorPage from "@/pages/Error/Error";
@@ -28,6 +28,7 @@ import Teacher from "@/pages/teacher/teacher";
 import Certificate from "@/pages/certificate/certificate";
 //Admin course
 import Course from "@/pages/course/course";
+import TCourse from "@/pages/course/teacherCourse";
 //Admin lesson
 import Lesson from "@/pages/lesson/lesson";
 //Admin session
@@ -58,11 +59,12 @@ export default new Router({
         {
           path: "session/:title",
           name: "session",
-          component: Session,
-        }, {
+          component: Session
+        },
+        {
           path: "lesson/:title",
           name: "lesson",
-          component: Lesson,
+          component: Lesson
         },
         {
           path: "course",
@@ -118,6 +120,23 @@ export default new Router({
           path: "student",
           name: "student",
           component: Student
+        }
+      ]
+    },
+    {
+      path: "/teacher",
+      name: "teacherLayout",
+      component: TeacherLayout,
+      children: [
+        {
+          path: "course",
+          name: "course",
+          component: TCourse
+        },
+        {
+          path: "lesson/:title",
+          name: "tlesson",
+          component: Lesson
         }
       ]
     }

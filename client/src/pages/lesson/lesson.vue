@@ -27,6 +27,7 @@
       <table id="dtBasicExample" align="center" class="table">
         <thead>
           <tr>
+            <th class>عملیات</th>
             <th class>تاریخ</th>
             <th class>تعداد جلسه</th>
             <th class>عنوان</th>
@@ -34,7 +35,19 @@
           </tr>
         </thead>
         <tbody id="myTable">
-          <tr v-for="(lesson,index) in lessons" :key="lesson._id" @click="push(lesson)">
+          <tr v-for="(lesson,index) in lessons" :key="lesson._id" @click="push($event,lesson)">
+            <td>
+              <i
+                @click="deleteLesson(lesson)"
+                class="fa fa-remove action-icon"
+                style="font-size: 1.5em;"
+              />
+              <i
+                @click="editLesson(lesson,index)"
+                class="fa fa-edit action-icon"
+                style="font-size: 1.5em;"
+              />
+            </td>
             <td>{{lesson.date}}</td>
             <td>5</td>
             <td>{{lesson.title}}</td>
@@ -42,6 +55,11 @@
           </tr>
         </tbody>
       </table>
+    </div>
+    <div>
+      <button id="fixedbutton" class="btn btn-primary" type="button" @click="addLesson()">
+        <i class="fa fa-plus" />
+      </button>
     </div>
   </div>
 </template>
@@ -52,47 +70,23 @@ export default {
     return {
       course: null,
       lessons: null,
-      courseId: null,
-      tableStyles: [
-        {
-          date: "1398/02/34",
-          teacher: "حسن خدادی",
-          title: "انقلاب اسلامی"
-        },
-        {
-          date: "1398/02/58",
-          teacher: "حسین خدادی",
-          title: "انقلاب اسلامی"
-        },
-        {
-          date: "1398/02/58",
-          teacher: "حسن خدادی",
-          title: "انقلاب اسلامی"
-        },
-        {
-          date: "1398/02/58",
-          teacher: "حسن خدادی",
-          title: "انقلاب اسلامی"
-        },
-        {
-          date: "1398/02/58",
-          teacher: "حسن خدادی",
-          title: "انقلاب اسلامی"
-        }
-      ]
+      courseId: null
     };
   },
 
   methods: {
-    push(data) {
-        global.courseId=this.courseId
-        global.lessonId=data._id
-        this.$router.push({
-            name:'session',
-            params:{
-              title:data.title
-            }
-        });
+    push(e, data) {
+      if (e.target.nodeName == "I") {
+        return;
+      }
+      global.courseId = this.courseId;
+      global.lessonId = data._id;
+      this.$router.push({
+        name: "session",
+        params: {
+          title: data.title
+        }
+      });
     },
     search(e) {
       var value = $("#myInput")
@@ -108,60 +102,197 @@ export default {
       });
       console.log(value);
     },
-    parseDate(date) {
-      const dateSet = date.toDateString().split(" ");
-      return `${date.toLocaleString("en-us", { month: "long" })} ${
-        dateSet[2]
-      }, ${dateSet[3]}`;
-    },
-    checkAll(ev, checkbox) {
-      const checkboxArr = new Array(this[checkbox].length).fill(
-        ev.target.checked
-      );
-      Vue.set(this, checkbox, checkboxArr);
-    },
-    changeCheck(ev, checkbox, id) {
-      this[checkbox][id] = ev.target.checked;
-      if (!ev.target.checked) {
-        this[checkbox][0] = false;
-      }
-    },
-    getRandomData() {
-      const result = [];
-
-      for (let i = 0; i <= 8; i += 1) {
-        result.push(Math.floor(Math.random() * 20) + 1);
-      }
-
-      return result;
-    },
-    initCharts() {
-      const colors = ["#547fff", "#9964e3", "#f55d5d", "#ffc247", "#3abf94"];
-
-      $.each($(".sparkline-chart"), (id, chart) => {
-        $(chart).sparkline(this.getRandomData(), {
-          type: "bar",
-          barColor: colors[Math.floor(Math.random() * colors.length)]
+    deleteLesson(lesson) {
+      this.$swal
+        .fire({
+          title: "Are you sure?",
+          text: "درس به همراه تمامی جلسه ها حذف می شود",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, delete it!"
+        })
+        .then(result => {
+          if (result.value) {
+            this.axios
+              .patch(`http://localhost:3000/api/lesson/delete/`, {
+                courseId: this.course._id,
+                lessonId: lesson._id
+              })
+              .then(res => {
+                let userIndex = this.lessons.indexOf(lesson);
+                this.lessons.splice(userIndex, 1);
+                this.$swal.fire({
+                  type: "success",
+                  title: "موفق",
+                  text: "درس با موفقیت حذف شد"
+                });
+              })
+              .catch(err => {
+                console.log(err);
+              });
+          }
         });
+    },
+    async addLesson(title = "", content = "") {
+      const { value: formValues2 } = await this.$swal.fire({
+        html: `
+          <div class="card">
+          <div class="card-header">
+            <strong>درس جدید</strong>
+          </div>
+          </br>
+          <div class="form-group">
+          <div class="">
+            <label for="title">عنوان درس</label>
+                  <input
+                    value="${title}"
+                    type="text"
+                    id="title"
+                    name="title"
+                    placeholder="عنوان درس را وارد کنید"
+                    class="form-control"
+                  />
+          </div>
+          </br></br>
+          <div>
+            <label for="content">توضیحات راجع به درس</label>
+            <textarea class="form-control text-center" rows="3" id="content"> ${content}</textarea>
+          </div>      
+          </div>`,
+        focusConfirm: false,
+        preConfirm: () => {
+          var title = document.getElementById("title").value;
+          var content = document.getElementById("content").value;
+          var ok = false;
+          if (title == "" || content == "") {
+            setTimeout(() => {
+              this.addLesson(title, content);
+            }, 0);
+          } else {
+            ok = true;
+          }
+          return {
+            ok,
+            title,
+            content
+          };
+        }
       });
+      if (formValues2 == undefined || formValues2.ok == false) {
+        return;
+      }
+      console.log(this.courseId);
+      this.axios
+        .patch(`http://localhost:3000/api/lesson/add`, {
+          courseId: this.courseId,
+          lesson: {
+            title: formValues2.title,
+            content: formValues2.content
+          }
+        })
+        .then(res => {
+          this.$swal.fire({
+            type: "success",
+            title: "موفق",
+            text: "درس با موفقیت ثبت شد"
+          });
+          console.log(res.data);
+          this.lessons = res.data.lessons;
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    async editLesson(lesson, index) {
+      const { value: formValues2 } = await this.$swal.fire({
+        html: `
+          <div class="card">
+          <div class="card-header">
+            <strong>درس جدید</strong>
+          </div>
+          </br>
+          <div class="form-group">
+          <div class="">
+            <label for="title">عنوان درس</label>
+                  <input
+                    value="${lesson.title}"
+                    type="text"
+                    id="title"
+                    name="title"
+                    placeholder="عنوان درس را وارد کنید"
+                    class="form-control"
+                  />
+          </div>
+          </br></br>
+          <div>
+            <label for="content">توضیحات راجع به درس</label>
+            <textarea class="form-control text-center" rows="3" id="content"> ${lesson.content}</textarea>
+          </div>      
+          </div>`,
+        focusConfirm: false,
+        preConfirm: () => {
+          var title = document.getElementById("title").value;
+          var content = document.getElementById("content").value;
+          var ok = false;
+          if (title == "" || content == "") {
+            setTimeout(() => {
+              this.editLesson(lesson);
+            }, 0);
+          } else {
+            ok = true;
+          }
+          return {
+            ok,
+            title,
+            content
+          };
+        }
+      });
+      if (formValues2 == undefined || formValues2.ok == false) {
+        return;
+      }
+      this.axios
+        .patch(`http://localhost:3000/api/lesson/edit`, {
+          courseId: this.courseId,
+          lessonId: lesson._id,
+          title: formValues2.title,
+          content: formValues2.content
+        })
+        .then(res => {
+          this.$swal.fire({
+            type: "success",
+            title: "موفق",
+            text: "درس با موفقیت ویرایش شد"
+          });
+          
+          Object.keys(res.data.lessons[index]).forEach(item => {
+            lesson[item] = res.data.lessons[index][item];
+          });
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
   },
   mounted() {
     // this.initCharts();
     if (global == undefined) {
-      this.$router.push("/app");
+      this.$router.push("/teacher");
     }
     this.courseId = global.courseId;
     this.axios
-      .post(`http://localhost:3000/api/lesson/showall`,{courseId:this.courseId})
+      .post(`http://localhost:3000/api/lesson/showall`, {
+        courseId: this.courseId
+      })
       .then(res => {
         this.lessons = res.data.lessons;
         this.course = res.date;
         var clone = Object.assign({}, res.date);
-        console.log(clone);
-        var clone=res.data
-        let {lessons,...x}=clone
-        this.course=x        
+        var clone = res.data;
+        let { lessons, ...x } = clone;
+        this.course = x;
       })
       .catch(err => {
         console.log(err);
@@ -169,6 +300,7 @@ export default {
   },
   created() {}
 };
+//TODO: router push role
 </script>
 <style>
 tr:hover {

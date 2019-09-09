@@ -267,10 +267,13 @@ module.exports.showAllStudents = (req, res) => {
 };
 module.exports.editUser = (req, res) => {
   newItems = editItems(req);
-  User.updateOne(
+  User.findOneAndUpdate(
     { _id: req.body.userId },
     {
       $set: newItems
+    },
+    {
+      new:true
     }
   )
     .exec()
