@@ -3,9 +3,9 @@
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
-          <a @click="push('Layout')" href="" class="iransans-b">مدیریت</a>
+          <a @click="push('Layout')" href="">مدیریت</a>
         </li>
-        <li class="breadcrumb-item active iransans-b" aria-current="page">اطلاعات اساتید</li>
+        <li class="breadcrumb-item active" aria-current="page">اطلاعات اساتید</li>
       </ol>
     </nav>
     <div class="input-group mb-3">

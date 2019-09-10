@@ -26,7 +26,7 @@
         <thead>
           <tr>
             <th class>عملیات</th>
-            <th class>وضعیت </th>
+            <th class>وضعیت</th>
             <th class>تاریخ</th>
             <th class>تعداد دروس</th>
             <th class>استاد</th>
@@ -75,7 +75,7 @@
               >منتشر شده</button>
             </td>
             <td>{{course.date}}</td>
-            <td>{{course.lessons.length}}</td>
+            <td>5</td>
             <td>{{teacher.name}}</td>
             <td>{{course.title}}</td>
             <td>{{index+1}}</td>
@@ -188,9 +188,8 @@ export default {
       if (e.target.nodeName == "I") {
         return;
       }
-      console.log(course._id);
       global.courseId = course._id;
-      console.log(this.$router);
+      global.teacherId = this.teacher._id;
 
       this.$router.push({
         name: "tlesson",
@@ -316,7 +315,7 @@ export default {
           }
         });
     },
-    async editCourse(course,index) {
+    async editCourse(course, index) {
       const { value: formValues } = await this.$swal.fire({
         html: `<div class="card">
           <div class="card-header">
@@ -388,13 +387,16 @@ export default {
   },
   mounted() {
     // this.initCharts();
-
+    //emadi
+    //5d77a5193908ca10e8a7877a
+    //khodadi
+    //5d74028057b2c842046986c7
     this.axios
       .post(`http://localhost:3000/api/user/course/showall`, {
         teacherId: "5d74028057b2c842046986c7"
       })
       .then(res => {
-        console.log('res.data');
+        console.log("res.data");
         console.log(res.data);
         this.courses = res.data;
       })

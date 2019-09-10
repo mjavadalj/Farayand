@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Router from "vue-router";
 import TeacherLayout from "@/components/Layout/teacherLayout";
+import UserLayout from "@/components/Layout/userLayout";
 import Layout from "@/components/Layout/Layout";
 import Login from "@/pages/Login/Login";
 import ErrorPage from "@/pages/Error/Error";
@@ -36,6 +37,7 @@ import Session from "@/pages/session/session";
 
 import Student from "./pages/students/student.vue";
 import Question from "./pages/question/question.vue";
+import Home from "./pages/home/home.vue";
 
 Vue.use(Router);
 
@@ -148,6 +150,23 @@ export default new Router({
           path: "lesson/:title",
           name: "tlesson",
           component: Lesson
+        },
+        {
+          path: "session/:title",
+          name: "tsession",
+          component: Session
+        }
+      ]
+    },
+    {
+      path: "/",
+      name: "userLayout",
+      component: UserLayout,
+      children: [
+        {
+          path: "/home",
+          name: "home",
+          component: Home
         }
       ]
     }

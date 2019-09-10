@@ -46,6 +46,12 @@
   font-family: "saminb";
   src: url("../fonts/Samim-Bold.woff2");
 }
+.samin {
+  font-family: samin;
+}
+.saminb {
+  font-family: saminb;
+}
 .iransans {
   font-family: iransans;
 }
@@ -87,4 +93,12 @@ tbody {
 .form-control-label,
 .display-3{
   font-family: lalezar;
+}
+.breadcrumb
+{
+  font-family: samin;
+
+}
+a{
+  font-family: samin;
 }

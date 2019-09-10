@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-breadcrumb>
-      <b-breadcrumb-item>سلام</b-breadcrumb-item>
+      <b-breadcrumb-item>راهنما</b-breadcrumb-item>
       <b-breadcrumb-item active>دوره ها</b-breadcrumb-item>
     </b-breadcrumb>
     <div class="input-group mb-3">
@@ -50,7 +50,7 @@
               >منتشر شده</button>
             </td>
             <td>{{course.date}}</td>
-            <td>{{course.lessons.length}}</td>
+            <td>5</td>
             <td>{{course.user.name}}</td>
             <td>{{course.title}}</td>
             <td>{{index+1}}</td>

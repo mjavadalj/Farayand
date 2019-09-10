@@ -12,9 +12,9 @@ export default {
       this.$router.push('/login');
     }
 
-    if (currentPath === '/' || currentPath === '/app') {
-      this.$router.push('/app/dashboard');
-    }
+    // if (currentPath === '/' || currentPath === '/app') {
+    //   this.$router.push('/app/dashboard');
+    // }
   },
 };
 </script>

@@ -1,10 +1,10 @@
 <template>
   <div>
     <b-breadcrumb>
-      <b-breadcrumb-item>سلام</b-breadcrumb-item>
-      <b-breadcrumb-item active>{{course.title}}</b-breadcrumb-item>
-      <b-breadcrumb-item active>{{lesson.title}}</b-breadcrumb-item>
-      <b-breadcrumb-item active>{{session.title}}</b-breadcrumb-item>
+      <b-breadcrumb-item>راهنما</b-breadcrumb-item>
+      <b-breadcrumb-item active>دوره {{course.title}}</b-breadcrumb-item>
+      <b-breadcrumb-item active>درس {{lesson.title}}</b-breadcrumb-item>
+      <b-breadcrumb-item active>جلسه {{session.title}}</b-breadcrumb-item>
       <b-breadcrumb-item active>سوالات</b-breadcrumb-item>
     </b-breadcrumb>
     <h1 class="display-3 text-right">{{session.title}}</h1>
@@ -41,7 +41,7 @@
           />
         </li>
         <li @click="changeAnswer($event,question,'option_1')" class="list-group-item">
-          <td v-if="question.option_1.correct" data-v-71d02ef0>
+          <td class="widgetControls widget-controls" v-if="question.option_1.correct" data-v-71d02ef0>
             <span data-v-71d02ef0 class="badge badge-success">جواب</span>
           </td>
           <input
@@ -52,7 +52,7 @@
           />
         </li>
         <li @click="changeAnswer($event,question,'option_2')" class="list-group-item">
-          <td v-if="question.option_2.correct" data-v-71d02ef0>
+          <td class="widgetControls widget-controls" v-if="question.option_2.correct" data-v-71d02ef0>
             <span data-v-71d02ef0 class="badge badge-success">جواب</span>
           </td>
           <input
@@ -63,7 +63,7 @@
           />
         </li>
         <li @click="changeAnswer($event,question,'option_3')" class="list-group-item">
-          <td v-if="question.option_3.correct" data-v-71d02ef0>
+          <td class="widgetControls widget-controls" v-if="question.option_3.correct" data-v-71d02ef0>
             <span data-v-71d02ef0 class="badge badge-success">جواب</span>
           </td>
           <input
@@ -74,7 +74,7 @@
           />
         </li>
         <li @click="changeAnswer($event,question,'option_4')" class="list-group-item">
-          <td v-if="question.option_4.correct" data-v-71d02ef0>
+          <td class="widgetControls widget-controls" v-if="question.option_4.correct" data-v-71d02ef0>
             <span data-v-71d02ef0 class="badge badge-success">جواب</span>
           </td>
           <input
@@ -238,7 +238,8 @@ export default {
     if (global == undefined) {
       this.$router.push("/teacher/course");
     }
-
+    console.log(global);
+    
     this.course = global.course;
     this.lesson = global.lesson;
     this.session = global.session;

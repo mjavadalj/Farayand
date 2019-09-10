@@ -8,12 +8,12 @@
         <!-- <b-tooltip target="barsTooltip" placement="bottom">
           Turn on/off <br> sidebar <br> collapsing
         </b-tooltip> -->
-        <a class="fs-lg d-lg-none" href="#" @click="switchSidebarMethod">
+        <!-- <a class="fs-lg d-lg-none" href="#" @click="switchSidebarMethod">
           <span class="rounded rounded-lg bg-gray text-white d-md-none">
             <i class="la la-bars la-lg" />
           </span>
           <i class="la la-bars la-lg d-sm-down-none ml-4" />
-        </a>
+        </a> -->
       </b-nav-item>
     </b-nav>
     

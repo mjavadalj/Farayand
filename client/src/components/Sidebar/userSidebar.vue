@@ -6,24 +6,31 @@
   >
     <header class="logo">
       <router-link to="/teacher">
-        <span class="text-warning">Teacher</span> App
+        <span class="text-warning">Student</span> App
       </router-link>
     </header>
     <ul class="nav">
       <NavLink
-        header="Courses"
+        header="HOME"
+        link="/home"
+        iconName="fa fa-home"
+        index="course"
+        isHeader
+      />
+      <!-- <NavLink
+        header="My Courses"
         link="/teacher/course"
         iconName="fa fa-tasks"
         index="course"
         isHeader
       />
       <NavLink
-        header="Certificates"
+        header="My Certificates"
         link="/app/certificate"
         iconName="flaticon-list"
         index="certificate"
         isHeader
-      />
+      /> -->
     </ul>
   </nav>
 </template>
@@ -70,10 +77,10 @@ export default {
       // }
     },
     sidebarMouseLeave() {
-    //   if (!this.sidebarStatic && (isScreen("lg") || isScreen("xl"))) {
-    //     this.switchSidebar(true);
-    //     this.changeSidebarActive(null);
-    //   }
+      //   if (!this.sidebarStatic && (isScreen("lg") || isScreen("xl"))) {
+      //     this.switchSidebar(true);
+      //     this.changeSidebarActive(null);
+      //   }
     }
   },
   created() {

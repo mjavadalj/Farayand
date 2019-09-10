@@ -432,26 +432,26 @@ small {
 
 ///////// Breadcrumbs //////////
 
-.breadcrumb {
-  color: $gray-600;
-  margin-bottom: 1.5rem;
-  margin-top: 0;
+// .breadcrumb {
+//   color: $gray-600;
+//   margin-bottom: 1.5rem;
+//   margin-top: 0;
 
-  a {
-    color: inherit;
-  }
+//   a {
+//     color: inherit;
+//   }
 
-  > .active {
-    font-weight: $font-weight-semi-bold;
-  }
+//   > .active {
+//     font-weight: $font-weight-semi-bold;
+//   }
 
-  padding: 0;
-}
+//   padding: 0;
+// }
 
-.breadcrumb-item + .breadcrumb-item::before {
-  content: '>';
-  color: $gray-600;
-}
+// .breadcrumb-item + .breadcrumb-item::before {
+//   content: '>';
+//   color: $gray-600;
+// }
 
 ///////// Glyphicons //////////
 

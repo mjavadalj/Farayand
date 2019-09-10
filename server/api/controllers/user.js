@@ -296,6 +296,7 @@ module.exports.deleteAUser = (req, res) => {
 };
 module.exports.showAllCoursesOfTeacher = (req, res) => {
   Embed.find({ user: req.body.teacherId })
+    .select('-lessons')
     .exec()
     .then(result => {
       res.status(200).json(result);

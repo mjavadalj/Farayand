@@ -1,9 +1,9 @@
 <template>
   <div>
     <b-breadcrumb>
-      <b-breadcrumb-item>سلام</b-breadcrumb-item>
-      <b-breadcrumb-item active>{{course.title}}</b-breadcrumb-item>
-      <b-breadcrumb-item active>{{lesson.title}}</b-breadcrumb-item>
+      <b-breadcrumb-item>راهنما</b-breadcrumb-item>
+      <b-breadcrumb-item active>دوره {{course.title}}</b-breadcrumb-item>
+      <b-breadcrumb-item active>درس {{lesson.title}}</b-breadcrumb-item>
       <b-breadcrumb-item active>جلسه ها</b-breadcrumb-item>
     </b-breadcrumb>
     <h1 class="display-3 text-right">{{lesson.title}}</h1>
@@ -87,13 +87,25 @@ export default {
       if (e.target.nodeName == "I") {
         return;
       }
-      global.sessionId=data._id
-      global.course=this.course
-      global.lesson=this.lesson
-      global.session=data
-      this.$router.push({
-        name: "question"
-      });
+      global.sessionId = data._id;
+      global.course = this.course;
+      global.lesson = this.lesson;
+      global.session = data;
+      if (global.teacherId != null) {
+        this.$router.push({
+          name: "tquestion",
+          params: {
+            title: data.title
+          }
+        });
+      } else {
+        this.$router.push({
+          name: "question",
+          params: {
+            title: data.title
+          }
+        });
+      }
     },
     search(e) {
       var value = $("#myInput")
