@@ -40,13 +40,13 @@
                 v-if="!course.publishable"
                 data-v-17b74d76
                 type="button"
-                class="btn p-1 px-3 btn-xs btn-danger"
+                class="btn p-1 px-3 btn-xs btn-danger lalezar"
               >عدم انتشار</button>
               <button
                 v-if="course.publishable"
                 data-v-17b74d76
                 type="button"
-                class="btn p-1 px-3 btn-xs btn-success"
+                class="btn p-1 px-3 btn-xs btn-success lalezar"
               >منتشر شده</button>
             </td>
             <td>{{course.date}}</td>

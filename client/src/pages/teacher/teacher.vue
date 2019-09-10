@@ -1,9 +1,13 @@
 <template>
   <div id="teachers">
-    <b-breadcrumb>
-      <b-breadcrumb-item>سلام</b-breadcrumb-item>
-      <b-breadcrumb-item active>اساتید</b-breadcrumb-item>
-    </b-breadcrumb>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a @click="push('Layout')" href="" class="iransans-b">مدیریت</a>
+        </li>
+        <li class="breadcrumb-item active iransans-b" aria-current="page">اطلاعات اساتید</li>
+      </ol>
+    </nav>
     <div class="input-group mb-3">
       <div class="input-group-prepend">
         <span class="input-group-text" id="basic-addon1">
@@ -14,8 +18,8 @@
         style="text-align:center;"
         type="text"
         id="myInput"
-        class="form-control"
-        placeholder="Serach"
+        class="form-control lalezar"
+        placeholder="جست و جو"
         aria-label="Search"
         aria-describedby="basic-addon1"
         v-on:keyup="search"
@@ -40,10 +44,7 @@
           </tr>
         </thead>
         <tbody id="myTable">
-          <tr
-            v-for="(teacher,index) in teachers"
-            :key="teacher._id"
-          >
+          <tr v-for="(teacher,index) in teachers" :key="teacher._id">
             <td>
               <i
                 @click="deleteUser(teacher)"
@@ -73,13 +74,13 @@
                 v-if="!teacher.confirmed"
                 data-v-17b74d76
                 type="button"
-                class="btn p-1 px-3 btn-xs btn-danger"
+                class="btn p-1 px-3 btn-xs btn-danger lalezar"
               >تایید نشده</button>
               <button
                 v-if="teacher.confirmed"
                 data-v-17b74d76
                 type="button"
-                class="btn p-1 px-3 btn-xs btn-success"
+                class="btn p-1 px-3 btn-xs btn-success lalezar"
               >فعال</button>
             </td>
             <td>{{teacher.email}}</td>
@@ -632,6 +633,11 @@ export default {
           console.log(err);
         });
     },
+    push(name){
+      this.$router.push({
+        name
+      })
+    }
   },
   mounted() {
     // this.initCharts();

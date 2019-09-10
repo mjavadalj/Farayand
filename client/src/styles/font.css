@@ -1,0 +1,90 @@
+@font-face {
+  font-family: "iransans-bold";
+  src: url("../fonts/IRANSans-Bold-web.ttf");
+}
+@font-face {
+  font-family: "yekan";
+  src: url("../fonts/Yekan.ttf");
+}
+@font-face {
+  font-family: "iransans-light";
+  src: url("../fonts/IRANSans-Light-web.ttf");
+}
+@font-face {
+  font-family: "iranyekan";
+  src: url("../fonts/iranyekan.woff");
+}
+@font-face {
+  font-family: "iranyekan-bold";
+  src: url("../fonts/iranyekan_bold.woff");
+}
+@font-face {
+  font-family: "gilory";
+  src: url("../fonts/Gilroylight.woff");
+}
+@font-face {
+  font-family: "gilory-b";
+  src: url("../fonts/Gilroy-Bold.woff");
+}
+@font-face {
+  font-family: "lelezar";
+  src: url("../fonts/Lalezar-Regular.ttf");
+}
+@font-face {
+  font-family: "vazir";
+  src: url("../fonts/Vazir.woff");
+}
+@font-face {
+  font-family: "byekan";
+  src: url("../fonts/BYekan.woff");
+}
+@font-face {
+  font-family: "samin";
+  src: url("../fonts/Samim.woff2");
+}
+@font-face {
+  font-family: "saminb";
+  src: url("../fonts/Samim-Bold.woff2");
+}
+.iransans {
+  font-family: iransans;
+}
+.iransans-b {
+  font-family: iransans-bold;
+  font-size: 10pt;
+}
+.iranyekan {
+  font-family: iranyekan;
+}
+.iranyekan-bold {
+  font-family: iranyekan-bold;
+}
+.yekan {
+  font-family: yekan;
+  font-size: 1.25em;
+}
+.gilory {
+  font-family: gilory;
+  font-size: 1.25em;
+}
+.gilory-b {
+  font-family: gilory-b;
+  font-size: 1.25em;
+}
+.lalezar {
+  font-family: lelezar;
+}
+thead {
+  font-family: lelezar;
+  font-size: 1.25em;
+  
+}
+tbody {
+  font-family: lelezar;
+}
+
+.form-control,
+.form-control-label,
+.display-3{
+  font-family: lalezar;
+}

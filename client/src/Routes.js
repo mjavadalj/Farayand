@@ -35,6 +35,7 @@ import Lesson from "@/pages/lesson/lesson";
 import Session from "@/pages/session/session";
 
 import Student from "./pages/students/student.vue";
+import Question from "./pages/question/question.vue";
 
 Vue.use(Router);
 
@@ -56,6 +57,11 @@ export default new Router({
       name: "Layout",
       component: Layout,
       children: [
+        {
+          path: "question/:title",
+          name: "question",
+          component: Question
+        },
         {
           path: "session/:title",
           name: "session",
@@ -128,6 +134,11 @@ export default new Router({
       name: "teacherLayout",
       component: TeacherLayout,
       children: [
+        {
+          path: "question/:title",
+          name: "tquestion",
+          component: Question
+        },
         {
           path: "course",
           name: "course",

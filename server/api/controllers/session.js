@@ -101,7 +101,7 @@ module.exports.showSingleSession = (req, res) => {
   ])
     .exec()
     .then(result => {
-      handler(result, res, 200);
+      handler(result[0].lessons.sessions.questions, res, 200);
     })
     .catch(err => {
       handler(err, res, 200);

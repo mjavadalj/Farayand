@@ -43,7 +43,7 @@
                 style="font-size: 1.5em;"
               />
               <i
-                @click="editCourse(course)"
+                @click="editCourse(course,index)"
                 class="fa fa-edit action-icon"
                 style="font-size: 1.5em;"
               />
@@ -65,13 +65,13 @@
                 v-if="!course.publishable"
                 data-v-17b74d76
                 type="button"
-                class="btn p-1 px-3 btn-xs btn-danger"
+                class="btn p-1 px-3 btn-xs btn-danger lalezar"
               >عدم انتشار</button>
               <button
                 v-if="course.publishable"
                 data-v-17b74d76
                 type="button"
-                class="btn p-1 px-3 btn-xs btn-success"
+                class="btn p-1 px-3 btn-xs btn-success lalezar"
               >منتشر شده</button>
             </td>
             <td>{{course.date}}</td>
@@ -316,7 +316,7 @@ export default {
           }
         });
     },
-    async editCourse(course) {
+    async editCourse(course,index) {
       const { value: formValues } = await this.$swal.fire({
         html: `<div class="card">
           <div class="card-header">
@@ -372,7 +372,9 @@ export default {
           title: formValues.title
         })
         .then(res => {
-          course = res.data;
+          Object.keys(res.data).forEach(item => {
+            course[item] = res.data[item];
+          });
           this.$swal.fire({
             type: "success",
             title: "موفق",
@@ -392,10 +394,9 @@ export default {
         teacherId: "5d74028057b2c842046986c7"
       })
       .then(res => {
-        // console.log("res.data");
-        // console.log(res.data);
+        console.log('res.data');
+        console.log(res.data);
         this.courses = res.data;
-        // this.addSuccessNotification();
       })
       .catch(err => {
         console.log(err);

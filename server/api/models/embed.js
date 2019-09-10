@@ -28,11 +28,22 @@ const embedSchema = mongoose.Schema({
           questions: [
             {
               text: { type: String, require: true },
-              option_1: { type: String, require: true },
-              option_2: { type: String, require: true },
-              option_3: { type: String, require: true },
-              option_4: { type: String, require: true },
-              correctAnswer: { type: String, require: true }
+              option_1:{
+                text:{ type: String, require: true },
+                correct:{ type: Boolean, default: null },
+              },
+              option_2:{
+                text:{ type: String, require: true },
+                correct:{ type: Boolean, default: null },
+              },
+              option_3:{
+                text:{ type: String, require: true },
+                correct:{ type: Boolean, default: null },
+              },
+              option_4:{
+                text:{ type: String, require: true },
+                correct:{ type: Boolean, default: null },
+              },
             }
           ],
           files: [

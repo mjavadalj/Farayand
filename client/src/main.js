@@ -42,6 +42,10 @@ export const global = new Vue({
   data: {
     courseId: null,
     lessonId: null,
-    teacherId: null
+    teacherId: null,
+    sessionId:null,
+    course:null,
+    lesson:null,
+    session:null,
   }
 });
