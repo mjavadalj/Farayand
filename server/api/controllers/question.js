@@ -28,16 +28,18 @@ const questionItems = (req, text = "") => {
     json[`${text}option_4.correct`] = req.body.option_4.correct;
   }
   console.log(json);
-  
+
   return json;
 };
 module.exports.add = (req, res) => {
   find = {
-    _id: req.body.courseId,
-    "lessons._id": req.body.lessonId,
-    "lessons.sessions._id": mong(req.body.sessionId)
+    $and: [
+      { _id: req.body.courseId },
+      { "lessons._id": req.body.lessonId },
+      { "lessons.sessions._id": mong(req.body.sessionId) }
+    ]
   };
-  Embed.findOneAndUpdate(
+  Embed.updateOne(
     find,
     {
       $push: {
@@ -51,6 +53,9 @@ module.exports.add = (req, res) => {
   )
     .exec()
     .then(result => {
+      // if (result == null) {
+      //   return handler({ err: "can't find" }, res, 404);
+      // }
       handler(result, res, 200);
     })
     .catch(err => {
@@ -60,10 +65,12 @@ module.exports.add = (req, res) => {
 
 module.exports.deleteAQuestion = (req, res) => {
   find = {
-    _id: req.body.courseId,
-    "lessons._id": req.body.lessonId,
-    "lessons.sessions._id": mong(req.body.sessionId),
-    "lessons.sessions.questions._id": mong(req.body.questionId)
+    $and: [
+      { _id: req.body.courseId },
+      { "lessons._id": req.body.lessonId },
+      { "lessons.sessions._id": mong(req.body.sessionId) },
+      { "lessons.sessions.questions._id": mong(req.body.questionId) }
+    ]
   };
   Embed.updateOne(
     find,
@@ -90,9 +97,12 @@ module.exports.deleteAQuestion = (req, res) => {
 
 module.exports.deleteAllQuestions = (req, res) => {
   find = {
-    _id: req.body.courseId,
-    "lessons._id": req.body.lessonId,
-    "lessons.sessions._id": mong(req.body.sessionId)
+    $and:[
+      {_id: req.body.courseId},
+    {"lessons._id": req.body.lessonId},
+    {"lessons.sessions._id": mong(req.body.sessionId)}
+    ]
+    
   };
   Embed.updateOne(
     find,
@@ -121,15 +131,18 @@ module.exports.editAQuestion = (req, res) => {
     "lessons.$[].sessions.$[].questions.$[elem]."
   );
   find = {
-    _id: req.body.courseId,
-    "lessons._id": req.body.lessonId,
-    "lessons.sessions._id": mong(req.body.sessionId),
-    "lessons.sessions.questions._id": mong(req.body.questionId)
+    $and:[
+      {_id: req.body.courseId},
+      {"lessons._id": req.body.lessonId},
+      {"lessons.sessions._id": mong(req.body.sessionId)},
+      {"lessons.sessions.questions._id": mong(req.body.questionId)}
+    ]
+    
   };
   Embed.updateOne(
     find,
     {
-      $set:newQuestion
+      $set: newQuestion
     },
     {
       new: true,

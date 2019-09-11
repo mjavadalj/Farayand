@@ -1,36 +1,52 @@
 <template>
   <div>
-    <div class="text-center">
-      <div id="teachers">
+    <div class="text-center lalezar">
+      <label  for="teachers">اساتید</label>
+      <div id="teachers" class="lalezar">
         <button
           @click="showCourses(teacher)"
           v-for="teacher in teachers"
           :key="teacher._id"
           style="margin-left:2px;"
           type="button"
-          class="btn btn-outline-primary"
-        >{{teacher.name}}</button>
+          class="btn btn-outline-primary lalezar"
+        >
+          <i class="fa fa-user">
+            <span style="margin-left:5px;" class="lalezar">{{teacher.name}}</span>
+          </i>
+        </button>
       </div>
       <br />
-      <div v-if="courseOpen">
+      <label v-if="courseOpen" for="courses">دوره ها</label>
+      <div id="courses" v-if="courseOpen">
         <button
           @click="showLesson(course)"
           v-for="course in courses"
           :key="course._id"
           style="margin:2px 2px 2px 2px;"
           type="button"
-          class="btn btn-outline-secondary"
-        >{{course.title}}</button>
+          class="btn btn-outline-secondary lalezar"
+        >
+          <i class="fa fa-tasks">
+            <span style="margin-left:5px;" class="lalezar">{{course.title}}</span>
+          </i>
+        </button>
       </div>
       <br />
-      <div v-if="lessonOpen">
+      <label v-if="lessonOpen" for="lessons">درس ها</label>
+      <div id="lessons" v-if="lessonOpen">
         <button
+          @click="push(lesson)"
           v-for="lesson in lessons"
           :key="lesson._id"
           style="margin:2px 2px 2px 2px;"
           type="button"
-          class="btn btn-outline-info"
-        >{{lesson.title}}</button>
+          class="btn btn-outline-info lalezar"
+        >
+          <i class="fa fa-code-fork">
+            <span style="margin-left:5px;" class="lalezar">{{lesson.title}}</span>
+          </i>
+        </button>
       </div>
     </div>
   </div>
@@ -123,7 +139,7 @@ export default {
         return;
       }
       this.axios
-        .post(`http://localhost:3000/api/user/course/showall`, {
+        .post(`http://localhost:3000/api/user/course/showall?r=s`, {
           teacherId: teacher._id
         })
         .then(res => {
@@ -169,6 +185,10 @@ export default {
     },
     al(x) {
       alert(x.target.nodeName);
+    },
+    push(lesson) {
+      console.log(lesson._id);
+      console.log(this.courseSelected);
     }
   },
   mounted() {},

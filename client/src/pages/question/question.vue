@@ -41,7 +41,11 @@
           />
         </li>
         <li @click="changeAnswer($event,question,'option_1')" class="list-group-item">
-          <td class="widgetControls widget-controls" v-if="question.option_1.correct" data-v-71d02ef0>
+          <td
+            class="widgetControls widget-controls"
+            v-if="question.option_1.correct"
+            data-v-71d02ef0
+          >
             <span data-v-71d02ef0 class="badge badge-success">جواب</span>
           </td>
           <input
@@ -52,7 +56,11 @@
           />
         </li>
         <li @click="changeAnswer($event,question,'option_2')" class="list-group-item">
-          <td class="widgetControls widget-controls" v-if="question.option_2.correct" data-v-71d02ef0>
+          <td
+            class="widgetControls widget-controls"
+            v-if="question.option_2.correct"
+            data-v-71d02ef0
+          >
             <span data-v-71d02ef0 class="badge badge-success">جواب</span>
           </td>
           <input
@@ -63,7 +71,11 @@
           />
         </li>
         <li @click="changeAnswer($event,question,'option_3')" class="list-group-item">
-          <td class="widgetControls widget-controls" v-if="question.option_3.correct" data-v-71d02ef0>
+          <td
+            class="widgetControls widget-controls"
+            v-if="question.option_3.correct"
+            data-v-71d02ef0
+          >
             <span data-v-71d02ef0 class="badge badge-success">جواب</span>
           </td>
           <input
@@ -74,7 +86,11 @@
           />
         </li>
         <li @click="changeAnswer($event,question,'option_4')" class="list-group-item">
-          <td class="widgetControls widget-controls" v-if="question.option_4.correct" data-v-71d02ef0>
+          <td
+            class="widgetControls widget-controls"
+            v-if="question.option_4.correct"
+            data-v-71d02ef0
+          >
             <span data-v-71d02ef0 class="badge badge-success">جواب</span>
           </td>
           <input
@@ -86,6 +102,11 @@
         </li>
       </ul>
     </div>
+    <div>
+      <button id="fixedbutton" class="btn btn-primary" type="button" @click="addQuestion()">
+        <i class="fa fa-plus" />
+      </button>
+    </div>
   </div>
 </template>
 <script>
@@ -93,6 +114,7 @@ import { global } from "@/main.js";
 export default {
   data() {
     return {
+      newAnswer: 0,
       course: null,
       lesson: null,
       session: null,
@@ -102,6 +124,9 @@ export default {
 
   methods: {
     deleteQuestion(question, index) {
+      if (question._id==undefined){
+        return alert('برای حذف  صفحه را ریفرش ! کنید')
+      }
       this.$swal
         .fire({
           title: "Are you sure?",
@@ -136,6 +161,9 @@ export default {
         });
     },
     editQuestion(question, index) {
+      if (question._id==undefined){
+        return alert('برای تغییر  صفحه را ریفرش ! کنید')
+      }
       var body = {};
       var text = document.getElementById(question._id + "text").value;
       var option_1 = document.getElementById(question._id + "q1").value;
@@ -153,13 +181,25 @@ export default {
       }
       if (text != question.text) body["text"] = text;
       if (option_1 != question.option_1.text)
-        body["option_1"] = { text: option_1, correct: true };
+        body["option_1"] = {
+          text: option_1,
+          correct: question.option_1.correct
+        };
       if (option_2 != question.option_2.text)
-        body["option_2"] = { text: option_2, correct: null };
+        body["option_2"] = {
+          text: option_2,
+          correct: question.option_2.correct
+        };
       if (option_3 != question.option_3.text)
-        body["option_3"] = { text: option_3, correct: null };
+        body["option_3"] = {
+          text: option_3,
+          correct: question.option_3.correct
+        };
       if (option_4 != question.option_4.text)
-        body["option_4"] = { text: option_4, correct: null };
+        body["option_4"] = {
+          text: option_4,
+          correct: question.option_4.correct
+        };
       if (jQuery.isEmptyObject(body)) {
         return alert("هیچ تغییری ایجاد نشده است");
       }
@@ -171,6 +211,7 @@ export default {
       this.axios
         .patch(`http://localhost:3000/api/question/edit`, body)
         .then(res => {
+          console.log(res.data);
           this.$swal.fire({
             type: "success",
             title: "موفق",
@@ -182,6 +223,12 @@ export default {
         });
     },
     changeAnswer(e, question, name) {
+      if (e.target.nodeName == "INPUT") {
+        return;
+      }
+      if (question._id==undefined){
+        return alert('برای تغییر پاسخ صحیح صفحه را ریفرش ! کنید')
+      }
       this.$swal
         .fire({
           title: "Are you sure?",
@@ -232,30 +279,167 @@ export default {
               });
           }
         });
+    },
+    async addQuestion(text = "", op1 = "", op2 = "", op3 = "", op4 = "") {
+      const { value: formValues2 } = await this.$swal.fire({
+        html: `
+          <div
+                class="list-group text-center lalezar"
+                style="border:1px solid;margin:2px 2px 2px 2px;"
+              >
+                <ul id="myForm" class="list-group list-group-flush">
+                  <li class="list-group-item">
+                    <span>
+                    </span>
+                    سوال جدید
+                  </li>
+                  <li class="list-group-item">
+                    <input
+                    value="${text}"
+                      id="n-text"
+                      placeholder="سوال"
+                      class="question-add-input"
+                      type="text"
+                    />
+                  </li>
+                  <li class="list-group-item">
+                    <input type="radio" class="form-check-input" id="1" name="materialExampleRadios">
+                    <input
+                    value="${op1}"
+                    id="n-p-1"
+                    placeholder="گزینه 1"
+                      class="question-add-input"
+                      type="text"
+                      
+                    />
+                  </li>
+                  <li class="list-group-item">
+                  <input type="radio" class="form-check-input" id="2" name="materialExampleRadios">
+                    <input
+                    value="${op2}"
+                    id="n-p-2"
+                    placeholder="گزینه 2"
+                      class="question-add-input"
+                      type="text"
+                    />
+                  </li>
+                  <li  class="list-group-item">
+                    <input type="radio" class="form-check-input" id="3" name="materialExampleRadios">
+                    <input
+                    value="${op3}"
+                    id="n-p-3"
+                    placeholder="گزینه 3"
+                      class="question-add-input"
+                      type="text"
+                    />
+                  </li>
+                  <li  class="list-group-item">
+                    <input type="radio" class="form-check-input" id="4" name="materialExampleRadios">
+                    <input
+                    value="${op4}"
+                    id="n-p-4"
+                    placeholder="گزینه 4"
+                    class="question-add-input"
+                      type="text"
+                    />
+                  </li>
+                </ul>
+              </div>
+          `,
+        focusConfirm: false,
+        preConfirm: () => {
+          var ans = $("input[name=materialExampleRadios]:checked")[0];
+          var text = document.getElementById("n-text").value;
+          var op1 = document.getElementById("n-p-1").value;
+          var op2 = document.getElementById("n-p-2").value;
+          var op3 = document.getElementById("n-p-3").value;
+          var op4 = document.getElementById("n-p-4").value;
+          var ok = false;
+          if (
+            text == "" ||
+            op1 == "" ||
+            op2 == "" ||
+            op3 == "" ||
+            op4 == "" ||
+            ans == undefined
+          ) {
+            setTimeout(() => {
+              this.addQuestion(text, op1, op2, op3, op4);
+            }, 0);
+          } else {
+            ok = true;
+          }
+          var question = {
+            text,
+            option_1: {
+              text: op1,
+              correct: ans.id == 1 ? true : null
+            },
+            option_2: {
+              text: op2,
+              correct: ans.id == 2 ? true : null
+            },
+            option_3: {
+              text: op3,
+              correct: ans.id == 3 ? true : null
+            },
+            option_4: {
+              text: op4,
+              correct: ans.id == 4 ? true : null
+            }
+          };
+          return {
+            ok,
+            question
+          };
+        }
+      });
+
+      if (formValues2 == undefined || formValues2.ok == false) {
+        return;
+      }
+      this.axios
+        .patch(`http://localhost:3000/api/question/add`, {
+          courseId: this.course._id,
+          lessonId: this.lesson._id,
+          sessionId: this.session._id,
+          question: formValues2.question
+        })
+        .then(res => {
+          this.$swal.fire({
+            type: "success",
+            title: "موفق",
+            text: "آزمون با موفقیت ثبت شد"
+          });
+          this.questions.push(formValues2.question);
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
   },
-  mounted() {
+  async mounted() {
     if (global == undefined) {
       this.$router.push("/teacher/course");
     }
-    console.log(global);
-    
-    this.course = global.course;
-    this.lesson = global.lesson;
-    this.session = global.session;
-    this.axios
-      .post(`http://localhost:3000/api/session/show`, {
-        courseId: this.course._id,
-        lessonId: this.lesson._id,
-        sessionId: this.session._id
-      })
-      .then(res => {
-        this.questions = res.data;
-        console.log(this.questions);
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    try {
+      this.course = global.course;
+      this.lesson = global.lesson;
+      this.session = global.session;
+      await this.axios
+        .post(`http://localhost:3000/api/session/show`, {
+          courseId: this.course._id,
+          lessonId: this.lesson._id,
+          sessionId: this.session._id
+        })
+        .then(res => {
+          this.questions = res.data;
+          console.log(this.questions);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    } catch (error) {}
   },
   created() {}
 };
@@ -269,6 +453,11 @@ li:hover {
   background: transparent;
   border: none;
   width: 500px;
+}
+.question-add-input {
+  background: transparent;
+  width: 300px;
+  border: none;
 }
 /* @import 'vue-good-table/dist/vue-good-table.css'; */
 </style>

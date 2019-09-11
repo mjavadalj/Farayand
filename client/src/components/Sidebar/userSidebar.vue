@@ -17,6 +17,13 @@
         index="course"
         isHeader
       />
+      <NavLink
+        header="My Lessons"
+        link="/mylesson"
+        iconName="fa fa-code-fork"
+        index="course"
+        isHeader
+      />
       <!-- <NavLink
         header="My Courses"
         link="/teacher/course"

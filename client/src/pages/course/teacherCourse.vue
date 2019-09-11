@@ -393,7 +393,7 @@ export default {
     //5d74028057b2c842046986c7
     this.axios
       .post(`http://localhost:3000/api/user/course/showall`, {
-        teacherId: "5d74028057b2c842046986c7"
+        teacherId: "5d77a5193908ca10e8a7877a"
       })
       .then(res => {
         console.log("res.data");
@@ -405,7 +405,7 @@ export default {
       });
     this.axios
       .post(`http://localhost:3000/api/user/show`, {
-        userId: "5d74028057b2c842046986c7"
+        userId: "5d77a5193908ca10e8a7877a"
       })
       .then(res => {
         this.teacher = res.data;

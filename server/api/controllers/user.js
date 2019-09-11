@@ -295,7 +295,14 @@ module.exports.deleteAUser = (req, res) => {
     });
 };
 module.exports.showAllCoursesOfTeacher = (req, res) => {
-  Embed.find({ user: req.body.teacherId })
+  find={
+    user: req.body.teacherId
+  }
+  console.log(req.query);
+  if(req.query.r='s'){
+    find['publishable']=true
+  }
+  Embed.find(find)
     .select('-lessons')
     .exec()
     .then(result => {

@@ -32,6 +32,7 @@ import Course from "@/pages/course/course";
 import TCourse from "@/pages/course/teacherCourse";
 //Admin lesson
 import Lesson from "@/pages/lesson/lesson";
+import RgLesson from "@/pages/lesson/reg_lesson";
 //Admin session
 import Session from "@/pages/session/session";
 
@@ -167,6 +168,11 @@ export default new Router({
           path: "/home",
           name: "home",
           component: Home
+        },
+        {
+          path:"/mylesson",
+          name:"reg_lesson",
+          component:RgLesson
         }
       ]
     }
