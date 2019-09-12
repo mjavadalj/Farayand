@@ -84,7 +84,7 @@ module.exports.editACourse = (req, res) => {
 
   Embed.findByIdAndUpdate(req.body.courseId, {
     $set: newItems
-  })
+  },{new:true})
     .exec()
     .then(result => {
       handler(result, res, 200);

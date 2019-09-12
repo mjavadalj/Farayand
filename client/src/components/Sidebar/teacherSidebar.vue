@@ -64,16 +64,16 @@ export default {
       this.changeSidebarActive(paths.join("/"));
     },
     sidebarMouseEnter() {
-      if (!this.sidebarStatic && (isScreen("lg") || isScreen("xl"))) {
-        this.switchSidebar(false);
-        this.setActiveByRoute();
-      }
+      // if (!this.sidebarStatic && (isScreen("lg") || isScreen("xl"))) {
+      //   this.switchSidebar(false);
+      //   this.setActiveByRoute();
+      // }
     },
     sidebarMouseLeave() {
-      if (!this.sidebarStatic && (isScreen("lg") || isScreen("xl"))) {
-        this.switchSidebar(true);
-        this.changeSidebarActive(null);
-      }
+    //   if (!this.sidebarStatic && (isScreen("lg") || isScreen("xl"))) {
+    //     this.switchSidebar(true);
+    //     this.changeSidebarActive(null);
+    //   }
     }
   },
   created() {

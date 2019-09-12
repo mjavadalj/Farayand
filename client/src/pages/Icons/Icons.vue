@@ -2525,7 +2525,9 @@
         <b-row class="icon-list">
           <b-col class="icon-list-item" lg="3" md="4" xs="12"><a href="../icon/file"><i
             class="fa fa-file"
-          /> file</a></b-col>
+          /> file</a>
+          
+          </b-col>
 
           <b-col class="icon-list-item" lg="3" md="4" xs="12"><a
             href="../icon/file-archive-o"

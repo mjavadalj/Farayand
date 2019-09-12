@@ -1,8 +1,8 @@
 <template>
   <div>
     <b-breadcrumb>
-      <b-breadcrumb-item>سلام</b-breadcrumb-item>
-      <b-breadcrumb-item active>{{course.title}}</b-breadcrumb-item>
+      <b-breadcrumb-item>راهنما</b-breadcrumb-item>
+      <b-breadcrumb-item active>دوره {{course.title}}</b-breadcrumb-item>
       <b-breadcrumb-item active>درس ها</b-breadcrumb-item>
     </b-breadcrumb>
     <h1 class="display-3 text-right">{{course.title}}</h1>
@@ -49,7 +49,7 @@
               />
             </td>
             <td>{{lesson.date}}</td>
-            <td>5</td>
+            <td>{{lesson.sessionLength}}</td>
             <td>{{lesson.title}}</td>
             <td>{{index+1}}</td>
           </tr>
@@ -81,12 +81,21 @@ export default {
       }
       global.courseId = this.courseId;
       global.lessonId = data._id;
-      this.$router.push({
-        name: "session",
-        params: {
-          title: data.title
-        }
-      });
+      if (global.teacherId!=null) {
+        this.$router.push({
+          name: "tsession",
+          params: {
+            title: data.title
+          }
+        });
+      } else {
+        this.$router.push({
+          name: "session",
+          params: {
+            title: data.title
+          }
+        });
+      }
     },
     search(e) {
       var value = $("#myInput")
@@ -266,7 +275,7 @@ export default {
             title: "موفق",
             text: "درس با موفقیت ویرایش شد"
           });
-          
+
           Object.keys(res.data.lessons[index]).forEach(item => {
             lesson[item] = res.data.lessons[index][item];
           });
@@ -287,12 +296,10 @@ export default {
         courseId: this.courseId
       })
       .then(res => {
-        this.lessons = res.data.lessons;
-        this.course = res.date;
-        var clone = Object.assign({}, res.date);
-        var clone = res.data;
-        let { lessons, ...x } = clone;
-        this.course = x;
+        console.log(res.data);
+        
+        this.lessons = res.data;
+        this.course = global.course;
       })
       .catch(err => {
         console.log(err);

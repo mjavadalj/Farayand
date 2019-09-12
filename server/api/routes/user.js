@@ -44,5 +44,9 @@ router.post('/delete',delete_ref.course,userController.deleteAUser)
 router.post('/course/showall',userController.showAllCoursesOfTeacher)
 //show a user
 router.post('/show',userController.showAUser)
+//show all registered lessons of a user
+router.post('/reg/show',userController.showAUserRegLessons)
+//delete a reg lesson
+router.patch('/reg/delete',userController.deleteAUserRegLesson)
 
 module.exports = router;

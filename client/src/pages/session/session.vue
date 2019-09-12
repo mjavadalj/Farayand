@@ -1,9 +1,9 @@
 <template>
   <div>
     <b-breadcrumb>
-      <b-breadcrumb-item>سلام</b-breadcrumb-item>
-      <b-breadcrumb-item active>{{course.title}}</b-breadcrumb-item>
-      <b-breadcrumb-item active>{{lesson.title}}</b-breadcrumb-item>
+      <b-breadcrumb-item>راهنما</b-breadcrumb-item>
+      <b-breadcrumb-item active>دوره {{course.title}}</b-breadcrumb-item>
+      <b-breadcrumb-item active>درس {{lesson.title}}</b-breadcrumb-item>
       <b-breadcrumb-item active>جلسه ها</b-breadcrumb-item>
     </b-breadcrumb>
     <h1 class="display-3 text-right">{{lesson.title}}</h1>
@@ -52,7 +52,7 @@
                 style="font-size: 1.5em;"
               />
             </td>
-            <td>{{session.date}}</td>
+            <td>{{session.quizDate}}</td>
             <td>{{session.secondChance}}</td>
             <td>{{session.duration}}</td>
             <td>{{session.minScore}}</td>
@@ -83,13 +83,29 @@ export default {
   },
 
   methods: {
-    push(e,data) {
+    push(e, data) {
       if (e.target.nodeName == "I") {
         return;
       }
-      //   this.$router.push({
-      //     name: "session"
-      //   });
+      global.sessionId = data._id;
+      global.course = this.course;
+      global.lesson = this.lesson;
+      global.session = data;
+      if (global.teacherId != null) {
+        this.$router.push({
+          name: "tquestion",
+          params: {
+            title: data.title
+          }
+        });
+      } else {
+        this.$router.push({
+          name: "question",
+          params: {
+            title: data.title
+          }
+        });
+      }
     },
     search(e) {
       var value = $("#myInput")
@@ -214,7 +230,7 @@ export default {
           }
         });
     },
-    async editSession(session,index) {
+    async editSession(session, index) {
       const { value: formValues2 } = await this.$swal.fire({
         html: `
           <div class="card">
@@ -284,7 +300,13 @@ export default {
           var minScore = document.getElementById("minScore").value;
           var secondChance = document.getElementById("secondChance").value;
           var ok = false;
-          if (title == "" || content == "" || duration == ""|| minScore == ""|| secondChance == "") {
+          if (
+            title == "" ||
+            content == "" ||
+            duration == "" ||
+            minScore == "" ||
+            secondChance == ""
+          ) {
             setTimeout(() => {
               this.editSession(session);
             }, 0);
@@ -311,9 +333,9 @@ export default {
           sessionId: session._id,
           title: formValues2.title,
           content: formValues2.content,
-          duration:formValues2.duration,
-          minScore:formValues2.minScore,
-          secondChance:formValues2.secondChance,
+          duration: formValues2.duration,
+          minScore: formValues2.minScore,
+          secondChance: formValues2.secondChance
         })
         .then(res => {
           this.$swal.fire({
@@ -321,16 +343,16 @@ export default {
             title: "موفق",
             text: "جلسه با موفقیت ویرایش شد"
           });
-          var lesson=res.data.lessons.find(obj=>{
-            return obj._id==this.lessonId
-          })
+          var lesson = res.data.lessons.find(obj => {
+            return obj._id == this.lessonId;
+          });
           // console.log(session);
           // console.log(lesson.sessions[index]);
-          
-          Object.keys(lesson.sessions[index]).forEach(item=>{
-            session[item]=lesson.sessions[index][item]
+
+          Object.keys(lesson.sessions[index]).forEach(item => {
+            session[item] = lesson.sessions[index][item];
             // session.item="54"
-          })
+          });
         })
         .catch(err => {
           console.log(err);
@@ -338,7 +360,6 @@ export default {
     }
   },
   mounted() {
-    // this.initCharts();
     if (global == undefined) {
       this.$router.push("/teacher/course");
     }

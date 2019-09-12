@@ -48,8 +48,11 @@ module.exports.addASession = (req, res) => {
 module.exports.showAllSessions = (req, res) => {
 
     find = {
-        _id: mong(req.body.courseId),
-        "lessons._id": mong(req.body.lessonId)
+      $and:[
+        {_id: mong(req.body.courseId)},
+        {"lessons._id": mong(req.body.lessonId)}
+      ]
+        
       };
       Embed.aggregate([
         {
@@ -101,7 +104,7 @@ module.exports.showSingleSession = (req, res) => {
   ])
     .exec()
     .then(result => {
-      handler(result, res, 200);
+      handler(result[0].lessons.sessions.questions, res, 200);
     })
     .catch(err => {
       handler(err, res, 200);

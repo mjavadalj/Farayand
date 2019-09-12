@@ -1,7 +1,7 @@
 <template>
   <div id="users">
     <b-breadcrumb>
-      <b-breadcrumb-item>سلام</b-breadcrumb-item>
+      <b-breadcrumb-item>راهنما</b-breadcrumb-item>
       <b-breadcrumb-item active>دانشجویان</b-breadcrumb-item>
     </b-breadcrumb>
     <div class="input-group mb-3">
@@ -66,13 +66,13 @@
                 v-if="!user.confirmed"
                 data-v-17b74d76
                 type="button"
-                class="btn p-1 px-3 btn-xs btn-danger"
+                class="btn p-1 px-3 btn-xs btn-danger lalezar"
               >تایید نشده</button>
               <button
                 v-if="user.confirmed"
                 data-v-17b74d76
                 type="button"
-                class="btn p-1 px-3 btn-xs btn-success"
+                class="btn p-1 px-3 btn-xs btn-success lalezar"
               >فعال</button>
             </td>
             <td>{{user.email}}</td>
@@ -127,8 +127,13 @@ export default {
     this.axios
       .get(`http://localhost:3000/api/user/student/showall`)
       .then(res => {
+        console.log(res.data);
+        
         this.users = res.data;
         // this.addSuccessNotification();
+      })
+      .catch(err => {
+        console.log(err);
       });
   },
 

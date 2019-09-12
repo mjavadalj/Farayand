@@ -39,7 +39,7 @@ const upload = multer({
 router.post("/showall",sessionController.showAllSessions);
 
 //show a session || show all questions
-router.get("/show", sessionController.showSingleSession);
+router.post("/show", sessionController.showSingleSession);
 //add session
 router.patch("/add", sessionController.addASession);
 //edit a session

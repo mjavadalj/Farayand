@@ -26,7 +26,7 @@
         <thead>
           <tr>
             <th class>عملیات</th>
-            <th class>وضعیت </th>
+            <th class>وضعیت</th>
             <th class>تاریخ</th>
             <th class>تعداد دروس</th>
             <th class>استاد</th>
@@ -43,7 +43,7 @@
                 style="font-size: 1.5em;"
               />
               <i
-                @click="editCourse(course)"
+                @click="editCourse(course,index)"
                 class="fa fa-edit action-icon"
                 style="font-size: 1.5em;"
               />
@@ -65,17 +65,17 @@
                 v-if="!course.publishable"
                 data-v-17b74d76
                 type="button"
-                class="btn p-1 px-3 btn-xs btn-danger"
+                class="btn p-1 px-3 btn-xs btn-danger lalezar"
               >عدم انتشار</button>
               <button
                 v-if="course.publishable"
                 data-v-17b74d76
                 type="button"
-                class="btn p-1 px-3 btn-xs btn-success"
+                class="btn p-1 px-3 btn-xs btn-success lalezar"
               >منتشر شده</button>
             </td>
             <td>{{course.date}}</td>
-            <td>{{course.lessons.length}}</td>
+            <td>{{course.lessonLength}}</td>
             <td>{{teacher.name}}</td>
             <td>{{course.title}}</td>
             <td>{{index+1}}</td>
@@ -188,10 +188,9 @@ export default {
       if (e.target.nodeName == "I") {
         return;
       }
-      console.log(course._id);
       global.courseId = course._id;
-      console.log(this.$router);
-
+      global.teacherId = this.teacher._id;
+      global.course = course;
       this.$router.push({
         name: "tlesson",
         params: {
@@ -316,7 +315,7 @@ export default {
           }
         });
     },
-    async editCourse(course) {
+    async editCourse(course, index) {
       const { value: formValues } = await this.$swal.fire({
         html: `<div class="card">
           <div class="card-header">
@@ -372,7 +371,9 @@ export default {
           title: formValues.title
         })
         .then(res => {
-          course = res.data;
+          Object.keys(res.data).forEach(item => {
+            course[item] = res.data[item];
+          });
           this.$swal.fire({
             type: "success",
             title: "موفق",
@@ -386,23 +387,25 @@ export default {
   },
   mounted() {
     // this.initCharts();
-
+    //emadi
+    //5d77a5193908ca10e8a7877a
+    //khodadi
+    //5d74028057b2c842046986c7
     this.axios
       .post(`http://localhost:3000/api/user/course/showall`, {
-        teacherId: "5d74028057b2c842046986c7"
+        teacherId: "5d77a5193908ca10e8a7877a"
       })
       .then(res => {
-        // console.log("res.data");
-        // console.log(res.data);
+        console.log("res.data");
+        console.log(res.data);
         this.courses = res.data;
-        // this.addSuccessNotification();
       })
       .catch(err => {
         console.log(err);
       });
     this.axios
       .post(`http://localhost:3000/api/user/show`, {
-        userId: "5d74028057b2c842046986c7"
+        userId: "5d77a5193908ca10e8a7877a"
       })
       .then(res => {
         this.teacher = res.data;

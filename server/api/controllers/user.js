@@ -158,17 +158,23 @@ module.exports.signin = (req, res) => {
 };
 module.exports.lessonRegister = (req, res) => {
   find = {
-    _id: req.body.userId,
-    "reg_lessons.lessonId": { $ne: mong(req.body.lessonId) }
+    $and: [
+      { _id: req.body.userId },
+      { "reg_lessons.lessonId": { $ne: mong(req.body.lessonId) } }
+    ]
   };
   User.findOneAndUpdate(
     find,
     {
       $push: {
         reg_lessons: {
+          courseTitle: req.body.courseTitle,
+          lessonTitle: req.body.lessonTitle,
+          teacherName: req.body.teacherName,
+          sessionLength: req.body.sessionLength,
           lessonId: req.body.lessonId,
           courseId: req.body.courseId,
-          sessionLength: req.body.sessionLength
+          teacherId: req.body.teacherId
         }
       }
     },
@@ -273,7 +279,7 @@ module.exports.editUser = (req, res) => {
       $set: newItems
     },
     {
-      new:true
+      new: true
     }
   )
     .exec()
@@ -295,7 +301,35 @@ module.exports.deleteAUser = (req, res) => {
     });
 };
 module.exports.showAllCoursesOfTeacher = (req, res) => {
-  Embed.find({ user: req.body.teacherId })
+  find = {
+    $and: [{ user: req.body.teacherId }]
+  };
+  console.log(req.query);
+  if ((req.query.r = "s")) {
+    find = {
+      $and: [{ user: mong(req.body.teacherId) }, { publishable: true }]
+    };
+  }
+  Embed.aggregate([
+    {
+      $match: find
+    },
+    {
+      $project: {
+        title: "$title",
+        content: "$content",
+        publishable: "$publishable",
+        forAllUniversities: "$forAllUniversities",
+        date_jalali: "$date_jalali",
+        date: "$date",
+        user: "$user",
+        lessonLength: { $size: "$lessons" }
+      }
+    }
+  ])
+    // Embed.find(find)
+    //   .select('-lessons')
+    //   .lean()
     .exec()
     .then(result => {
       res.status(200).json(result);
@@ -315,3 +349,31 @@ module.exports.showAUser = (req, res) => {
       handler(err, res, 500);
     });
 };
+module.exports.showAUserRegLessons = (req, res) => {
+  User.findById(req.body.userId)
+    .select("reg_lessons")
+    .exec()
+    .then(result => {
+      res.status(200).json(result);
+    })
+    .catch(err => {
+      handler(err, res, 500);
+    });
+};
+module.exports.deleteAUserRegLesson = (req, res) => {
+  User.findByIdAndUpdate(req.body.userId, {
+    $pull: {
+      reg_lessons: {
+        _id: req.body.reg_lessonId
+      }
+    }
+  },{new:true})
+    .exec()
+    .then(result => {
+      res.status(200).json(result);
+    })
+    .catch(err => {
+      handler(err, res, 500);
+    });
+};
+//TODO: select -password

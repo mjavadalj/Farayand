@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-breadcrumb>
-      <b-breadcrumb-item>سلام</b-breadcrumb-item>
+      <b-breadcrumb-item>راهنما</b-breadcrumb-item>
       <b-breadcrumb-item active>دوره ها</b-breadcrumb-item>
     </b-breadcrumb>
     <div class="input-group mb-3">
@@ -40,13 +40,13 @@
                 v-if="!course.publishable"
                 data-v-17b74d76
                 type="button"
-                class="btn p-1 px-3 btn-xs btn-danger"
+                class="btn p-1 px-3 btn-xs btn-danger lalezar"
               >عدم انتشار</button>
               <button
                 v-if="course.publishable"
                 data-v-17b74d76
                 type="button"
-                class="btn p-1 px-3 btn-xs btn-success"
+                class="btn p-1 px-3 btn-xs btn-success lalezar"
               >منتشر شده</button>
             </td>
             <td>{{course.date}}</td>
@@ -136,6 +136,7 @@ export default {
       console.log(course._id);
 
       global.courseId = course._id;
+      global.course=course
       this.$router.push({
         name: "lesson",
         params: {
