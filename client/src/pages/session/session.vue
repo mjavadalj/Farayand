@@ -56,7 +56,7 @@
             <td>{{session.secondChance}}</td>
             <td>{{session.duration}}</td>
             <td>{{session.minScore}}</td>
-            <td>5</td>
+            <td>{{session.questionLength}}</td>
             <td>{{session.title}}</td>
             <td>{{index+1}}</td>
           </tr>
@@ -372,15 +372,9 @@ export default {
         lessonId: this.lessonId
       })
       .then(res => {
-        console.log(res.data);
-        this.sessions = res.data.lessons.sessions;
-        this.course = res.date;
-        var course = res.data;
-        let { lessons, ...x } = course;
-        this.course = x;
-        var lesson = res.data.lessons;
-        let { sessions, ...y } = lesson;
-        this.lesson = lesson;
+        this.sessions = res.data;
+        this.course = global.course;
+        this.lesson = global.lesson;
       })
       .catch(err => {
         console.log(err);

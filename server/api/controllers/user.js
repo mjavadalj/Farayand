@@ -205,7 +205,9 @@ module.exports.sessionRegister = (req, res) => {
           sessionId: req.body.sessionId,
           title: req.body.title,
           passed:req.body.passed,
-          anotherChanceDate:req.body.anotherChanceDate
+          anotherChanceDate:req.body.anotherChanceDate,
+          tryCount:req.body.tryCount,
+          score:req.body.score,
         }
       }
     },
@@ -220,7 +222,6 @@ module.exports.sessionRegister = (req, res) => {
     });
 };
 module.exports.sessionComplete = (req, res) => {
-  newItems = editItems(req, "reg_lessons.$[].reg_sessions.$[elem].");
   find = {
     _id: req.body.userId,
     "reg_lessons._id": req.body.reg_lessonId,
@@ -229,7 +230,17 @@ module.exports.sessionComplete = (req, res) => {
   User.updateOne(
     find,
     {
-      $set: newItems
+      $set: {
+        'reg_lessons.$[].reg_sessions.$[elem]':{
+          score:req.body.score,
+          passed:req.body.passed,
+          anotherChanceDate:req.body.anotherChanceDate,
+          title:req.body.title,
+          sessionId:req.body.sessionId,
+          _id:req.body.reg_sessionId,
+          date:req.body.date
+        }
+      }
     },
     {
       new: true,

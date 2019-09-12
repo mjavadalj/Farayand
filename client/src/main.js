@@ -48,5 +48,6 @@ export const global = new Vue({
     lesson:null,
     session:null,
     teacher:null,
+    index:null,
   }
 });

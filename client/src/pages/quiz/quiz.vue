@@ -1,105 +1,184 @@
 <template>
   <div>
-    <b-breadcrumb>
-      <b-breadcrumb-item>راهنما</b-breadcrumb-item>
-      <b-breadcrumb-item active>درس های ثبت نام شده</b-breadcrumb-item>
-      <b-breadcrumb-item active>جلسات</b-breadcrumb-item>
-    </b-breadcrumb>
-    <div class="text-right">
-      <p data-v-de302f26>
+    <div v-if="!isQuiz">
+      <b-breadcrumb>
+        <b-breadcrumb-item>راهنما</b-breadcrumb-item>
+        <b-breadcrumb-item active>{{reg_lesson.lessonTitle}}</b-breadcrumb-item>
+        <b-breadcrumb-item active>جلسات</b-breadcrumb-item>
+      </b-breadcrumb>
+      <div class="text-right">
+        <p data-v-de302f26>
+          <button
+            data-v-de302f26
+            id="show-success-message"
+            type="button"
+            class="btn btn-success lalezar"
+          >جلساتی که قبلا انجام داده اید</button>
+        </p>
+      </div>
+      <div id="registered" class="table-resposive" style="text-align:center;">
+        <table id="dtBasicExample" align="center" class="table">
+          <thead>
+            <tr>
+              <th class>عملیات</th>
+              <th class>وضعیت</th>
+              <th class>نمره</th>
+              <th class>شانس مجدد</th>
+              <th class>تعداد تلاش</th>
+              <th class>تاریخ آزمون</th>
+              <th class>عنوان</th>
+              <th class>#</th>
+            </tr>
+          </thead>
+          <tbody id="myTable">
+            <tr v-for="(reg_session,index) in reg_sessions" :key="reg_session._id">
+              <td>
+                <i
+                  @click="reQuiz(reg_session,index)"
+                  class="fa fa-refresh action-icon"
+                  style="font-size: 1.5em;"
+                />
+              </td>
+              <td>
+                <button
+                  v-if="!reg_session.passed"
+                  data-v-17b74d76
+                  type="button"
+                  class="btn p-1 px-3 btn-xs btn-danger lalezar"
+                > رد</button>
+                <button
+                  v-if="reg_session.passed"
+                  data-v-17b74d76
+                  type="button"
+                  class="btn p-1 px-3 btn-xs btn-success lalezar"
+                > قبول </button>
+              </td>
+              <td>{{reg_session.score}}</td>
+              <td>{{reg_session.anotherChanceDate}}</td>
+              <td>{{reg_session.tryCount}}</td>
+              <td>{{reg_session.date}}</td>
+              <td>{{reg_session.title}}</td>
+              <td>{{index+1}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div v-if="sessions.length!=0" class="text-right">
+        <p data-v-de302f26>
+          <button
+            data-v-de302f26
+            id="show-error-message"
+            type="button"
+            class="btn btn-danger lalezar"
+          >بقیه جلسات</button>
+        </p>
+      </div>
+      <div v-if="sessions.length!=0" class="table-resposive" style="text-align:center;">
+        <table id="dtBasicExample" align="center" class="table">
+          <thead>
+            <tr>
+              <th class>وضعیت</th>
+              <th class>شانس مجدد</th>
+              <th class>مدت زمان آزمون</th>
+              <th class>حداقل نمره قبولی</th>
+              <th class>تعداد سوال</th>
+              <th class>عنوان</th>
+              <th class>#</th>
+            </tr>
+          </thead>
+          <tbody id="myTable">
+            <tr
+              v-for="(session,index) in sessions"
+              :key="session._id"
+              @click="addToRegSession(session,index)"
+            >
+              <td>
+                <i v-if="index==0" class="fa fa-unlock action-icon" style="font-size: 1.5em;" />
+                <i v-else @click="aa()" class="fa fa-lock action-icon" style="font-size: 1.5em;" />
+              </td>
+              <td>{{session.secondChance}}</td>
+              <td>{{session.duration}}</td>
+              <td>{{session.minScore}}</td>
+              <td>{{session.questionLength}}</td>
+              <td>{{session.title}}</td>
+              <td>{{index+1}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div v-else class="text-center">
+        <h3 class="display-3">شما در تمامی جلسات شرکت کردید</h3>
         <button
-          data-v-de302f26
-          id="show-success-message"
+          @click="setCertificate()"
           type="button"
           class="btn btn-success lalezar"
-        >جلساتی که قبلا انجام داده اید</button>
-      </p>
+        >دریافت گواهی این درس</button>
+      </div>
     </div>
-    <div id="registered" class="table-resposive" style="text-align:center;">
-      <table id="dtBasicExample" align="center" class="table">
-        <thead>
-          <tr>
-            <th class>عملیات</th>
-            <th class>وضعیت</th>
-            <th class>نمره</th>
-            <th class>شانس مجدد</th>
-            <th class>تعداد تلاش</th>
-            <th class>تاریخ آزمون</th>
-            <th class>عنوان</th>
-            <th class>#</th>
-          </tr>
-        </thead>
-        <tbody id="myTable">
-          <tr v-for="(reg_session,index) in reg_sessions" :key="reg_session._id">
-            <td>
-              <i
-                @click="reQuiz(reg_session,index)"
-                class="fa fa-refresh action-icon"
-                style="font-size: 1.5em;"
-              />
-            </td>
-            <td>{{reg_session.passed}}</td>
-            <td>{{reg_session.score}}</td>
-            <td>{{reg_session.anotherChanceDate}}</td>
-            <td>{{reg_session.tryCount}}</td>
-            <td>{{reg_session.date}}</td>
-            <td>{{reg_session.title}}</td>
-            <td>{{index+1}}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div v-if="sessions.length!=0" class="text-right">
-      <p data-v-de302f26>
+    <div v-else>
+      <div
+        v-for="(question,index) in questions"
+        :key="question._id"
+        class="list-group text-center lalezar"
+        style="border:1px solid;margin:2px 2px 2px 2px;"
+      >
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">{{index+1}} سوال شماره</li>
+          <li class="list-group-item">
+            <span>{{question.text}}</span>
+          </li>
+          <li class="list-group-item">
+            <input
+              type="radio"
+              class="form-check-input"
+              v-bind:id="'option_1'"
+              :name="question._id"
+            />
+            <span>{{question.option_1.text}}</span>
+          </li>
+          <li class="list-group-item">
+            <input
+              type="radio"
+              class="form-check-input"
+              v-bind:id="'option_2'"
+              :name="question._id"
+            />
+            <span>{{question.option_2.text}}</span>
+          </li>
+          <li class="list-group-item">
+            <input
+              type="radio"
+              class="form-check-input"
+              v-bind:id="'option_3'"
+              :name="question._id"
+            />
+            <span>{{question.option_3.text}}</span>
+          </li>
+          <li class="list-group-item">
+            <input
+              type="radio"
+              class="form-check-input"
+              v-bind:id="'option_4'"
+              :name="question._id"
+            />
+            <span>{{question.option_4.text}}</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="fixed-top text-right">
+        <button class="btn btn-danger" style="z-index:5;" type="button">
+          <span class="lalezar" id="countdown">00:00</span>
+        </button>
         <button
-          data-v-de302f26
-          id="show-error-message"
+          class="btn btn-success text-center"
+          style="z-index:4;"
           type="button"
-          class="btn btn-danger lalezar"
-        >بقیه جلسات</button>
-      </p>
-    </div>
-    <div v-if="sessions.length!=0" class="table-resposive" style="text-align:center;">
-      <table id="dtBasicExample" align="center" class="table">
-        <thead>
-          <tr>
-            <th class>وضعیت</th>
-            <th class>شانس مجدد</th>
-            <th class>مدت زمان آزمون</th>
-            <th class>حداقل نمره قبولی</th>
-            <th class>تعداد سوال</th>
-            <th class>عنوان</th>
-            <th class>#</th>
-          </tr>
-        </thead>
-        <tbody id="myTable">
-          <tr v-for="(session,index) in sessions" :key="session._id">
-            <td>
-              <i
-                v-if="index==0"
-                @click="addToRegSession(session)"
-                class="fa fa-unlock action-icon"
-                style="font-size: 1.5em;"
-              />
-              <i v-else @click="aa()" class="fa fa-lock action-icon" style="font-size: 1.5em;" />
-            </td>
-            <td>{{session.secondChance}}</td>
-            <td>{{session.duration}}</td>
-            <td>{{session.minScore}}</td>
-            <td>5</td>
-            <td>{{session.title}}</td>
-            <td>{{index+1}}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div v-else class="text-center">
-      <h3 class="display-3">شما در تمامی جلسات شرکت کردید</h3>
-      <button
-        @click="setCertificate()"
-        type="button"
-        class="btn btn-success lalezar"
-      >دریافت گواهی این درس</button>
+          @click="endQuiz()"
+        >
+          <span class="lalezar">خاتمه امتحان</span>
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -161,6 +240,8 @@ function initializationMessengerCode() {
 export default {
   data() {
     return {
+      questions: null,
+      isQuiz: false,
       locationClasses: "messenger-fixed messenger-on-bottom messenger-on-right",
       reg_lesson: null,
       courseId: null,
@@ -174,17 +255,36 @@ export default {
       alert("ابتدا باید جلسات قبلی را انجام دهید");
     },
     reQuiz(reg_session, index) {
-        var now=new Date()
-        var chance=new Date(reg_session.anotherChanceDate)
-        if (now < chance){
-            return alert('هنوز مهلت آزمون مجدد نرسیده است')
-        }
-        if (reg_session.tryCount>=3){
-            return alert('آزمون برای شما قفل شده است')
-        }
-        
+      var now = new Date();
+      var chance = new Date(reg_session.anotherChanceDate);
+      if (now < chance) {
+        return alert("بعدا");
+      }
+      this.axios
+        .patch(`http://localhost:3000/api/user/session/complete`, {
+          userId: "5d766c948c992a0c38924e54",
+          reg_lessonId: this.reg_lesson._id,
+          reg_sessionId: reg_session._id,
+          passed: true,
+          score: 90,
+          anotherChanceDate: reg_session.anotherChanceDate,
+          title: reg_session.title,
+          date: reg_session.date,
+          sessionId: reg_session.sessionId
+        })
+        .then(res => {
+          console.log(res.data);
+          reg_session.passed = true;
+          reg_session.score = 100;
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
-    addToRegSession(session) {
+    addToRegSession(session, index) {
+      if (index != 0) {
+        return;
+      }
       Date.prototype.addDays = function(days) {
         var date = new Date(this.valueOf());
         date.setDate(date.getDate() + days);
@@ -192,21 +292,52 @@ export default {
       };
       var date = new Date();
       var newDate = date.addDays(parseInt(session.secondChance));
-      this.axios
-        .patch(`http://localhost:3000/api/user/session/register`, {
-          userId: "5d766c948c992a0c38924e54",
-          reg_lessonId: this.reg_lesson._id,
-          sessionId: session._id,
-          title: session.title,
-          passed: false,
-          anotherChanceDate: newDate
-        })
-        .then(res => {
-          console.log(res.data);
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      if (session.questionLength == 0) {
+        this.axios
+          .patch(`http://localhost:3000/api/user/session/register`, {
+            userId: "5d766c948c992a0c38924e54",
+            reg_lessonId: this.reg_lesson._id,
+            sessionId: session._id,
+            title: session.title,
+            passed: true,
+            anotherChanceDate: newDate,
+            score: 100
+          })
+          .then(res => {
+            // var length=res.data.lessons[global.index].session.length-1
+            var newRegSession = res.data.reg_lessons[
+              global.index
+            ].reg_sessions.slice(-1)[0];
+            this.reg_sessions.push(newRegSession);
+            this.sessions.splice(index, 1);
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      } else {
+        this.axios
+          .patch(`http://localhost:3000/api/user/session/register`, {
+            userId: "5d766c948c992a0c38924e54",
+            reg_lessonId: this.reg_lesson._id,
+            sessionId: session._id,
+            title: session.title,
+            passed: false,
+            anotherChanceDate: newDate,
+            score: 0
+          })
+          .then(res => {
+            // var length=res.data.lessons[global.index].session.length-1
+            var newRegSession = res.data.reg_lessons[
+              global.index
+            ].reg_sessions.slice(-1)[0];
+            this.showQuestions(newRegSession, session);
+            this.reg_sessions.push(newRegSession);
+            this.sessions.splice(index, 1);
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
     },
     isRegistered(session) {
       const find = this.reg_sessions.find(item => {
@@ -220,6 +351,83 @@ export default {
       });
       if (find) {
         alert("باید در تمامی جلسات نمره قبولی را بدست بیاورید");
+      }
+    },
+    showQuestions(reg_session, session) {
+      this.isQuiz = true;
+      this.axios
+        .post(`http://localhost:3000/api/session/show`, {
+          courseId: this.courseId,
+          lessonId: this.lessonId,
+          sessionId: session._id
+        })
+        .then(res => {
+          var a = 0;
+          var duration = 5;
+          this.questions = res.data;
+          var intervalTimer = setInterval(() => {
+            var time = duration - a;
+            var minute = Math.floor(time / 60);
+            if (minute < 10) {
+              minute = "0" + minute;
+            }
+            var second = Math.floor(time % 60);
+            if (second < 10) {
+              second = "0" + second;
+            }
+            document.getElementById("countdown").innerHTML =
+              minute + ":" + second;
+            a++;
+            if (time <= 0) {
+              document.getElementById("countdown").innerHTML =
+                "زمان شما تمام شد";
+              clearInterval(intervalTimer);
+              this.endQuiz(reg_session, session, true);
+            }
+          }, 1000);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    endQuiz(reg_session, session, force = false) {
+      var BreakException = {};
+      var correct = 0;
+      try {
+        this.questions.forEach((question, i) => {
+          var ans = $(`input[name=${question._id}]:checked`);
+          if (ans.length == 0 && !force) {
+            alert(`به سوال شماره ${i + 1} پاسخ ندادید`);
+            throw BreakException;
+          }
+          if (ans[0] != undefined && question[ans[0].id].correct) {
+            correct++;
+          }
+        });
+        var score = Math.floor((correct / this.questions.length) * 100);
+        var passed = score >= session.minScore;
+        this.axios
+          .patch(`http://localhost:3000/api/user/session/complete`, {
+            userId: "5d766c948c992a0c38924e54",
+            reg_lessonId: this.reg_lesson._id,
+            reg_sessionId: reg_session._id,
+            passed: passed,
+            score: score,
+            anotherChanceDate: reg_session.anotherChanceDate,
+            title: reg_session.title,
+            date: reg_session.date,
+            sessionId: reg_session.sessionId
+          })
+          .then(res => {
+            reg_session.passed = passed;
+            reg_session.score = score;
+            this.isQuiz = false;
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      } catch (e) {
+        if (e !== BreakException) throw e;
       }
     }
   },
@@ -239,7 +447,7 @@ export default {
         lessonId: this.lessonId
       })
       .then(res => {
-        this.sessions = res.data.lessons.sessions;
+        this.sessions = res.data;
         var index = [];
         this.reg_sessions.forEach(reg_session => {
           this.sessions.forEach((session, i) => {
