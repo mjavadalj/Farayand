@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="text-center lalezar">
-      <label  for="teachers">اساتید</label>
+      <label for="teachers">اساتید</label>
       <div id="teachers" class="lalezar">
         <button
           @click="showCourses(teacher)"
@@ -36,7 +36,7 @@
       <label v-if="lessonOpen" for="lessons">درس ها</label>
       <div id="lessons" v-if="lessonOpen">
         <button
-          @click="push(lesson)"
+          @click="lessonRegister(lesson)"
           v-for="lesson in lessons"
           :key="lesson._id"
           style="margin:2px 2px 2px 2px;"
@@ -173,9 +173,10 @@ export default {
         })
         .then(res => {
           console.log("lesson load");
+          console.log(res.data);
 
-          this.lessons = res.data.lessons;
-          this.loadedLessons[course._id] = res.data.lessons;
+          this.lessons = res.data;
+          this.loadedLessons[course._id] = res.data;
           this.courseSelected = course;
           this.lessonOpen = true;
         })
@@ -186,9 +187,58 @@ export default {
     al(x) {
       alert(x.target.nodeName);
     },
-    push(lesson) {
-      console.log(lesson._id);
-      console.log(this.courseSelected);
+    push(lesson) {},
+    lessonRegister(lesson) {
+      this.$swal
+        .fire({
+          title: "Are you sure?",
+          text: "می خواهید در این درس ثبت نام کنید؟",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, delete it!"
+        })
+        .then(result => {
+          if (result.value) {
+            global.course = this.courseSelected;
+            global.lesson = lesson;
+            global.teacher = this.teacherSelected;
+            var body = {
+              userId: this.user._id,
+              courseTitle: this.courseSelected.title,
+              lessonTitle: lesson.title,
+              teacherName: this.teacherSelected.name,
+              sessionLength: lesson.sessionLength,
+              lessonId: lesson._id,
+              courseId: this.courseSelected._id,
+              teacherId: this.teacherSelected._id
+            };
+            console.log(body);
+
+            this.axios
+              .patch(`http://localhost:3000/api/user/lesson/register`, body)
+              .then(res => {
+                console.log(res.data);
+                if (res.data == null) {
+                  this.$swal.fire({
+                    type: "warning",
+                    title: "!",
+                    text: " شما قبلا  در این درس ثبت نام کردید"
+                  });
+                  return
+                }
+                this.$swal.fire({
+                  type: "success",
+                  title: "موفق",
+                  text: " شما با موفقیت در این درس ثبت نام کردید"
+                });
+              })
+              .catch(err => {
+                console.log(err);
+              });
+          }
+        });
     }
   },
   mounted() {},

@@ -75,7 +75,7 @@
               >منتشر شده</button>
             </td>
             <td>{{course.date}}</td>
-            <td>5</td>
+            <td>{{course.lessonLength}}</td>
             <td>{{teacher.name}}</td>
             <td>{{course.title}}</td>
             <td>{{index+1}}</td>
@@ -190,7 +190,7 @@ export default {
       }
       global.courseId = course._id;
       global.teacherId = this.teacher._id;
-
+      global.course = course;
       this.$router.push({
         name: "tlesson",
         params: {

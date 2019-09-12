@@ -49,7 +49,7 @@
               />
             </td>
             <td>{{lesson.date}}</td>
-            <td>5</td>
+            <td>{{lesson.sessionLength}}</td>
             <td>{{lesson.title}}</td>
             <td>{{index+1}}</td>
           </tr>
@@ -296,12 +296,10 @@ export default {
         courseId: this.courseId
       })
       .then(res => {
-        this.lessons = res.data.lessons;
-        this.course = res.date;
-        var clone = Object.assign({}, res.date);
-        var clone = res.data;
-        let { lessons, ...x } = clone;
-        this.course = x;
+        console.log(res.data);
+        
+        this.lessons = res.data;
+        this.course = global.course;
       })
       .catch(err => {
         console.log(err);
