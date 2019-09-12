@@ -40,7 +40,7 @@
           <tr
             v-for="(reg_lesson,index) in reg_lessons"
             :key="reg_lesson._id"
-            @click="push(reg_lesson)"
+            @click="push($event,reg_lesson)"
           >
             <td>
               <i
@@ -147,16 +147,15 @@ export default {
       });
       return false;
     },
-    push(reg_lesson) {
-      console.log(reg_lesson);
-
+    push(e,reg_lesson) {
+      if (e.target.nodeName=='I'){
+        return
+      }
       // global.courseId = course._id;
-      // this.$router.push({
-      //   name: "lesson",
-      //   params: {
-      //     title: course.title
-      //   }
-      // });
+      global.lesson=reg_lesson
+      this.$router.push({
+        name: "quiz"
+      });
     },
     search(e) {
       var value = $("#myInput")

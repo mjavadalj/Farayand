@@ -190,16 +190,22 @@ module.exports.lessonRegister = (req, res) => {
 };
 module.exports.sessionRegister = (req, res) => {
   find = {
-    _id: req.body.userId,
-    "reg_lessons._id": req.body.reg_lessonId
+    $and:[
+      {_id: req.body.userId},
+      {"reg_lessons._id": req.body.reg_lessonId},
+      { "reg_lessons.reg_sessions.sessionId": { $ne: mong(req.body.sessionId) } }
+    ]
+    
   };
-  User.updateOne(
+  User.findOneAndUpdate(
     find,
     {
       $push: {
         "reg_lessons.$.reg_sessions": {
           sessionId: req.body.sessionId,
-          title: req.body.title
+          title: req.body.title,
+          passed:req.body.passed,
+          anotherChanceDate:req.body.anotherChanceDate
         }
       }
     },
