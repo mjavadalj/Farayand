@@ -34,6 +34,7 @@
             <th class>مدت زمان آزمون</th>
             <th class>حداقل نمره قبولی</th>
             <th class>تعداد سوال</th>
+            <!-- <th class>سوال دانشجو</th> -->
             <th class>عنوان</th>
             <th class>#</th>
           </tr>
@@ -56,7 +57,8 @@
             <td>{{session.secondChance}}</td>
             <td>{{session.duration}}</td>
             <td>{{session.minScore}}</td>
-            <td>5</td>
+            <td>{{session.questionLength}}</td>
+            <!-- <td>{{session.userQCount}}</td> -->
             <td>{{session.title}}</td>
             <td>{{index+1}}</td>
           </tr>
@@ -121,40 +123,105 @@ export default {
       });
       console.log(value);
     },
-    async addSession(title = "", content = "") {
+    async addSession(
+      title = "",
+      content = "",
+      duration = "",
+      secondChance = "",
+      minScore = "",
+      userQCount=""
+      ) {
       const { value: formValues2 } = await this.$swal.fire({
         html: `
-          <div class="card">
-          <div class="card-header">
-            <strong>جلسه جدید</strong>
-          </div>
-          </br>
-          <div class="form-group">
-          <div class="">
-            <label for="title">عنوان جلسه</label>
-                  <input
-                    value="${title}"
-                    type="text"
-                    id="title"
-                    name="title"
-                    placeholder="عنوان جلسه را وارد کنید"
-                    class="form-control"
-                  />
-          </div>
-          </br></br>
-          <div>
-            <label for="content">توضیحات راجع به جلسه</label>
-            <textarea class="form-control text-center" rows="3" id="content"> ${content}</textarea>
-          </div>      
-          </div>`,
+                <div class="card">
+                <div class="card-header">
+                  <strong class="lalezar" >جلسه جدید</strong>
+                </div>
+                </br>
+                <div class="form-group">
+                <div class="">
+                  <label class="lalezar" for="title">عنوان جلسه</label>
+                        <input
+                          value="${title}"
+                          type="text"
+                          id="title"
+                          name="title"
+                          placeholder="عنوان جلسه را وارد کنید"
+                          class="form-control"
+                        />
+                </div>
+                </br>
+                <div>
+                  <label class="lalezar"  for="content">توضیحات راجع به جلسه</label>
+                  <textarea class="form-control text-center" rows="3" id="content"> ${content}</textarea>
+                </div> 
+                </br>
+                <div class="">
+                  <label class="lalezar"  for="title">مدت زمان آزمون </label>
+                        <input
+                          value="${duration}"
+                          type="number"
+                          id="duration"
+                          name="duration"
+                          placeholder="مدت زمان آزمون را مشخص کنید"
+                          class="form-control"
+                        />
+                </div>
+                </br>
+                <div class="">
+                  <label class="lalezar"  for="title">حداقل نمره قبولی در آزمون</label>
+                        <input
+                          value="${minScore}"
+                          type="number"
+                          id="minScore"
+                          name="minScore"
+                          placeholder="حداقل نمره قبولی را به درصد وارد کنید"
+                          class="form-control"
+                        />
+                </div> 
+                </br>
+                <div class="">
+                  <label class="lalezar"  for="title">شانس مجدد</label>
+                        <input
+                          value="${secondChance}"
+                          type="number"
+                          id="secondChance"
+                          name="secondChance"
+                          placeholder="چند روز پس از آزمون"
+                          class="form-control"
+                        />
+                </div>
+                <div class="">
+                  <label class="lalezar"  for="title"> سوال دانشجو</label>
+                        <input
+                          value="${userQCount}"
+                          type="number"
+                          id="userQCount"
+                          name="userQCount"
+                          placeholder="تعداد سوالاتی که برای دانشجو نمایش داده می شود"
+                          class="form-control"
+                        />
+                </div>        
+                </div>`,
         focusConfirm: false,
         preConfirm: () => {
           var title = document.getElementById("title").value;
           var content = document.getElementById("content").value;
+          var duration = document.getElementById("duration").value;
+          var minScore = document.getElementById("minScore").value;
+          var secondChance = document.getElementById("secondChance").value;
+          var userQCount = document.getElementById("userQCount").value;
           var ok = false;
-          if (title == "" || content == "") {
+          if (
+            title == "" ||
+            content == "" ||
+            duration == "" ||
+            minScore == "" ||
+            secondChance == ""||
+            userQCount==""
+          ) {
             setTimeout(() => {
-              this.addSession(title, content);
+              this.addSession(title, content, duration, secondChance, minScore,userQCount);
             }, 0);
           } else {
             ok = true;
@@ -162,7 +229,11 @@ export default {
           return {
             ok,
             title,
-            content
+            content,
+            secondChance,
+            duration,
+            minScore,
+            userQCount
           };
         }
       });
@@ -177,9 +248,11 @@ export default {
           session: {
             title: formValues2.title,
             content: formValues2.content,
-            secondChance: "20",
-            duration: 20,
-            minScore: 20
+            secondChance: formValues2.secondChance,
+            duration: parseInt(formValues2.duration),
+            minScore: parseInt(formValues2.minScore),
+            userQCount: parseInt(formValues2.userQCount),
+
           }
         })
         .then(res => {
@@ -235,12 +308,12 @@ export default {
         html: `
           <div class="card">
           <div class="card-header">
-            <strong>جلسه جدید</strong>
+            <strong class="lalezar" >جلسه جدید</strong>
           </div>
           </br>
           <div class="form-group">
           <div class="">
-            <label for="title">عنوان جلسه</label>
+            <label class="lalezar" for="title">عنوان جلسه</label>
                   <input
                     value="${session.title}"
                     type="text"
@@ -252,12 +325,12 @@ export default {
           </div>
           </br>
           <div>
-            <label for="content">توضیحات راجع به جلسه</label>
+            <label class="lalezar"  for="content">توضیحات راجع به جلسه</label>
             <textarea class="form-control text-center" rows="3" id="content"> ${session.content}</textarea>
           </div> 
           </br>
           <div class="">
-            <label for="title">مدت زمان آزمون </label>
+            <label class="lalezar"  for="title">مدت زمان آزمون </label>
                   <input
                     value="${session.duration}"
                     type="number"
@@ -269,7 +342,7 @@ export default {
           </div>
           </br>
           <div class="">
-            <label for="title">حداقل نمره قبولی در آزمون</label>
+            <label class="lalezar"  for="title">حداقل نمره قبولی در آزمون</label>
                   <input
                     value="${session.minScore}"
                     type="number"
@@ -281,13 +354,24 @@ export default {
           </div> 
           </br>
           <div class="">
-            <label for="title">شانس مجدد</label>
+            <label class="lalezar"  for="title">شانس مجدد</label>
                   <input
                     value="${session.secondChance}"
                     type="number"
                     id="secondChance"
                     name="secondChance"
                     placeholder="چند روز پس از آزمون"
+                    class="form-control"
+                  />
+          </div>
+          <div class="">
+            <label class="lalezar"  for="title">سوال دانشجو </label>
+                  <input
+                    value="${session.userQCount}"
+                    type="number"
+                    id="userQCount"
+                    name="userQCount"
+                    placeholder="تعداد سوالاتی که برای دانشجو نمایش داده می شود"
                     class="form-control"
                   />
           </div>       
@@ -299,13 +383,15 @@ export default {
           var duration = document.getElementById("duration").value;
           var minScore = document.getElementById("minScore").value;
           var secondChance = document.getElementById("secondChance").value;
+          var userQCount = document.getElementById("userQCount").value;
           var ok = false;
           if (
             title == "" ||
             content == "" ||
             duration == "" ||
             minScore == "" ||
-            secondChance == ""
+            secondChance == ""||
+            userQCount==""
           ) {
             setTimeout(() => {
               this.editSession(session);
@@ -319,7 +405,8 @@ export default {
             content,
             secondChance,
             duration,
-            minScore
+            minScore,
+            userQCount
           };
         }
       });
@@ -335,7 +422,9 @@ export default {
           content: formValues2.content,
           duration: formValues2.duration,
           minScore: formValues2.minScore,
+          userQCount: formValues2.userQCount,
           secondChance: formValues2.secondChance
+
         })
         .then(res => {
           this.$swal.fire({
@@ -349,8 +438,11 @@ export default {
           // console.log(session);
           // console.log(lesson.sessions[index]);
 
-          Object.keys(lesson.sessions[index]).forEach(item => {
-            session[item] = lesson.sessions[index][item];
+          Object.keys(formValues2).forEach(item => {
+            if (session[item]){
+              session[item]=formValues2[item]
+              
+            }
             // session.item="54"
           });
         })
@@ -372,15 +464,11 @@ export default {
         lessonId: this.lessonId
       })
       .then(res => {
+        this.sessions = res.data;
         console.log(res.data);
-        this.sessions = res.data.lessons.sessions;
-        this.course = res.date;
-        var course = res.data;
-        let { lessons, ...x } = course;
-        this.course = x;
-        var lesson = res.data.lessons;
-        let { sessions, ...y } = lesson;
-        this.lesson = lesson;
+        
+        this.course = global.course;
+        this.lesson = global.lesson;
       })
       .catch(err => {
         console.log(err);

@@ -81,6 +81,8 @@ export default {
       }
       global.courseId = this.courseId;
       global.lessonId = data._id;
+      global.lesson=data
+      global.course=this.course
       if (global.teacherId!=null) {
         this.$router.push({
           name: "tsession",

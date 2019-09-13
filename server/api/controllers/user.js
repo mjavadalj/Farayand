@@ -190,16 +190,24 @@ module.exports.lessonRegister = (req, res) => {
 };
 module.exports.sessionRegister = (req, res) => {
   find = {
-    _id: req.body.userId,
-    "reg_lessons._id": req.body.reg_lessonId
+    $and:[
+      {_id: req.body.userId},
+      {"reg_lessons._id": req.body.reg_lessonId},
+      { "reg_lessons.reg_sessions.sessionId": { $ne: mong(req.body.sessionId) } }
+    ]
+    
   };
-  User.updateOne(
+  User.findOneAndUpdate(
     find,
     {
       $push: {
         "reg_lessons.$.reg_sessions": {
           sessionId: req.body.sessionId,
-          title: req.body.title
+          title: req.body.title,
+          passed:req.body.passed,
+          anotherChanceDate:req.body.anotherChanceDate,
+          tryCount:req.body.tryCount,
+          score:req.body.score,
         }
       }
     },
@@ -214,7 +222,6 @@ module.exports.sessionRegister = (req, res) => {
     });
 };
 module.exports.sessionComplete = (req, res) => {
-  newItems = editItems(req, "reg_lessons.$[].reg_sessions.$[elem].");
   find = {
     _id: req.body.userId,
     "reg_lessons._id": req.body.reg_lessonId,
@@ -223,11 +230,50 @@ module.exports.sessionComplete = (req, res) => {
   User.updateOne(
     find,
     {
-      $set: newItems
+      $set: {
+        'reg_lessons.$[].reg_sessions.$[elem]':{
+          score:req.body.score,
+          tryCount:req.body.tryCount,
+          passed:req.body.passed,
+          anotherChanceDate:req.body.anotherChanceDate,
+          title:req.body.title,
+          sessionId:req.body.sessionId,
+          _id:req.body.reg_sessionId,
+          date:req.body.date
+        }
+      }
     },
     {
       new: true,
       arrayFilters: [{ "elem._id": mong(req.body.reg_sessionId) }]
+    }
+  )
+    .exec()
+    .then(result => {
+      res.status(200).json(result);
+    })
+    .catch(err => {
+      handler(err, res, 500);
+    });
+};
+module.exports.lessonComplete = (req, res) => {
+  find = {
+    $and:[
+      {_id: req.body.userId},
+    {"reg_lessons._id": req.body.reg_lessonId},
+    ]
+    
+  };
+  User.findOneAndUpdate(
+    find,
+    {
+      $set: {
+        'reg_lessons.$.passed':req.body.passed,
+        'reg_lessons.$.finalScore':req.body.finalScore,
+      }
+    },
+    {
+      new: true,
     }
   )
     .exec()
@@ -368,6 +414,36 @@ module.exports.deleteAUserRegLesson = (req, res) => {
       }
     }
   },{new:true})
+    .exec()
+    .then(result => {
+      res.status(200).json(result);
+    })
+    .catch(err => {
+      handler(err, res, 500);
+    });
+};
+module.exports.showAllC = (req, res) => {
+  User.aggregate([
+    {
+      $unwind:"$reg_lessons"
+    },
+    {
+      $match:{
+        "reg_lessons.passed":true
+      }
+    }
+    ,
+    {
+      $project:{
+        teacherName:"$reg_lessons.teacherName",
+        userName:"$name",
+        courseTitle:"$reg_lessons.courseTitle",
+        lessonTitle:"$reg_lessons.lessonTitle",
+        finalScore:"$reg_lessons.finalScore",
+        date:"$date",
+      }
+    }
+  ])
     .exec()
     .then(result => {
       res.status(200).json(result);

@@ -18,6 +18,7 @@ const embedSchema = mongoose.Schema({
       sessions: [
         {
           title: { type: String, require: true },
+          userQCount: { type: Number, require: true },
           content: { type: String, default: null },
           date_jalali: { type: Object, default: null },
           quizDate: { type: mongoose.Schema.Types.Date, default: Date.now },

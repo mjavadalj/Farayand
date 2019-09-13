@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const Embed = require("../models/embed");
 const moment = require("moment-jalaali");
 
-
 const handler = (json, res, code) => {
   res.status(code).json(json);
 };
@@ -23,6 +22,8 @@ const editItems = (req, text = "") => {
     json[`${text}publishable`] = req.body.publishable;
   if (req.body.forAllUniversities != undefined)
     json[`${text}forAllUniversities`] = req.body.forAllUniversities;
+  if (req.body.userQCount != undefined)
+    json[`${text}userQCount`] = req.body.userQCount;
   return json;
 };
 
@@ -31,11 +32,15 @@ module.exports.addASession = (req, res) => {
     _id: req.body.courseId,
     "lessons._id": req.body.lessonId
   };
-  Embed.findOneAndUpdate(find, {
-    $push: {
-      "lessons.$.sessions": req.body.session
-    }
-  },{new:true})
+  Embed.findOneAndUpdate(
+    find,
+    {
+      $push: {
+        "lessons.$.sessions": req.body.session
+      }
+    },
+    { new: true }
+  )
     .exec()
     .then(result => {
       handler(result, res, 200);
@@ -46,35 +51,53 @@ module.exports.addASession = (req, res) => {
 };
 
 module.exports.showAllSessions = (req, res) => {
+  find = {
+    $and: [
+      { _id: mong(req.body.courseId) },
+      { "lessons._id": mong(req.body.lessonId) }
+    ]
+  };
+  Embed.aggregate([
+    {
+      $unwind: {
+        path: "$lessons"
 
-    find = {
-      $and:[
-        {_id: mong(req.body.courseId)},
-        {"lessons._id": mong(req.body.lessonId)}
-      ]
-        
-      };
-      Embed.aggregate([
-        {
-          $unwind: {
-            path: "$lessons",
-            includeArrayIndex: "index"
-            // "preserveNullAndEmptyArrays": true
-          }
-        },
-        {
-          $match: find
-        }
-      ])
-        // sort('-lessons.date')
-        .exec()
-        .then(result => {
-          handler(result[0], res, 200);
-        })
-        .catch(err => {
-          handler(err, res, 200);
-        });
+        // "preserveNullAndEmptyArrays": true
+      }
+    },
+    {
+      $unwind: {
+        path: "$lessons.sessions"
 
+        // "preserveNullAndEmptyArrays": true
+      }
+    },
+    {
+      $match: find
+    },
+    {
+      $project: {
+        _id: "$lessons.sessions._id",
+        files: "$lessons.sessions.files",
+        content: "$lessons.sessions.content",
+        duration: "$lessons.sessions.duration",
+        minScore: "$lessons.sessions.minScore",
+        secondChance: "$lessons.sessions.secondChance",
+        userQCount: "$lessons.sessions.userQCount",
+        title: "$lessons.sessions.title",
+        quizDate: "$lessons.sessions.quizDate",
+        questionLength: { $size: "$lessons.sessions.questions" }
+      }
+    }
+  ])
+    // sort('-lessons.date')
+    .exec()
+    .then(result => {
+      handler(result, res, 200);
+    })
+    .catch(err => {
+      handler(err, res, 200);
+    });
 };
 
 module.exports.showSingleSession = (req, res) => {
@@ -178,7 +201,6 @@ module.exports.editASession = (req, res) => {
     });
 };
 
-
 module.exports.addFile = (req, res) => {
-  console.log(req.file.mimetype, '\n', req.file)
-}
+  console.log(req.file.mimetype, "\n", req.file);
+};

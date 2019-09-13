@@ -201,9 +201,6 @@ export default {
         })
         .then(result => {
           if (result.value) {
-            global.course = this.courseSelected;
-            global.lesson = lesson;
-            global.teacher = this.teacherSelected;
             var body = {
               userId: this.user._id,
               courseTitle: this.courseSelected.title,
@@ -214,8 +211,6 @@ export default {
               courseId: this.courseSelected._id,
               teacherId: this.teacherSelected._id
             };
-            console.log(body);
-
             this.axios
               .patch(`http://localhost:3000/api/user/lesson/register`, body)
               .then(res => {

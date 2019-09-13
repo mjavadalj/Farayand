@@ -39,6 +39,7 @@ import Session from "@/pages/session/session";
 import Student from "./pages/students/student.vue";
 import Question from "./pages/question/question.vue";
 import Home from "./pages/home/home.vue";
+import Quiz from "./pages/quiz/quiz.vue";
 
 Vue.use(Router);
 
@@ -173,6 +174,17 @@ export default new Router({
           path:"/mylesson",
           name:"reg_lesson",
           component:RgLesson
+        },
+        {
+          path:"/quiz",
+          name:"quiz",
+          component:Quiz
+        }
+        ,
+        {
+          path:"/certificate",
+          name:"certificate",
+          component:Certificate
         }
       ]
     }

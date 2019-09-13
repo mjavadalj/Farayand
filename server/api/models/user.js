@@ -29,9 +29,9 @@ const userSchema = mongoose.Schema({
           title: { type: String, require: true },
           sessionId: { type: mongoose.Schema.Types.ObjectId, require: true },
           score:{ type: Number, default: null },
-          tryCount:{ type: Number, default: 0 },
+          tryCount:{ type: Number, default: 1 },
           anotherChanceDate:{ type: mongoose.Schema.Types.Date, default: null },
-          date:{ type: mongoose.Schema.Types.Date, default: null },
+          date:{ type: mongoose.Schema.Types.Date, default: Date.now },
           passed:{type:Boolean,default:false}
 
         }
