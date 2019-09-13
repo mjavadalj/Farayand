@@ -22,6 +22,8 @@ const editItems = (req, text = "") => {
     json[`${text}publishable`] = req.body.publishable;
   if (req.body.forAllUniversities != undefined)
     json[`${text}forAllUniversities`] = req.body.forAllUniversities;
+  if (req.body.userQCount != undefined)
+    json[`${text}userQCount`] = req.body.userQCount;
   return json;
 };
 
@@ -58,15 +60,15 @@ module.exports.showAllSessions = (req, res) => {
   Embed.aggregate([
     {
       $unwind: {
-        path: "$lessons",
-        
+        path: "$lessons"
+
         // "preserveNullAndEmptyArrays": true
       }
     },
     {
       $unwind: {
-        path: "$lessons.sessions",
-        
+        path: "$lessons.sessions"
+
         // "preserveNullAndEmptyArrays": true
       }
     },
@@ -74,17 +76,17 @@ module.exports.showAllSessions = (req, res) => {
       $match: find
     },
     {
-      $project:{
-        _id:"$lessons.sessions._id",
-        files:"$lessons.sessions.files",
-        content:"$lessons.sessions.content",
-        duration:"$lessons.sessions.duration",
-        minScore:"$lessons.sessions.minScore",
-        secondChance:"$lessons.sessions.secondChance",
-        title:"$lessons.sessions.title",
-        quizDate:"$lessons.sessions.quizDate",
-        questionLength:{ $size: "$lessons.sessions.questions" },
-        
+      $project: {
+        _id: "$lessons.sessions._id",
+        files: "$lessons.sessions.files",
+        content: "$lessons.sessions.content",
+        duration: "$lessons.sessions.duration",
+        minScore: "$lessons.sessions.minScore",
+        secondChance: "$lessons.sessions.secondChance",
+        userQCount: "$lessons.sessions.userQCount",
+        title: "$lessons.sessions.title",
+        quizDate: "$lessons.sessions.quizDate",
+        questionLength: { $size: "$lessons.sessions.questions" }
       }
     }
   ])

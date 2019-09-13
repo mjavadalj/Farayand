@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Certificate = require("../models/certificate");
+const User = require("../models/user");
 const moment = require("moment-jalaali");
 const handler = (json, res, code) => {
   res.status(code).json(json);
@@ -8,15 +9,9 @@ const handler = (json, res, code) => {
 module.exports.add = (req, res) => {
   const cer = new Certificate({
     _id: mongoose.Types.ObjectId(),
-    teacherId: req.body.teacherId,
     userId: req.body.userId,
-    courseId: req.body.courseId,
-    lessonId: req.body.lessonId,
-    teacherName: req.body.teacherName,
     userName: req.body.userName,
-    courseTitle: req.body.courseTitle,
-    lessonTitle: req.body.lessonTitle,
-    score: req.body.score
+    lesson: req.body.reg_lessonId
   })
     .save()
     .then(result => {
@@ -47,8 +42,41 @@ module.exports.show = (req, res) => {
     });
 };
 module.exports.showAll = (req, res) => {
-  //query
-  Certificate.find({})
+  Certificate.aggregate([
+    {
+      $lookup: {
+        from: User.collection.name,
+        localField: "userId",
+        foreignField: "_id",
+        as: "user"
+      }
+    }
+    ,
+    {
+      $unwind:"$user"
+    }
+    ,
+    {
+      $unwind:"$user.reg_lessons"
+    },
+    {
+      $match:{
+        "user.reg_lessons.passed":true
+      }
+    }
+    ,
+    {
+      $project:{
+        _id:"$_id",
+        teacherName:"$user.reg_lessons.teacherName",
+        userName:"$user.name",
+        courseTitle:"$user.reg_lessons.courseTitle",
+        lessonTitle:"$user.reg_lessons.lessonTitle",
+        finalScore:"$user.reg_lessons.finalScore",
+        date:"$date",
+      }
+    }
+  ])
     .exec()
     .then(result => {
       res.status(200).json(result);

@@ -30,6 +30,8 @@ router.patch('/lesson/register',userController.lessonRegister)
 router.patch('/session/register',userController.sessionRegister)
 //session complete
 router.patch('/session/complete',userController.sessionComplete)
+//lesson complete
+router.patch('/lesson/complete',userController.lessonComplete)
 //delete all users
 router.delete('/deleteall',userController.deleteAllUsers)
 //show all teachers
@@ -48,5 +50,6 @@ router.post('/show',userController.showAUser)
 router.post('/reg/show',userController.showAUserRegLessons)
 //delete a reg lesson
 router.patch('/reg/delete',userController.deleteAUserRegLesson)
+router.get('/reg/showall',userController.showAllC)
 
 module.exports = router;

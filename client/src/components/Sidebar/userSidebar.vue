@@ -24,6 +24,13 @@
         index="course"
         isHeader
       />
+      <NavLink
+        header="My Certificates"
+        link="/certificate"
+        iconName="flaticon-list"
+        index="certificate"
+        isHeader
+      />
       <!-- <NavLink
         header="My Courses"
         link="/teacher/course"

@@ -256,6 +256,34 @@ module.exports.sessionComplete = (req, res) => {
       handler(err, res, 500);
     });
 };
+module.exports.lessonComplete = (req, res) => {
+  find = {
+    $and:[
+      {_id: req.body.userId},
+    {"reg_lessons._id": req.body.reg_lessonId},
+    ]
+    
+  };
+  User.findOneAndUpdate(
+    find,
+    {
+      $set: {
+        'reg_lessons.$.passed':req.body.passed,
+        'reg_lessons.$.finalScore':req.body.finalScore,
+      }
+    },
+    {
+      new: true,
+    }
+  )
+    .exec()
+    .then(result => {
+      res.status(200).json(result);
+    })
+    .catch(err => {
+      handler(err, res, 500);
+    });
+};
 module.exports.deleteAllUsers = (req, res) => {
   User.deleteMany({})
     .exec()
@@ -386,6 +414,36 @@ module.exports.deleteAUserRegLesson = (req, res) => {
       }
     }
   },{new:true})
+    .exec()
+    .then(result => {
+      res.status(200).json(result);
+    })
+    .catch(err => {
+      handler(err, res, 500);
+    });
+};
+module.exports.showAllC = (req, res) => {
+  User.aggregate([
+    {
+      $unwind:"$reg_lessons"
+    },
+    {
+      $match:{
+        "reg_lessons.passed":true
+      }
+    }
+    ,
+    {
+      $project:{
+        teacherName:"$reg_lessons.teacherName",
+        userName:"$name",
+        courseTitle:"$reg_lessons.courseTitle",
+        lessonTitle:"$reg_lessons.lessonTitle",
+        finalScore:"$reg_lessons.finalScore",
+        date:"$date",
+      }
+    }
+  ])
     .exec()
     .then(result => {
       res.status(200).json(result);

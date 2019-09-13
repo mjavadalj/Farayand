@@ -180,6 +180,12 @@ export default new Router({
           name:"quiz",
           component:Quiz
         }
+        ,
+        {
+          path:"/certificate",
+          name:"certificate",
+          component:Certificate
+        }
       ]
     }
   ]

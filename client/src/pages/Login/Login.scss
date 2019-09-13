@@ -1,9 +1,11 @@
-@import '../../styles/app';
+@import "../../styles/app";
 
 .login-page {
   padding-top: 20vh;
+  // padding-left: 140vh;
   height: 100%;
-
+  // background-image: url(../../assets/image/home-img.jpg);
+  background-size: cover;
   .widget {
     max-width: 460px;
     padding: 30px !important;

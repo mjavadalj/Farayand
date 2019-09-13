@@ -3,16 +3,10 @@
     <b-container>
       <h5 class="logo">
         <i class="fa fa-circle text-gray" />
-        sing
+        <span class="lalezar" style="color:black;">بسیج اساتید</span>
         <i class="fa fa-circle text-warning" />
       </h5>
-      <Widget class="mx-auto" title="<h3 class='mt-0'>Login to your Web App</h3>" customHeader>
-        <p class="text-muted mb-0 mt fs-sm">
-          Use Facebook, Twitter or your email to sign in.
-        </p>
-        <p class="text-muted fs-sm">
-          Don't have an account? Sign up now!
-        </p>
+      <Widget class="mx-auto" title="<h4 class='mt-0 lalezar text-center'>وارد شوید</h4>" customHeader>
         <form class="mt" @submit.prevent="login">
           <b-alert class="alert-sm" variant="danger" :show="!!errorMessage">
             {{errorMessage}}
@@ -29,20 +23,6 @@
             <div class="btn-toolbar float-right">
               <b-button type="reset" size="sm" variant="default">Create an Account</b-button>
               <b-button type="submit" size="sm" variant="inverse">Login</b-button>
-            </div>
-          </div>
-          <div class="row no-gutters mt-3">
-            <div class="col">
-              <div class="abc-checkbox">
-                <input
-                  type="checkbox"
-                  id="checkbox"
-                />
-                <label for="checkbox" class="text-muted fs-sm">Keep me signed in</label>
-              </div>
-            </div>
-            <div class="col">
-              <a class="mt-sm" href="">Trouble with account?</a>
             </div>
           </div>
         </form>
@@ -70,16 +50,16 @@ export default {
       const username = this.$refs.username.value;
       const password = this.$refs.password.value;
 
-      if (username.length !== 0 && password.length !== 0) {
-        window.localStorage.setItem('authenticated', true);
-        this.$router.push('/app/main/analytics');
-      }
+      // if (username.length !== 0 && password.length !== 0) {
+      //   window.localStorage.setItem('authenticated', true);
+      //   this.$router.push('/app/main/analytics');
+      // }
     },
   },
   created() {
-    if (window.localStorage.getItem('authenticated') === 'true') {
-      this.$router.push('/app/main/analytics');
-    }
+    // if (window.localStorage.getItem('authenticated') === 'true') {
+    //   this.$router.push('/app/main/analytics');
+    // }
   },
 };
 </script>
