@@ -174,7 +174,7 @@
           class="btn btn-success text-center"
           style="z-index:4;"
           type="button"
-          @click="endQuiz()"
+          @click="endQuiz(selectedRegSession,selectedSession)"
         >
           <span class="lalezar">خاتمه امتحان</span>
         </button>
@@ -240,6 +240,10 @@ function initializationMessengerCode() {
 export default {
   data() {
     return {
+      intervalTimer:null,
+      deletedSessions:{},
+      selectedRegSession:null,
+      selectedSession:null,
       questions: null,
       isQuiz: false,
       locationClasses: "messenger-fixed messenger-on-bottom messenger-on-right",
@@ -257,29 +261,13 @@ export default {
     reQuiz(reg_session, index) {
       var now = new Date();
       var chance = new Date(reg_session.anotherChanceDate);
-      if (now < chance) {
+      if (now > chance) {
         return alert("بعدا");
       }
-      this.axios
-        .patch(`http://localhost:3000/api/user/session/complete`, {
-          userId: "5d766c948c992a0c38924e54",
-          reg_lessonId: this.reg_lesson._id,
-          reg_sessionId: reg_session._id,
-          passed: true,
-          score: 90,
-          anotherChanceDate: reg_session.anotherChanceDate,
-          title: reg_session.title,
-          date: reg_session.date,
-          sessionId: reg_session.sessionId
-        })
-        .then(res => {
-          console.log(res.data);
-          reg_session.passed = true;
-          reg_session.score = 100;
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      else{
+        this.showQuestions(reg_session,this.deletedSessions[reg_session.sessionId])
+      }
+      
     },
     addToRegSession(session, index) {
       if (index != 0) {
@@ -355,6 +343,8 @@ export default {
     },
     showQuestions(reg_session, session) {
       this.isQuiz = true;
+      this.selectedRegSession=reg_session
+      this.selectedSession=session
       this.axios
         .post(`http://localhost:3000/api/session/show`, {
           courseId: this.courseId,
@@ -363,9 +353,9 @@ export default {
         })
         .then(res => {
           var a = 0;
-          var duration = 5;
+          var duration = parseInt(session.duration)*60;
           this.questions = res.data;
-          var intervalTimer = setInterval(() => {
+          this.intervalTimer = setInterval(() => {
             var time = duration - a;
             var minute = Math.floor(time / 60);
             if (minute < 10) {
@@ -381,7 +371,7 @@ export default {
             if (time <= 0) {
               document.getElementById("countdown").innerHTML =
                 "زمان شما تمام شد";
-              clearInterval(intervalTimer);
+              clearInterval(this.intervalTimer);
               this.endQuiz(reg_session, session, true);
             }
           }, 1000);
@@ -393,6 +383,7 @@ export default {
     endQuiz(reg_session, session, force = false) {
       var BreakException = {};
       var correct = 0;
+      var tryCount=parseInt(reg_session.tryCount)+1
       try {
         this.questions.forEach((question, i) => {
           var ans = $(`input[name=${question._id}]:checked`);
@@ -416,14 +407,19 @@ export default {
             anotherChanceDate: reg_session.anotherChanceDate,
             title: reg_session.title,
             date: reg_session.date,
-            sessionId: reg_session.sessionId
+            sessionId: reg_session.sessionId,
+            tryCount
           })
           .then(res => {
             reg_session.passed = passed;
             reg_session.score = score;
+            reg_session.tryCount = tryCount;
             this.isQuiz = false;
+            clearInterval(this.intervalTimer);
           })
           .catch(err => {
+            this.isQuiz=false
+            clearInterval(this.intervalTimer);
             console.log(err);
           });
       } catch (e) {
@@ -458,12 +454,15 @@ export default {
         });
         // this.sessions.splice(0,1)
         index.forEach(i => {
+          this.deletedSessions[this.sessions[i]._id]=this.sessions[i]
           this.sessions.splice(i, 1);
         });
         this.sessions = this.sessions.slice(
           0,
           this.reg_lesson.sessionLength - this.reg_sessions.length
         );
+        console.log(this.de);
+        
       })
       .catch(err => {
         console.log(err);

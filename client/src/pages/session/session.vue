@@ -121,17 +121,23 @@ export default {
       });
       console.log(value);
     },
-    async addSession(title = "", content = "") {
+    async addSession(
+      title = "",
+      content = "",
+      duration = "",
+      secondChance = "",
+      minScore = ""
+    ) {
       const { value: formValues2 } = await this.$swal.fire({
         html: `
           <div class="card">
           <div class="card-header">
-            <strong>جلسه جدید</strong>
+            <strong class="lalezar" >جلسه جدید</strong>
           </div>
           </br>
           <div class="form-group">
           <div class="">
-            <label for="title">عنوان جلسه</label>
+            <label class="lalezar" for="title">عنوان جلسه</label>
                   <input
                     value="${title}"
                     type="text"
@@ -141,20 +147,65 @@ export default {
                     class="form-control"
                   />
           </div>
-          </br></br>
+          </br>
           <div>
-            <label for="content">توضیحات راجع به جلسه</label>
+            <label class="lalezar"  for="content">توضیحات راجع به جلسه</label>
             <textarea class="form-control text-center" rows="3" id="content"> ${content}</textarea>
-          </div>      
+          </div> 
+          </br>
+          <div class="">
+            <label class="lalezar"  for="title">مدت زمان آزمون </label>
+                  <input
+                    value="${duration}"
+                    type="number"
+                    id="duration"
+                    name="duration"
+                    placeholder="مدت زمان آزمون را مشخص کنید"
+                    class="form-control"
+                  />
+          </div>
+          </br>
+          <div class="">
+            <label class="lalezar"  for="title">حداقل نمره قبولی در آزمون</label>
+                  <input
+                    value="${minScore}"
+                    type="number"
+                    id="minScore"
+                    name="minScore"
+                    placeholder="حداقل نمره قبولی را به درصد وارد کنید"
+                    class="form-control"
+                  />
+          </div> 
+          </br>
+          <div class="">
+            <label class="lalezar"  for="title">شانس مجدد</label>
+                  <input
+                    value="${secondChance}"
+                    type="number"
+                    id="secondChance"
+                    name="secondChance"
+                    placeholder="چند روز پس از آزمون"
+                    class="form-control"
+                  />
+          </div>       
           </div>`,
         focusConfirm: false,
         preConfirm: () => {
           var title = document.getElementById("title").value;
           var content = document.getElementById("content").value;
+          var duration = document.getElementById("duration").value;
+          var minScore = document.getElementById("minScore").value;
+          var secondChance = document.getElementById("secondChance").value;
           var ok = false;
-          if (title == "" || content == "") {
+          if (
+            title == "" ||
+            content == "" ||
+            duration == "" ||
+            minScore == "" ||
+            secondChance == ""
+          ) {
             setTimeout(() => {
-              this.addSession(title, content);
+              this.addSession(title,content,duration,secondChance,minScore);
             }, 0);
           } else {
             ok = true;
@@ -162,7 +213,10 @@ export default {
           return {
             ok,
             title,
-            content
+            content,
+            secondChance,
+            duration,
+            minScore
           };
         }
       });
@@ -177,9 +231,9 @@ export default {
           session: {
             title: formValues2.title,
             content: formValues2.content,
-            secondChance: "20",
-            duration: 20,
-            minScore: 20
+            secondChance: formValues2.secondChance,
+            duration: parseInt(formValues2.duration),
+            minScore: parseInt(formValues2.minScore)
           }
         })
         .then(res => {
@@ -235,12 +289,12 @@ export default {
         html: `
           <div class="card">
           <div class="card-header">
-            <strong>جلسه جدید</strong>
+            <strong class="lalezar" >جلسه جدید</strong>
           </div>
           </br>
           <div class="form-group">
           <div class="">
-            <label for="title">عنوان جلسه</label>
+            <label class="lalezar" for="title">عنوان جلسه</label>
                   <input
                     value="${session.title}"
                     type="text"
@@ -252,12 +306,12 @@ export default {
           </div>
           </br>
           <div>
-            <label for="content">توضیحات راجع به جلسه</label>
+            <label class="lalezar"  for="content">توضیحات راجع به جلسه</label>
             <textarea class="form-control text-center" rows="3" id="content"> ${session.content}</textarea>
           </div> 
           </br>
           <div class="">
-            <label for="title">مدت زمان آزمون </label>
+            <label class="lalezar"  for="title">مدت زمان آزمون </label>
                   <input
                     value="${session.duration}"
                     type="number"
@@ -269,7 +323,7 @@ export default {
           </div>
           </br>
           <div class="">
-            <label for="title">حداقل نمره قبولی در آزمون</label>
+            <label class="lalezar"  for="title">حداقل نمره قبولی در آزمون</label>
                   <input
                     value="${session.minScore}"
                     type="number"
@@ -281,7 +335,7 @@ export default {
           </div> 
           </br>
           <div class="">
-            <label for="title">شانس مجدد</label>
+            <label class="lalezar"  for="title">شانس مجدد</label>
                   <input
                     value="${session.secondChance}"
                     type="number"

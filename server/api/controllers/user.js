@@ -233,6 +233,7 @@ module.exports.sessionComplete = (req, res) => {
       $set: {
         'reg_lessons.$[].reg_sessions.$[elem]':{
           score:req.body.score,
+          tryCount:req.body.tryCount,
           passed:req.body.passed,
           anotherChanceDate:req.body.anotherChanceDate,
           title:req.body.title,
