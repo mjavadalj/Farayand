@@ -50,6 +50,14 @@ router.post('/show',userController.showAUser)
 router.post('/reg/show',userController.showAUserRegLessons)
 //delete a reg lesson
 router.patch('/reg/delete',userController.deleteAUserRegLesson)
+//show all certificates
 router.get('/reg/showall',userController.showAllC)
+//add uni to teacher
+router.patch('/teacher/adduni',userController.addTeacherUni)
+//add uni to user
+router.patch('/user/adduni',userController.addUserUni)
+//remove user university
+router.patch('/removeuni',userController.removeUserrUni)
+
 
 module.exports = router;

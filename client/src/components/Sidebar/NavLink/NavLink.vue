@@ -1,5 +1,5 @@
 <template>
-  <li v-if="!childrenLinks && isHeader" :class="{headerLink: true, className}">
+  <li  v-if="!childrenLinks && isHeader" :class="{headerLink: true, className}">
     <router-link :to="link">
       <span class="icon">
         <i :class="fullIconName"></i>

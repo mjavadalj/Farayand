@@ -15,7 +15,7 @@
         type="text"
         id="myInput"
         class="form-control"
-        placeholder="جست و جو"
+        placeholder="جستجو"
         aria-label="Search"
         aria-describedby="basic-addon1"
         v-on:keyup="search"
@@ -33,7 +33,11 @@
             <th class>وضعیت دانشجو</th>
             <th class>ایمیل</th>
             <th class>تاریخ عضویت</th>
-            <th class>دانشگاه</th>
+            <th class>
+              <div data-v-71d02ef0>
+                <span data-v-71d02ef0 class="badge badge-info">پس از ثبت دانشجو، دانشگاه را اضافه کنید</span>
+              </div>دانشگاه
+            </th>
             <th class>نام کاربری</th>
             <th class>نام</th>
             <th class>#</th>
@@ -42,6 +46,11 @@
         <tbody id="myTable">
           <tr v-for="(user,index) in users" :key="user._id">
             <td>
+              <i
+                @click="showModal(user)"
+                class="fa fa-university action-icon"
+                style="font-size: 1.3em;"
+              />
               <i
                 @click="deleteUser(user)"
                 class="fa fa-remove action-icon"
@@ -77,18 +86,7 @@
             </td>
             <td>{{user.email}}</td>
             <td>{{user.date}}</td>
-            <td>
-              <p class="mb-0">
-                <small>
-                  <span class="text-muted">&nbsp; نوشیروانی</span>
-                </small>
-              </p>
-              <p>
-                <small>
-                  <span class="text-muted">&nbsp; مازندران</span>
-                </small>
-              </p>
-            </td>
+            <td>{{retUni(user.university)}}</td>
             <td>{{user.username}}</td>
             <td>{{user.name}}</td>
             <td>{{index+1}}</td>
@@ -101,7 +99,54 @@
     <button id="fixedbutton" class="btn btn-primary" type="button" @click="s()">
       <i class="fa fa-plus" />
     </button>
-    <div></div>
+    <div id="modaaal">
+      <b-modal id="my-modal" ref="my-modal" hide-footer title>
+        <div class="d-block text-center lalezar">
+          <h3>دانشگاه جدید به استاد اضافه کنید</h3>
+        </div>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">
+              <i class="fa fa-search" />
+            </span>
+          </div>
+          <input
+            style="text-align:center;"
+            type="text"
+            id="myInput2"
+            class="form-control lalezar"
+            placeholder="جستجو"
+            aria-label="Search"
+            aria-describedby="basic-addon1"
+            v-on:keyup="search2"
+          />
+        </div>
+        <div
+          id="table_data"
+          class="table-resposive"
+          style="text-align:center;max-height:500px; overflow: auto;margin-bottom:10px;"
+        >
+          <table id="dtBasicExample" align="center" class="table">
+            <thead>
+              <tr>
+                <th class>شهرستان</th>
+                <th class>استان</th>
+                <th class>نام</th>
+                <th class>#</th>
+              </tr>
+            </thead>
+            <tbody id="myTable2">
+              <tr v-for="(uni,index) in universities" :key="uni._id" @click="addUserUni(uni,index)">
+                <td>{{uni.city}}</td>
+                <td>{{uni.state}}</td>
+                <td>{{uni.name}}</td>
+                <td>{{index+1}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </b-modal>
+    </div>
   </div>
 </template>
 
@@ -119,7 +164,9 @@ const { Messenger } = window;
 export default {
   data() {
     return {
-      users: []
+      users: [],
+      selectedUser: null,
+      universities: null
     };
   },
 
@@ -128,7 +175,7 @@ export default {
       .get(`http://localhost:3000/api/user/student/showall`)
       .then(res => {
         console.log(res.data);
-        
+
         this.users = res.data;
         // this.addSuccessNotification();
       })
@@ -365,7 +412,11 @@ export default {
           password: formValues.password
         })
         .then(res => {
-          user = res.data;
+          Object.keys(formValues).forEach(item => {
+            if (user[item]) {
+              user[item] = formValues[item];
+            }
+          });
           this.$swal.fire({
             type: "success",
             title: "موفق",
@@ -581,6 +632,61 @@ export default {
         );
       });
       console.log(value);
+    },
+    search2(e, temp = null) {
+      var value = $("#myInput2")
+        .val()
+        .toLowerCase();
+      $("#myTable2 tr").filter(function() {
+        $(this).toggle(
+          $(this)
+            .text()
+            .toLowerCase()
+            .indexOf(value) > -1
+        );
+      });
+    },
+    showModal(user) {
+      this.axios
+        .get(`http://localhost:3000/api/university/showall`)
+        .then(res => {
+          this.$refs["my-modal"].show();
+          this.selectedUser = user;
+          this.universities = res.data;
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    hideModal() {
+      this.$refs["my-modal"].hide();
+    },
+    toggleModal() {
+      // We pass the ID of the button that we want to return focus to
+      // when the modal has hidden
+      this.$refs["my-modal"].toggle("#toggle-btn");
+    },
+    addUserUni(uni, index) {
+      this.axios
+        .patch(`http://localhost:3000/api/user/user/adduni`, {
+          userId: this.selectedUser._id,
+          uniId: uni._id
+        })
+        .then(res => {
+          console.log(res.data);
+          this.selectedUser.university = [];
+          this.selectedUser.university.push(uni);
+          this.hideModal();
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    retUni(uni) {
+      if (uni.length == 0) {
+        return "";
+      }
+      return uni[0].name;
     }
   }
 };

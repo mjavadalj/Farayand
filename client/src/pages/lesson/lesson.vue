@@ -17,7 +17,7 @@
         type="text"
         id="myInput"
         class="form-control"
-        placeholder="Serach"
+        placeholder="جستجو"
         aria-label="Search"
         aria-describedby="basic-addon1"
         v-on:keyup="search"

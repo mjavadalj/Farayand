@@ -15,7 +15,7 @@
         type="text"
         id="myInput"
         class="form-control"
-        placeholder="Serach"
+        placeholder="جستجو"
         aria-label="Search"
         aria-describedby="basic-addon1"
         v-on:keyup="search"
@@ -63,7 +63,7 @@
                 class="btn p-1 px-3 btn-xs btn-success lalezar"
               >صادر شده</button>
             </td>
-            <td>{{reg_lesson.date}}</td>
+            <td>{{new Date(reg_lesson.date) | moment.(" jMMMM jDo YYYY, h:mm:ss a,fa")}}</td>
             <td>{{reg_lesson.reg_sessions.length}}</td>
             <td>{{reg_lesson.sessionLength}}</td>
             <td>{{reg_lesson.teacherName}}</td>
@@ -130,6 +130,7 @@ function initializationMessengerCode() {
   }.call(window));
 }
 /* eslint-enable */
+
 export default {
   data() {
     return {
@@ -186,7 +187,7 @@ export default {
         .then(result => {
           if (result.value) {
             var body={
-              userId:"5d766c948c992a0c38924e54",
+              userId:"5d7df0a4ea00431500c61add",
               reg_lessonId:reg_lesson._id
             }
             this.axios.patch("http://localhost:3000/api/user/reg/delete",body)
@@ -207,7 +208,7 @@ export default {
 
     this.axios
       .post(`http://localhost:3000/api/user/reg/show`, {
-        userId: "5d766c948c992a0c38924e54"
+        userId: "5d7df0a4ea00431500c61add"
       })
       .then(res => {
         console.log("res.data");

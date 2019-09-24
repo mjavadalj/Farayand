@@ -10,7 +10,7 @@ module.exports.addUniversity = (req, res) => {
         _id: mongoose.Types.ObjectId(),
         city: req.body.city,
         state: req.body.state,
-        name: req.body.secondChance
+        name: req.body.name
     }).save()
         .then(result => {
             res.status(200).json(result)
@@ -51,7 +51,7 @@ module.exports.deleteAllUniversites = (req, res) => {
 }
 
 module.exports.deleteSingleUniversity = (req, res) => {
-    University.remove({ _id: req.params.id }).exec()
+    University.remove({ _id: req.body.id }).exec()
         .then(result => {
             handler(result, res, 200)
         })
@@ -65,7 +65,7 @@ module.exports.editAUniversity = (req, res) => {
     if (req.body.city) temp.city = req.body.city
     if (req.body.state) temp.state = req.body.state
     if (req.body.name) temp.name = req.body.name
-    University.findByIdAndUpdate(req.params.id, {
+    University.findByIdAndUpdate(req.body.id, {
         $set: temp
     }).exec()
         .then(result => {

@@ -12,14 +12,11 @@ import VueAxios from "vue-axios";
 import store from "./store";
 import router from "./Routes";
 import App from "./App";
-// import VueSwal from "vue-swal";
 import VueSweetalert2 from "vue-sweetalert2";
+Vue.use(require('vue-moment-jalaali'));
 Vue.use(VueSweetalert2);
-// Vue.use(VueSwal);
 Vue.use(VueAxios, axios);
-// import Vuetify from 'vuetify/lib'
 Vue.use(BootstrapVue);
-// Vue.use(Vuetify);
 Vue.use(VueTouch);
 Vue.use(Trend);
 

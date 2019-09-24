@@ -93,11 +93,11 @@
               @click="addToRegSession(session,index)"
             >
               <td>
-                <i v-if="index==0" class="fa fa-unlock action-icon" style="font-size: 1.5em;" />
+                <i v-if="index==0 && check()" class="fa fa-unlock action-icon" style="font-size: 1.5em;" />
                 <i v-else @click="aa()" class="fa fa-lock action-icon" style="font-size: 1.5em;" />
               </td>
-              <td>{{session.secondChance}}</td>
-              <td>{{session.duration}}</td>
+              <td>پس از {{session.secondChance}} روز </td>
+              <td>{{duration(session.duration)}} </td>
               <td>{{session.minScore}}</td>
               <td>{{session.questionLength}}</td>
               <td>{{session.title}}</td>
@@ -260,16 +260,17 @@ export default {
   methods: {
     aa(reg_session, index) {
       alert("ابتدا باید جلسات قبلی را انجام دهید");
+      this.check()
     },
     reQuiz(reg_session, index) {
       var now = new Date();
       var chance = new Date(reg_session.anotherChanceDate);
       if (reg_session.passed) {
         return alert("شما در این آزمون پذیرفته شده اید");
-      } else if (now > chance) {
+      } else if (now < chance) {
         return alert("بعدا");
       } else if (
-        this.deletedSessions[reg_session.sessionId].questionLength != 0
+        true
       ) {
         this.showQuestions(
           reg_session,
@@ -278,7 +279,7 @@ export default {
       }
     },
     addToRegSession(session, index) {
-      if (index != 0) {
+      if (index != 0 || !this.check) {
         return;
       }
       Date.prototype.addDays = function(days) {
@@ -291,7 +292,7 @@ export default {
       if (session.questionLength == 0) {
         this.axios
           .patch(`http://localhost:3000/api/user/session/register`, {
-            userId: "5d766c948c992a0c38924e54",
+            userId: "5d7df0a4ea00431500c61add",
             reg_lessonId: this.reg_lesson._id,
             sessionId: session._id,
             title: session.title,
@@ -313,7 +314,7 @@ export default {
       } else {
         this.axios
           .patch(`http://localhost:3000/api/user/session/register`, {
-            userId: "5d766c948c992a0c38924e54",
+            userId: "5d7df0a4ea00431500c61add",
             reg_lessonId: this.reg_lesson._id,
             sessionId: session._id,
             title: session.title,
@@ -346,6 +347,7 @@ export default {
         return reg.passed == false;
       });
       if (find) {
+        alert('باید در تمامی آزمون ها پذیرفته شوید تا گواهی برای شما صادر شود')
       } else {
         var finalScore = 0;
         this.reg_sessions.forEach(reg_session => {
@@ -356,14 +358,14 @@ export default {
         console.log(this.reg_lesson);
         this.axios
           .post("http://localhost:3000/api/certificate/add", {
-            userId: "5d766c948c992a0c38924e54",
+            userId: "5d7df0a4ea00431500c61add",
             userName: "amir",
             reg_lessonId: this.reg_lesson._id
           })
           .then(res => {
             this.axios
               .patch(`http://localhost:3000/api/user/lesson/complete`, {
-                userId: "5d766c948c992a0c38924e54",
+                userId: "5d7df0a4ea00431500c61add",
                 reg_lessonId: this.reg_lesson._id,
                 finalScore,
                 passed: true
@@ -438,7 +440,7 @@ export default {
         var passed = score >= session.minScore;
         this.axios
           .patch(`http://localhost:3000/api/user/session/complete`, {
-            userId: "5d766c948c992a0c38924e54",
+            userId: "5d7df0a4ea00431500c61add",
             reg_lessonId: this.reg_lesson._id,
             reg_sessionId: reg_session._id,
             passed: passed,
@@ -464,6 +466,15 @@ export default {
       } catch (e) {
         if (e !== BreakException) throw e;
       }
+    },
+    duration(d){
+      return `${d}'`
+    },
+    check(){
+      // const index=this.reg_sessions.length-1
+      // return this.reg_sessions[index].passed
+      return true
+      
     }
   },
   mounted() {

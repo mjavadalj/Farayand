@@ -245,11 +245,11 @@ export default {
     //5d77a5193908ca10e8a7877a
     //khodadi
     //5d74028057b2c842046986c7
-    //amir
-    //5d766c948c992a0c38924e54
+    //ali
+    //5d7df0a4ea00431500c61add
     this.axios
       .post(`http://localhost:3000/api/user/show`, {
-        userId: "5d766c948c992a0c38924e54"
+        userId: "5d7df0a4ea00431500c61add"
       })
       .then(res => {
         this.user = res.data;
@@ -263,20 +263,20 @@ export default {
         .get(`http://localhost:3000/api/user/teacher/showall`)
         .then(res => {
           this.teachers = res.data;
-          var temp = {};
-          this.teachers.forEach(teacher => {
-            this.axios
-              .post(`http://localhost:3000/api/user/course/showall`, {
-                teacherId: teacher._id
-              })
-              .then(res => {
-                temp[teacher._id] = res.data;
-                this.courses = temp;
-              })
-              .catch(err => {
-                console.log(err);
-              });
-          });
+          // var temp = {};
+          // this.teachers.forEach(teacher => {
+          //   this.axios
+          //     .post(`http://localhost:3000/api/user/course/showall`, {
+          //       teacherId: teacher._id
+          //     })
+          //     .then(res => {
+          //       temp[teacher._id] = res.data;
+          //       this.courses = temp;
+          //     })
+          //     .catch(err => {
+          //       console.log(err);
+          //     });
+          // });
         })
         .catch(err => {
           console.log(err);
