@@ -160,8 +160,18 @@ module.exports.deleteTeacherFromCourse = (req, res) => {
     });
 };
 module.exports.searchCourse = (req, res) => {
-  Embed.find({ title: { $regex: req.query.title, $options: "i" } })
-    .select("-lessons")
+  var find = { title: { $regex: req.query.title, $options: "i" } };
+  if(req.query.r=='!a'){
+    find={
+      $and:[
+        { title: { $regex: req.query.title, $options: "i" } },
+        {publishable:true}
+      ]
+    }
+  }
+  Embed.find(find)
+    .select("-lessons.sessions")
+    .populate("creator name")
     .exec()
     .then(result => {
       handler(result, res, 200);

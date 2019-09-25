@@ -471,7 +471,7 @@ export default {
           password: formValues.password
         })
         .then(res => {
-           Object.keys(formValues).forEach(item => {
+          Object.keys(formValues).forEach(item => {
             if (user[item]) {
               user[item] = formValues[item];
             }
@@ -771,19 +771,18 @@ export default {
     },
     addTeacherUni(uni, index) {
       this.axios
-        .patch(`http://localhost:3000/api/user/teacher/adduni`,{
-          userId:this.selectedTeacher._id,
-          uniId:uni._id
+        .patch(`http://localhost:3000/api/user/teacher/adduni`, {
+          userId: this.selectedTeacher._id,
+          uniId: uni._id
         })
         .then(res => {
           console.log(res.data);
-          this.selectedTeacher.university.push(uni)
+          this.selectedTeacher.university.push(uni);
           this.hideModal();
         })
         .catch(err => {
           console.log(err);
         });
-      
     }
   },
   mounted() {
@@ -844,4 +843,5 @@ input[type="number"] {
 .modal-backdrop {
   opacity: 0.5 !important;
 }
+
 </style>

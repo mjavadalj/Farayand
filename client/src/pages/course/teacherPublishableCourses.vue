@@ -5,7 +5,7 @@
       <b-breadcrumb-item active>دوره ها</b-breadcrumb-item>
     </b-breadcrumb>
     <div class="input-group mb-3">
-      <div class="input-group-prepend">
+      <div style="cursor: pointer;" class="input-group-prepend" @click="searchCourses">
         <span class="input-group-text" id="basic-addon1">
           <i class="fa fa-search" />
         </span>
@@ -18,6 +18,7 @@
         placeholder="جستجو"
         aria-label="Search"
         aria-describedby="basic-addon1"
+        v-model="searchInput"
         v-on:keyup="search"
       />
     </div>
@@ -59,7 +60,7 @@
         </tbody>
       </table>
     </div>
-    <div>
+    <div v-if="!searchMode">
       <nav aria-label="Page navigation example ">
         <ul class="pagination">
           <li class="page-item pagination-sm" @click="prev()">
@@ -78,6 +79,11 @@
           </li>
         </ul>
       </nav>
+    </div>
+    <div v-else>
+      <button class="btn btn-danger" type="button" @click="back()">
+        <i class="fa fa-minus" />
+      </button>
     </div>
   </div>
 </template>
@@ -143,7 +149,10 @@ export default {
       courseCount: 0,
       page: 0,
       maxInPage: 10,
-      isReg: {}
+      isReg: {},
+      searchInput: "",
+      searchMode: false,
+      temp: null
     };
   },
   methods: {
@@ -170,18 +179,17 @@ export default {
       //   });
     },
     search(e) {
-      var value = $("#myInput")
-        .val()
-        .toLowerCase();
-      $("#myTable tr").filter(function() {
-        $(this).toggle(
-          $(this)
-            .text()
-            .toLowerCase()
-            .indexOf(value) > -1
-        );
-      });
-      console.log(value);
+      // var value = $("#myInput")
+      //   .val()
+      //   .toLowerCase();
+      // $("#myTable tr").filter(function() {
+      //   $(this).toggle(
+      //     $(this)
+      //       .text()
+      //       .toLowerCase()
+      //       .indexOf(value) > -1
+      //   );
+      // });
     },
     calculateCourseCount() {
       return Math.ceil(this.courseCount / this.maxInPage);
@@ -264,6 +272,30 @@ export default {
         .catch(err => {
           console.log(err);
         });
+    },
+    searchCourses() {
+      if (this.searchInput == "") {
+        return alert("چیزی برای جستجو وجود ندارد");
+      }
+      this.axios
+        .get(`http://localhost:3000/api/course/find?title=${this.searchInput}&r=!a`)
+        .then(res => {
+          this.searchMode = true;
+          if (this.temp == null) {
+            this.temp = this.courses;
+          }
+          this.courses = res.data;
+          // this.$refs["my-modal"].show();
+          // this.searchInput = "";
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    back() {
+      this.courses = this.temp;
+      this.searchMode = false;
+      this.searchInput = "";
     }
   },
   mounted() {
