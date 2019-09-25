@@ -26,11 +26,11 @@ module.exports.addCourse = (req, res) => {
 };
 
 module.exports.showAllCourses = (req, res) => {
-  find={}
-  if (req.query.r=='!a'){
-    find={
-      publishable:true
-    }
+  find = {};
+  if (req.query.r == "!a") {
+    find = {
+      publishable: true
+    };
   }
   Embed.find(find)
     .skip(parseInt(req.query.skip))
@@ -49,13 +49,14 @@ module.exports.showAllCourses = (req, res) => {
     });
 };
 module.exports.courseConut = (req, res) => {
-  find={}
-  if (req.query.r=='!a'){
-    find={
-      publishable:true
-    }
+  find = {};
+  if (req.query.r == "!a") {
+    find = {
+      publishable: true
+    };
   }
-  Embed.find(find).count()
+  Embed.find(find)
+    .count()
     .exec()
     .then(result => {
       handler(result, res, 200);
@@ -150,6 +151,17 @@ module.exports.deleteTeacherFromCourse = (req, res) => {
     },
     { new: true }
   )
+    .exec()
+    .then(result => {
+      handler(result, res, 200);
+    })
+    .catch(err => {
+      handler(err, res, 500);
+    });
+};
+module.exports.searchCourse = (req, res) => {
+  Embed.find({ title: { $regex: req.query.title, $options: "i" } })
+    .select("-lessons")
     .exec()
     .then(result => {
       handler(result, res, 200);

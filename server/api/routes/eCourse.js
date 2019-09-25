@@ -30,6 +30,8 @@ router.patch("/user/add", courseController.addTeacherToCourse);
 router.patch("/user/delete", courseController.deleteTeacherFromCourse);
 //course count
 router.get("/count", courseController.courseConut);
+//search by course title
+router.get("/find", courseController.searchCourse);
 
 
 module.exports = router;

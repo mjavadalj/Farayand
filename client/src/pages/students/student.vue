@@ -23,7 +23,7 @@
     </div>
     <div
       id="table_data"
-      class="table-striped"
+      class="table-resposive"
       style="text-align:center;max-height:500px; overflow: auto;margin-bottom:10px;"
     >
       <table id="dtBasicExample" align="center" class="table">
