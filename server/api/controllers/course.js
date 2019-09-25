@@ -14,7 +14,7 @@ module.exports.addCourse = (req, res) => {
     title: req.body.title,
     content: req.body.content,
     publishable: req.body.publishable,
-    user:req.body.user
+    creator: req.body.creator
   })
     .save()
     .then(result => {
@@ -26,9 +26,19 @@ module.exports.addCourse = (req, res) => {
 };
 
 module.exports.showAllCourses = (req, res) => {
-  Embed.find({})
+  find = {};
+  if (req.query.r == "!a") {
+    find = {
+      publishable: true
+    };
+  }
+  Embed.find(find)
+    .skip(parseInt(req.query.skip))
+    .limit(parseInt(req.query.limit))
     .select("-lessons.sessions")
-    .populate('user','name')
+    .populate("creator", "name")
+    .populate("user", "name")
+    // .sort('-date')
     .lean()
     .exec()
     .then(result => {
@@ -38,7 +48,23 @@ module.exports.showAllCourses = (req, res) => {
       handler(err, res, 404);
     });
 };
-
+module.exports.courseConut = (req, res) => {
+  find = {};
+  if (req.query.r == "!a") {
+    find = {
+      publishable: true
+    };
+  }
+  Embed.find(find)
+    .count()
+    .exec()
+    .then(result => {
+      handler(result, res, 200);
+    })
+    .catch(err => {
+      handler(err, res, 404);
+    });
+};
 module.exports.showSingleCourse = (req, res) => {
   Embed.findById(req.body.courseId)
     .select("-lessons")
@@ -82,9 +108,13 @@ module.exports.editACourse = (req, res) => {
   if (req.body.forAllUniversities != undefined)
     newItems.forAllUniversities = req.body.forAllUniversities;
 
-  Embed.findByIdAndUpdate(req.body.courseId, {
-    $set: newItems
-  },{new:true})
+  Embed.findByIdAndUpdate(
+    req.body.courseId,
+    {
+      $set: newItems
+    },
+    { new: true }
+  )
     .exec()
     .then(result => {
       handler(result, res, 200);
@@ -93,4 +123,60 @@ module.exports.editACourse = (req, res) => {
       handler(err, res, 500);
     });
 };
-
+module.exports.addTeacherToCourse = (req, res) => {
+  Embed.findByIdAndUpdate(
+    req.body.courseId,
+    {
+      $addToSet: {
+        user: req.body.teacherId
+      }
+    },
+    { new: true }
+  )
+    .exec()
+    .then(result => {
+      handler(result, res, 200);
+    })
+    .catch(err => {
+      handler(err, res, 500);
+    });
+};
+module.exports.deleteTeacherFromCourse = (req, res) => {
+  Embed.findByIdAndUpdate(
+    req.body.courseId,
+    {
+      $pull: {
+        user: req.body.teacherId
+      }
+    },
+    { new: true }
+  )
+    .exec()
+    .then(result => {
+      handler(result, res, 200);
+    })
+    .catch(err => {
+      handler(err, res, 500);
+    });
+};
+module.exports.searchCourse = (req, res) => {
+  var find = { title: { $regex: req.query.title, $options: "i" } };
+  if(req.query.r=='!a'){
+    find={
+      $and:[
+        { title: { $regex: req.query.title, $options: "i" } },
+        {publishable:true}
+      ]
+    }
+  }
+  Embed.find(find)
+    .select("-lessons.sessions")
+    .populate("creator name")
+    .exec()
+    .then(result => {
+      handler(result, res, 200);
+    })
+    .catch(err => {
+      handler(err, res, 500);
+    });
+};

@@ -3,7 +3,7 @@
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
-          <a @click="push('Layout')" href="">مدیریت</a>
+          <a @click="push('Layout')" href>مدیریت</a>
         </li>
         <li class="breadcrumb-item active" aria-current="page">اطلاعات اساتید</li>
       </ol>
@@ -19,7 +19,7 @@
         type="text"
         id="myInput"
         class="form-control lalezar"
-        placeholder="جست و جو"
+        placeholder="جستجو"
         aria-label="Search"
         aria-describedby="basic-addon1"
         v-on:keyup="search"
@@ -34,10 +34,15 @@
         <thead>
           <tr>
             <th class>عملیات</th>
+            <th class>id</th>
             <th class>وضعیت استاد</th>
             <th class>ایمیل</th>
             <th class>تاریخ عضویت</th>
-            <th class>دانشگاه</th>
+            <th class>
+              <div data-v-71d02ef0>
+                <span data-v-71d02ef0 class="badge badge-info">برای حذف روی نام دانشگاه کلیک کنید</span>
+              </div>دانشگاه
+            </th>
             <th class>نام کاربری</th>
             <th class>نام</th>
             <th class>#</th>
@@ -46,6 +51,11 @@
         <tbody id="myTable">
           <tr v-for="(teacher,index) in teachers" :key="teacher._id">
             <td>
+              <i
+                @click="showModal(teacher)"
+                class="fa fa-university action-icon"
+                style="font-size: 1.3em;"
+              />
               <i
                 @click="deleteUser(teacher)"
                 class="fa fa-remove action-icon"
@@ -69,6 +79,7 @@
                 style="font-size: 1.5em;"
               />
             </td>
+            <td>{{teacher._id}}</td>
             <td>
               <button
                 v-if="!teacher.confirmed"
@@ -86,18 +97,17 @@
             <td>{{teacher.email}}</td>
             <td>{{teacher.date}}</td>
             <td>
-              <p class="mb-0">
-                <small>
-                  <!-- <span class="fw-semi-bold">Type:</span> -->
-                  <span class="text-muted">&nbsp; نوشیروانی</span>
-                </small>
-              </p>
-              <p>
-                <small>
-                  <!-- <span class="fw-semi-bold">Dimensions:</span> -->
-                  <span class="text-muted">&nbsp; مازندران</span>
-                </small>
-              </p>
+              <div v-for="(uni,uniIndex) in teacher.university" :key="uni._id">
+                <p class="mb-0">
+                  <small>
+                    <!-- <span class="fw-semi-bold">Type:</span> -->
+                    <span
+                      class="text-muted"
+                      @click="removeUserUni(teacher,uni,uniIndex)"
+                    >&nbsp; {{uni.name}}</span>
+                  </small>
+                </p>
+              </div>
             </td>
             <td>{{teacher.username}}</td>
             <td>{{teacher.name}}</td>
@@ -113,8 +123,58 @@
         <i class="fa fa-plus" />
       </button>
     </div>
-
-    <div></div>
+    <div id="modaaal">
+      <b-modal id="my-modal" ref="my-modal" hide-footer title>
+        <div class="d-block text-center lalezar">
+          <h3>دانشگاه جدید به استاد اضافه کنید</h3>
+        </div>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">
+              <i class="fa fa-search" />
+            </span>
+          </div>
+          <input
+            style="text-align:center;"
+            type="text"
+            id="myInput2"
+            class="form-control lalezar"
+            placeholder="جستجو"
+            aria-label="Search"
+            aria-describedby="basic-addon1"
+            v-on:keyup="search2"
+          />
+        </div>
+        <div
+          id="table_data"
+          class="table-resposive"
+          style="text-align:center;max-height:500px; overflow: auto;margin-bottom:10px;"
+        >
+          <table id="dtBasicExample" align="center" class="table">
+            <thead>
+              <tr>
+                <th class>شهرستان</th>
+                <th class>استان</th>
+                <th class>نام</th>
+                <th class>#</th>
+              </tr>
+            </thead>
+            <tbody id="myTable2">
+              <tr
+                v-for="(uni,index) in universities"
+                :key="uni._id"
+                @click="addTeacherUni(uni,index)"
+              >
+                <td>{{uni.city}}</td>
+                <td>{{uni.state}}</td>
+                <td>{{uni.name}}</td>
+                <td>{{index+1}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </b-modal>
+    </div>
   </div>
 </template>
 <script>
@@ -173,11 +233,14 @@ function initializationMessengerCode() {
 }
 /* eslint-enable */
 //#FAFBFF
+//TODO: filter uni select same
 export default {
   data() {
     return {
       locationClasses: "messenger-fixed messenger-on-bottom messenger-on-right",
-      teachers: null
+      teachers: null,
+      universities: null,
+      selectedTeacher: null
     };
   },
   methods: {
@@ -408,7 +471,11 @@ export default {
           password: formValues.password
         })
         .then(res => {
-          user = res.data;
+          Object.keys(formValues).forEach(item => {
+            if (user[item]) {
+              user[item] = formValues[item];
+            }
+          });
           this.$swal.fire({
             type: "success",
             title: "موفق",
@@ -448,7 +515,19 @@ export default {
             .indexOf(value) > -1
         );
       });
-      console.log(value);
+    },
+    search2(e, temp = null) {
+      var value = $("#myInput2")
+        .val()
+        .toLowerCase();
+      $("#myTable2 tr").filter(function() {
+        $(this).toggle(
+          $(this)
+            .text()
+            .toLowerCase()
+            .indexOf(value) > -1
+        );
+      });
     },
     async s(name = "", username = "", number = "", email = "") {
       const { value: formValues2 } = await this.$swal.fire({
@@ -633,10 +712,77 @@ export default {
           console.log(err);
         });
     },
-    push(name){
+    push(name) {
       this.$router.push({
         name
-      })
+      });
+    },
+    removeUserUni(teacher, uni, uniIndex) {
+      this.$swal
+        .fire({
+          title: "Are you sure?",
+          text: "دانشگاه از استاد حذف می شود",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, delete it!"
+        })
+        .then(result => {
+          if (result.value) {
+            this.axios
+              .patch(`http://localhost:3000/api/user/removeuni`, {
+                uniId: uni._id,
+                userId: teacher._id
+              })
+              .then(res => {
+                teacher.university.splice(uniIndex, 1);
+                this.$swal.fire({
+                  type: "success",
+                  title: "موفق",
+                  text: "دانشگاه با موفقیت حذف شد"
+                });
+              })
+              .catch(err => {
+                console.log(err);
+              });
+          }
+        });
+    },
+    showModal(teacher) {
+      this.axios
+        .get(`http://localhost:3000/api/university/showall`)
+        .then(res => {
+          this.$refs["my-modal"].show();
+          this.selectedTeacher = teacher;
+          this.universities = res.data;
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    hideModal() {
+      this.$refs["my-modal"].hide();
+    },
+    toggleModal() {
+      // We pass the ID of the button that we want to return focus to
+      // when the modal has hidden
+      this.$refs["my-modal"].toggle("#toggle-btn");
+    },
+    addTeacherUni(uni, index) {
+      this.axios
+        .patch(`http://localhost:3000/api/user/teacher/adduni`, {
+          userId: this.selectedTeacher._id,
+          uniId: uni._id
+        })
+        .then(res => {
+          console.log(res.data);
+          this.selectedTeacher.university.push(uni);
+          this.hideModal();
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
   },
   mounted() {
@@ -694,4 +840,8 @@ input[type="number"] {
 .action-icon {
   margin-right: 5px;
 }
+.modal-backdrop {
+  opacity: 0.5 !important;
+}
+
 </style>

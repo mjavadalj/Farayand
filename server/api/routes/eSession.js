@@ -38,8 +38,10 @@ const upload = multer({
 //show all sessions
 router.post("/showall",sessionController.showAllSessions);
 
-//show a session || show all questions
-router.post("/show", sessionController.showSingleSession);
+//show all questions
+router.post("/showallquestions", sessionController.showAllQuestions);
+//show randonm questions
+router.post("/showrandonmquestions", sessionController.showRandomQuestions);
 //add session
 router.patch("/add", sessionController.addASession);
 //edit a session

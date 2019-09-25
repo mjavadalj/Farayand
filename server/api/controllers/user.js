@@ -50,8 +50,8 @@ module.exports.addAUser = (req, res) => {
 
 module.exports.showAllUsers = (req, res) => {
   User.find({})
-
     .select("-reg_lessons")
+    .populate("university")
     .exec()
     .then(result => {
       handler(result, res, 200);
@@ -180,6 +180,7 @@ module.exports.lessonRegister = (req, res) => {
     },
     { new: true }
   )
+    .select('_id')
     .exec()
     .then(result => {
       res.status(200).json(result);
@@ -190,12 +191,13 @@ module.exports.lessonRegister = (req, res) => {
 };
 module.exports.sessionRegister = (req, res) => {
   find = {
-    $and:[
-      {_id: req.body.userId},
-      {"reg_lessons._id": req.body.reg_lessonId},
-      { "reg_lessons.reg_sessions.sessionId": { $ne: mong(req.body.sessionId) } }
+    $and: [
+      { _id: req.body.userId },
+      { "reg_lessons._id": req.body.reg_lessonId },
+      {
+        "reg_lessons.reg_sessions.sessionId": { $ne: mong(req.body.sessionId) }
+      }
     ]
-    
   };
   User.findOneAndUpdate(
     find,
@@ -204,10 +206,10 @@ module.exports.sessionRegister = (req, res) => {
         "reg_lessons.$.reg_sessions": {
           sessionId: req.body.sessionId,
           title: req.body.title,
-          passed:req.body.passed,
-          anotherChanceDate:req.body.anotherChanceDate,
-          tryCount:req.body.tryCount,
-          score:req.body.score,
+          passed: req.body.passed,
+          anotherChanceDate: req.body.anotherChanceDate,
+          tryCount: req.body.tryCount,
+          score: req.body.score
         }
       }
     },
@@ -231,15 +233,15 @@ module.exports.sessionComplete = (req, res) => {
     find,
     {
       $set: {
-        'reg_lessons.$[].reg_sessions.$[elem]':{
-          score:req.body.score,
-          tryCount:req.body.tryCount,
-          passed:req.body.passed,
-          anotherChanceDate:req.body.anotherChanceDate,
-          title:req.body.title,
-          sessionId:req.body.sessionId,
-          _id:req.body.reg_sessionId,
-          date:req.body.date
+        "reg_lessons.$[].reg_sessions.$[elem]": {
+          score: req.body.score,
+          tryCount: req.body.tryCount,
+          passed: req.body.passed,
+          anotherChanceDate: req.body.anotherChanceDate,
+          title: req.body.title,
+          sessionId: req.body.sessionId,
+          _id: req.body.reg_sessionId,
+          date: req.body.date
         }
       }
     },
@@ -258,22 +260,21 @@ module.exports.sessionComplete = (req, res) => {
 };
 module.exports.lessonComplete = (req, res) => {
   find = {
-    $and:[
-      {_id: req.body.userId},
-    {"reg_lessons._id": req.body.reg_lessonId},
+    $and: [
+      { _id: req.body.userId },
+      { "reg_lessons._id": req.body.reg_lessonId }
     ]
-    
   };
   User.findOneAndUpdate(
     find,
     {
       $set: {
-        'reg_lessons.$.passed':req.body.passed,
-        'reg_lessons.$.finalScore':req.body.finalScore,
+        "reg_lessons.$.passed": req.body.passed,
+        "reg_lessons.$.finalScore": req.body.finalScore
       }
     },
     {
-      new: true,
+      new: true
     }
   )
     .exec()
@@ -297,6 +298,7 @@ module.exports.deleteAllUsers = (req, res) => {
 module.exports.showAllTeachers = (req, res) => {
   User.find({ role: "teacher" })
     .select("-reg_lessons")
+    .populate("university")
     .sort("-date")
     .exec()
     .then(result => {
@@ -309,6 +311,7 @@ module.exports.showAllTeachers = (req, res) => {
 module.exports.showAllStudents = (req, res) => {
   User.find({ role: "student" })
     .select("-reg_lessons")
+    .populate("university")
     .exec()
     .then(result => {
       res.status(200).json(result);
@@ -348,17 +351,25 @@ module.exports.deleteAUser = (req, res) => {
 };
 module.exports.showAllCoursesOfTeacher = (req, res) => {
   find = {
-    $and: [{ user: req.body.teacherId }]
+    $and: [
+      { user: mong(req.body.user) },
+      { publishable: true }
+    ]
   };
-  console.log(req.query);
-  if ((req.query.r = "s")) {
-    find = {
-      $and: [{ user: mong(req.body.teacherId) }, { publishable: true }]
-    };
-  }
   Embed.aggregate([
     {
+      $unwind: "$user"
+    },
+    {
       $match: find
+    },
+    {
+      $lookup: {
+        from: User.collection.name,
+        localField: "creator",
+        foreignField: "_id",
+        as: "creator"
+      }
     },
     {
       $project: {
@@ -369,13 +380,11 @@ module.exports.showAllCoursesOfTeacher = (req, res) => {
         date_jalali: "$date_jalali",
         date: "$date",
         user: "$user",
+        creator: "$creator.name",
         lessonLength: { $size: "$lessons" }
       }
     }
   ])
-    // Embed.find(find)
-    //   .select('-lessons')
-    //   .lean()
     .exec()
     .then(result => {
       res.status(200).json(result);
@@ -407,13 +416,17 @@ module.exports.showAUserRegLessons = (req, res) => {
     });
 };
 module.exports.deleteAUserRegLesson = (req, res) => {
-  User.findByIdAndUpdate(req.body.userId, {
-    $pull: {
-      reg_lessons: {
-        _id: req.body.reg_lessonId
+  User.findByIdAndUpdate(
+    req.body.userId,
+    {
+      $pull: {
+        reg_lessons: {
+          _id: req.body.reg_lessonId
+        }
       }
-    }
-  },{new:true})
+    },
+    { new: true }
+  )
     .exec()
     .then(result => {
       res.status(200).json(result);
@@ -425,22 +438,22 @@ module.exports.deleteAUserRegLesson = (req, res) => {
 module.exports.showAllC = (req, res) => {
   User.aggregate([
     {
-      $unwind:"$reg_lessons"
+      $unwind: "$reg_lessons"
     },
     {
-      $match:{
-        "reg_lessons.passed":true
+      $match: {
+        "reg_lessons.passed": true
       }
-    }
-    ,
+    },
     {
-      $project:{
-        teacherName:"$reg_lessons.teacherName",
-        userName:"$name",
-        courseTitle:"$reg_lessons.courseTitle",
-        lessonTitle:"$reg_lessons.lessonTitle",
-        finalScore:"$reg_lessons.finalScore",
-        date:"$date",
+      $project: {
+        teacherName: "$reg_lessons.teacherName",
+        userName: "$name",
+        university: "$university",
+        courseTitle: "$reg_lessons.courseTitle",
+        lessonTitle: "$reg_lessons.lessonTitle",
+        finalScore: "$reg_lessons.finalScore",
+        date: "$date"
       }
     }
   ])
@@ -452,4 +465,59 @@ module.exports.showAllC = (req, res) => {
       handler(err, res, 500);
     });
 };
+module.exports.addTeacherUni = (req, res) => {
+  User.findByIdAndUpdate(
+    req.body.userId,
+    {
+      $addToSet: {
+        university: req.body.uniId
+      }
+    },
+    { new: true }
+  )
+    .exec()
+    .then(result => {
+      res.status(200).json(result);
+    })
+    .catch(err => {
+      handler(err, res, 500);
+    });
+};
+module.exports.addUserUni = (req, res) => {
+  User.findByIdAndUpdate(
+    req.body.userId,
+    {
+      $set: {
+        university: req.body.uniId
+      }
+    },
+    { new: true }
+  )
+    .exec()
+    .then(result => {
+      res.status(200).json(result);
+    })
+    .catch(err => {
+      handler(err, res, 500);
+    });
+};
+module.exports.removeUserrUni = (req, res) => {
+  User.findByIdAndUpdate(
+    req.body.userId,
+    {
+      $pull: {
+        university: req.body.uniId
+      }
+    },
+    { new: true }
+  )
+    .exec()
+    .then(result => {
+      res.status(200).json(result);
+    })
+    .catch(err => {
+      handler(err, res, 500);
+    });
+};
+
 //TODO: select -password

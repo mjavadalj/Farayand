@@ -5,38 +5,45 @@
     @mouseleave="sidebarMouseLeave"
   >
     <header class="logo">
-      <router-link to="/app"><span class="text-warning">Basij</span> App</router-link>
+      <router-link to="/app/main"><span class="text-warning">مدیریت</span></router-link>
     </header>
     <ul class="nav">
       <NavLink
-        header="Courses"
+        header="دوره ها"
         link="/app/course"
         iconName="fa fa-tasks"
         index="course"
         isHeader
       />
       <NavLink
-        header="Teachers"
+        header="اساتید"
         link="/app/teacher"
         iconName="flaticon-user"
         index="notifications"
         isHeader
       />
       <NavLink
-        header="Students"
+        header="دانشجویان"
         link="/app/student"
         iconName="fa fa-graduation-cap"
         index="students"
         isHeader
       />
       <NavLink
-        header="Certificates"
+        header="گواهی ها"
         link="/app/certificate"
         iconName="flaticon-list"
         index="certificate"
         isHeader
       />
       <NavLink
+        header="دانشگاه ها"
+        link="/app/universities"
+        iconName="fa fa-university"
+        index="uni"
+        isHeader
+      />
+      <!-- <NavLink
         header="Dashboard"
         link="/app/dashboard"
         iconName="flaticon-home"
@@ -75,7 +82,7 @@
           { header: 'Icons', link: '/app/components/icons' },
           { header: 'Maps', link: '/app/components/maps' },
         ]"
-      />
+      /> -->
     </ul>
     
   </nav>

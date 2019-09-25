@@ -16,9 +16,9 @@ router.get('/show/:id', universityController.showSingleUniversity);
 router.delete('/deleteall', universityController.deleteAllUniversites);
 
 //Delete a university
-router.delete('/delete/:id', universityController.deleteSingleUniversity);
+router.post('/delete', universityController.deleteSingleUniversity);
 
 //Edit a university
-router.patch('/edit/:id', universityController.editAUniversity);
+router.patch('/edit', universityController.editAUniversity);
 
 module.exports = router;

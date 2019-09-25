@@ -6,26 +6,27 @@
   >
     <header class="logo">
       <router-link to="/teacher">
-        <span class="text-warning">Student</span> App
+      پنل
+        <span class="text-warning">دانشجو</span>
       </router-link>
     </header>
     <ul class="nav">
       <NavLink
-        header="HOME"
+        header="خانه"
         link="/home"
         iconName="fa fa-home"
         index="course"
         isHeader
       />
       <NavLink
-        header="My Lessons"
+        header="درس های ثبت نام شده"
         link="/mylesson"
         iconName="fa fa-code-fork"
         index="course"
         isHeader
       />
       <NavLink
-        header="My Certificates"
+        header="گواهی های من"
         link="/certificate"
         iconName="flaticon-list"
         index="certificate"

@@ -7,7 +7,8 @@ const embedSchema = mongoose.Schema({
   date: { type: mongoose.Schema.Types.Date, default: Date.now },
   publishable: { type: Boolean, default: false },
   forAllUniversities: { type: Boolean, default: true },
-  user:{type: mongoose.Schema.Types.ObjectId,ref:'User', require: true},
+  user:[{type: mongoose.Schema.Types.ObjectId,ref:'User'}],
+  creator:{type: mongoose.Schema.Types.ObjectId,ref:'User', require: true},
   lessons: [
     {
       title: { type: String, require: true },

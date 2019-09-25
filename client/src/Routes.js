@@ -40,6 +40,9 @@ import Student from "./pages/students/student.vue";
 import Question from "./pages/question/question.vue";
 import Home from "./pages/home/home.vue";
 import Quiz from "./pages/quiz/quiz.vue";
+import Uni from "./pages/uni/uni.vue";
+import AdminMain from "./pages/main/adminMain.vue";
+import TPCourse from "./pages/course/teacherPublishableCourses.vue";
 
 Vue.use(Router);
 
@@ -61,6 +64,16 @@ export default new Router({
       name: "Layout",
       component: Layout,
       children: [
+        {
+          path: "main",
+          name: "adminMain",
+          component: AdminMain
+        },
+        {
+          path: "universities",
+          name: "uni",
+          component: Uni
+        },
         {
           path: "question/:title",
           name: "question",
@@ -139,13 +152,23 @@ export default new Router({
       component: TeacherLayout,
       children: [
         {
+          path: "tpcourse",
+          name: "tpcourse",
+          component: TPCourse
+        },
+        {
+          path: "main",
+          name: "teacherMain",
+          component: AdminMain
+        },
+        {
           path: "question/:title",
           name: "tquestion",
           component: Question
         },
         {
-          path: "course",
-          name: "course",
+          path: "mycourse",
+          name: "mycourse",
           component: TCourse
         },
         {
@@ -166,25 +189,29 @@ export default new Router({
       component: UserLayout,
       children: [
         {
+          path: "main",
+          name: "studentMain",
+          component: AdminMain
+        },
+        {
           path: "/home",
           name: "home",
           component: Home
         },
         {
-          path:"/mylesson",
-          name:"reg_lesson",
-          component:RgLesson
+          path: "/mylesson",
+          name: "reg_lesson",
+          component: RgLesson
         },
         {
-          path:"/quiz",
-          name:"quiz",
-          component:Quiz
-        }
-        ,
+          path: "/quiz",
+          name: "quiz",
+          component: Quiz
+        },
         {
-          path:"/certificate",
-          name:"certificate",
-          component:Certificate
+          path: "/certificate",
+          name: "certificate",
+          component: Certificate
         }
       ]
     }

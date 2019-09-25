@@ -6,20 +6,28 @@
   >
     <header class="logo">
       <router-link to="/teacher">
-        <span class="text-warning">Teacher</span> App
+        پنل
+        <span class="text-warning">استاد</span>
       </router-link>
     </header>
     <ul class="nav">
       <NavLink
-        header="Courses"
-        link="/teacher/course"
+        header="دوره ها"
+        link="/teacher/tpcourse"
         iconName="fa fa-tasks"
         index="course"
         isHeader
       />
       <NavLink
-        header="Certificates"
-        link="/app/certificate"
+        header="دوره های دانشجویان"
+        link="/teacher/mycourse"
+        iconName="fa fa-tasks"
+        index="course"
+        isHeader
+      />
+      <NavLink
+        header="گواهی ها"
+        link="/teacher/certificate"
         iconName="flaticon-list"
         index="certificate"
         isHeader
@@ -70,10 +78,10 @@ export default {
       // }
     },
     sidebarMouseLeave() {
-    //   if (!this.sidebarStatic && (isScreen("lg") || isScreen("xl"))) {
-    //     this.switchSidebar(true);
-    //     this.changeSidebarActive(null);
-    //   }
+      //   if (!this.sidebarStatic && (isScreen("lg") || isScreen("xl"))) {
+      //     this.switchSidebar(true);
+      //     this.changeSidebarActive(null);
+      //   }
     }
   },
   created() {

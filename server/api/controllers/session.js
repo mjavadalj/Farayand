@@ -26,7 +26,19 @@ const editItems = (req, text = "") => {
     json[`${text}userQCount`] = req.body.userQCount;
   return json;
 };
-
+const randomQuestions = (res, arr, n) => {
+  var result = new Array(n),
+    len = arr.length,
+    taken = new Array(len);
+  if (n > len)
+    throw new RangeError("getRandom: more elements taken than available");
+  while (n--) {
+    var x = Math.floor(Math.random() * len);
+    result[n] = arr[x in taken ? taken[x] : x];
+    taken[x] = --len in taken ? taken[len] : len;
+  }
+  handler(result, res, 200);
+};
 module.exports.addASession = (req, res) => {
   find = {
     _id: req.body.courseId,
@@ -100,7 +112,7 @@ module.exports.showAllSessions = (req, res) => {
     });
 };
 
-module.exports.showSingleSession = (req, res) => {
+module.exports.showAllQuestions = (req, res) => {
   find = {
     _id: mongoose.Types.ObjectId(req.body.courseId),
     "lessons._id": mongoose.Types.ObjectId(req.body.lessonId),
@@ -133,7 +145,44 @@ module.exports.showSingleSession = (req, res) => {
       handler(err, res, 200);
     });
 };
-
+module.exports.showRandomQuestions = (req, res) => {
+  find = {
+    _id: mongoose.Types.ObjectId(req.body.courseId),
+    "lessons._id": mongoose.Types.ObjectId(req.body.lessonId),
+    "lessons.sessions._id": mongoose.Types.ObjectId(req.body.sessionId)
+  };
+  Embed.aggregate([
+    {
+      $unwind: {
+        path: "$lessons",
+        includeArrayIndex: "index"
+        // "preserveNullAndEmptyArrays": true
+      }
+    },
+    {
+      $unwind: {
+        path: "$lessons.sessions",
+        includeArrayIndex: "index"
+        // "preserveNullAndEmptyArrays": true
+      }
+    },
+    {
+      $match: find
+    }
+  ])
+    .exec()
+    .then(result => {
+      const userQCount=result[0].lessons.sessions.userQCount
+      const length=result[0].lessons.sessions.questions.length
+      var number;
+      number=userQCount>length?length:userQCount
+      randomQuestions(res,result[0].lessons.sessions.questions,number)
+      // handler(result[0].lessons.sessions, res, 200);
+    })
+    .catch(err => {
+      handler(err, res, 200);
+    });
+};
 module.exports.deleteAllSessons = (req, res) => {
   find = {
     _id: req.body.courseId,
