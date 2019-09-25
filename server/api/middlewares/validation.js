@@ -25,19 +25,19 @@ exports.signUp = [
         }),
 
     // username validation
-    check('userName')
+    check('username')
         .isLength({
             min: 2,
             max: 32
         })
         .withMessage('username must be  between 2 and 32 characters long'),
     // name validation
-    check('name')
-        .isLength({
-            min: 2,
-            max: 32
-        })
-        .withMessage('name must be  between 2 and 32 characters long'),
+    // check('name')
+    //     .isLength({
+    //         min: 2,
+    //         max: 32
+    //     })
+    //     .withMessage('name must be  between 2 and 32 characters long'),
 
     // password validation
     check('password')
