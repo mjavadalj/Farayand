@@ -7,7 +7,7 @@ const userSchema = mongoose.Schema({
   name: { type: String, require: true },
   phoneNumber: { type: String, default: null },
   gender: { type: String, enum: ["man", "woman"], default: "man" },
-  role: { type: String, default: "teacher" },
+  role: { type: String,enum: ["teacher", "student","admin"], default: "teacher" },
   confirmed: { type: Boolean, default: true },
   nationalCode: { type: String, default: null },
   date_jalali: { type: Object, default: null },

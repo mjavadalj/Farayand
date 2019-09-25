@@ -93,7 +93,6 @@ module.exports.showSingleLesson = (req, res) => {
       $match: find
     }
   ])
-    .lean()
     .exec()
     .then(result => {
       handler(result, res, 200);

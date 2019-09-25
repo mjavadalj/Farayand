@@ -427,7 +427,7 @@ export default {
       this.lesson = global.lesson;
       this.session = global.session;
       await this.axios
-        .post(`http://localhost:3000/api/session/show`, {
+        .post(`http://localhost:3000/api/session/showallquestions`, {
           courseId: this.course._id,
           lessonId: this.lesson._id,
           sessionId: this.session._id

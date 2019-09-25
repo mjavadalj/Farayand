@@ -187,7 +187,7 @@ export default {
         .then(result => {
           if (result.value) {
             var body={
-              userId:"5d7df0a4ea00431500c61add",
+              userId:"5d8b01ad21f2fd2db8f9b917",
               reg_lessonId:reg_lesson._id
             }
             this.axios.patch("http://localhost:3000/api/user/reg/delete",body)
@@ -208,7 +208,7 @@ export default {
 
     this.axios
       .post(`http://localhost:3000/api/user/reg/show`, {
-        userId: "5d7df0a4ea00431500c61add"
+        userId: "5d8b01ad21f2fd2db8f9b917"
       })
       .then(res => {
         console.log("res.data");

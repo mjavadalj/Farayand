@@ -37,18 +37,18 @@
           <tr v-for="(course,index) in courses" :key="course._id" @click="push($event,course)">
             <td>
               <button
-                v-if="checkRegistration(course)==undefined"
+                v-if="checkRegistration(course)!=undefined"
+                data-v-17b74d76
+                type="button"
+                class="btn p-1 px-3 btn-xs btn-success lalezar"
+              >ثبت نام شده</button>
+              <button
+                v-else-if="course['ok']==undefined"
                 @click="courseRegister(course)"
                 data-v-17b74d76
                 type="button"
                 class="btn p-1 px-3 btn-xs btn-warning lalezar"
               >برای ثبت نام کلیک کنید</button>
-              <button
-                v-else
-                data-v-17b74d76
-                type="button"
-                class="btn p-1 px-3 btn-xs btn-success lalezar"
-              >ثبت نام شده</button>
             </td>
             <td>{{course.date}}</td>
             <td>{{course.lessons.length}}</td>
@@ -58,11 +58,6 @@
           </tr>
         </tbody>
       </table>
-    </div>
-    <div>
-      <button id="fixedbutton" class="btn btn-primary" type="button" @click="addCourse()">
-        <i class="fa fa-plus" />
-      </button>
     </div>
     <div>
       <nav aria-label="Page navigation example ">
@@ -244,8 +239,8 @@ export default {
       var find = course.user.find(obj => {
         return obj._id == "5d8a5561acb6b226e8de83ae";
       });
-      if (find){
-          this.isReg[course._id]=true
+      if (find) {
+        this.isReg[course._id] = true;
       }
       return find;
     },
@@ -259,7 +254,7 @@ export default {
           console.log("res.data");
           console.log(res.data);
           console.log(course);
-
+          course["ok"] = true;
           Object.keys(course).forEach(item => {
             if (item != "user" && item != "creator") {
               //  course[item] = res.data[item];

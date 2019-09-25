@@ -52,11 +52,6 @@
         </tbody>
       </table>
     </div>
-    <div>
-      <button id="fixedbutton" class="btn btn-primary" type="button" @click="addCourse()">
-        <i class="fa fa-plus" />
-      </button>
-    </div>
   </div>
 </template>
 <script>

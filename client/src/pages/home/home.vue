@@ -139,11 +139,11 @@ export default {
         return;
       }
       this.axios
-        .post(`http://localhost:3000/api/user/course/showall?r=s`, {
-          teacherId: teacher._id
+        .post(`http://localhost:3000/api/user/course/showall`, {
+          user: teacher._id
         })
         .then(res => {
-          console.log("course load");
+          console.log("course load");          
           this.courses = res.data;
           this.courseOpen = true;
           this.lessonOpen = false;
@@ -241,15 +241,11 @@ export default {
   async created() {
     // this.initializationMessengerCode();
     // this.initCharts();
-    //emadi
-    //5d77a5193908ca10e8a7877a
-    //khodadi
-    //5d74028057b2c842046986c7
-    //ali
-    //5d7df0a4ea00431500c61add
+    //mohammad
+    //5d8b01ad21f2fd2db8f9b917
     this.axios
       .post(`http://localhost:3000/api/user/show`, {
-        userId: "5d7df0a4ea00431500c61add"
+        userId: "5d8b01ad21f2fd2db8f9b917"
       })
       .then(res => {
         this.user = res.data;

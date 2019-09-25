@@ -38,6 +38,7 @@ module.exports.showAllCourses = (req, res) => {
     .select("-lessons.sessions")
     .populate("creator", "name")
     .populate("user", "name")
+    // .sort('-date')
     .lean()
     .exec()
     .then(result => {

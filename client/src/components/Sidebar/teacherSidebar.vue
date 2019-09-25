@@ -19,7 +19,7 @@
         isHeader
       />
       <NavLink
-        header="دوره های ثبت نام شده"
+        header="دوره های دانشجویان"
         link="/teacher/mycourse"
         iconName="fa fa-tasks"
         index="course"

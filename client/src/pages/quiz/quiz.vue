@@ -267,7 +267,7 @@ export default {
       var chance = new Date(reg_session.anotherChanceDate);
       if (reg_session.passed) {
         return alert("شما در این آزمون پذیرفته شده اید");
-      } else if (now < chance) {
+      } else if (now > chance) {
         return alert("بعدا");
       } else if (
         true
@@ -292,7 +292,7 @@ export default {
       if (session.questionLength == 0) {
         this.axios
           .patch(`http://localhost:3000/api/user/session/register`, {
-            userId: "5d7df0a4ea00431500c61add",
+            userId: "5d8b01ad21f2fd2db8f9b917",
             reg_lessonId: this.reg_lesson._id,
             sessionId: session._id,
             title: session.title,
@@ -314,7 +314,7 @@ export default {
       } else {
         this.axios
           .patch(`http://localhost:3000/api/user/session/register`, {
-            userId: "5d7df0a4ea00431500c61add",
+            userId: "5d8b01ad21f2fd2db8f9b917",
             reg_lessonId: this.reg_lesson._id,
             sessionId: session._id,
             title: session.title,
@@ -358,14 +358,14 @@ export default {
         console.log(this.reg_lesson);
         this.axios
           .post("http://localhost:3000/api/certificate/add", {
-            userId: "5d7df0a4ea00431500c61add",
+            userId: "5d8b01ad21f2fd2db8f9b917",
             userName: "amir",
             reg_lessonId: this.reg_lesson._id
           })
           .then(res => {
             this.axios
               .patch(`http://localhost:3000/api/user/lesson/complete`, {
-                userId: "5d7df0a4ea00431500c61add",
+                userId: "5d8b01ad21f2fd2db8f9b917",
                 reg_lessonId: this.reg_lesson._id,
                 finalScore,
                 passed: true
@@ -387,7 +387,7 @@ export default {
       this.selectedRegSession = reg_session;
       this.selectedSession = session;
       this.axios
-        .post(`http://localhost:3000/api/session/show`, {
+        .post(`http://localhost:3000/api/session/showrandonmquestions`, {
           courseId: this.courseId,
           lessonId: this.lessonId,
           sessionId: session._id
@@ -440,7 +440,7 @@ export default {
         var passed = score >= session.minScore;
         this.axios
           .patch(`http://localhost:3000/api/user/session/complete`, {
-            userId: "5d7df0a4ea00431500c61add",
+            userId: "5d8b01ad21f2fd2db8f9b917",
             reg_lessonId: this.reg_lesson._id,
             reg_sessionId: reg_session._id,
             passed: passed,
@@ -481,6 +481,7 @@ export default {
     if (global == undefined) {
       this.$router.push("/");
     }
+    //TODO: user info
     this.reg_lesson = global.lesson;
     this.reg_sessions = global.lesson.reg_sessions;
     this.courseId = global.lesson.courseId;

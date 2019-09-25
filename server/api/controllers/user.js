@@ -180,6 +180,7 @@ module.exports.lessonRegister = (req, res) => {
     },
     { new: true }
   )
+    .select('_id')
     .exec()
     .then(result => {
       res.status(200).json(result);
