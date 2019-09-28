@@ -4,6 +4,37 @@
       <b-breadcrumb-item>راهنما</b-breadcrumb-item>
       <b-breadcrumb-item active>دوره ها</b-breadcrumb-item>
     </b-breadcrumb>
+
+    <div style="margin-bottom:5px;" class="text-center">
+      <button
+        id="teacher"
+        style="margin:2px;font-family:lalezar"
+        class="btn btn-outline-secondary"
+        type="button"
+        @click="limitation('teachers')"
+      >دوره های اساتید</button>
+      <button
+        id="student"
+        style="margin:2px;font-family:lalezar"
+        class="btn btn-outline-secondary"
+        type="button"
+        @click="limitation('students')"
+      >دوره های دانشجویان</button>
+      <button
+        id="all"
+        style="margin:2px;font-family:lalezar"
+        class="btn btn-outline-secondary"
+        type="button"
+        @click="limitation('all')"
+      >دوره های بدون محدودیت</button>
+      <button
+        id="none"
+        style="margin:2px;font-family:lalezar"
+        class="btn btn-outline-secondary active"
+        type="button"
+        @click="limitation()"
+      >همه</button>
+    </div>
     <div class="input-group mb-3">
       <div style="cursor: pointer;" class="input-group-prepend" @click="searchCourses">
         <span class="input-group-text" id="basic-addon1">
@@ -28,6 +59,7 @@
           <tr>
             <th class>عملیات</th>
             <th class>وضعیت انتشار</th>
+            <th class>محدودیت</th>
             <th class>تاریخ</th>
             <th class>تعداد درس</th>
             <th class>استاد</th>
@@ -75,6 +107,7 @@
                 class="btn p-1 px-3 btn-xs btn-success lalezar"
               >منتشر شده</button>
             </td>
+            <td>{{convert(course.limitation)}}</td>
             <td>{{course.date}}</td>
             <td>{{course.lessons.length}}</td>
             <td>{{course.creator.name}}</td>
@@ -97,7 +130,7 @@
           </li>
           <li
             class="page-item pagination-sm"
-            v-for="index in calculateCourseCount()"
+            v-for="index in Math.ceil(this.courseCount / this.maxInPage)"
             :key="index"
             @click="jumpTo(index-1)"
           >
@@ -181,7 +214,8 @@ export default {
       searchInput: "",
       searchedCourses: null,
       searchMode: false,
-      temp: null
+      temp: null,
+      limit: ""
     };
   },
   methods: {
@@ -450,11 +484,12 @@ export default {
     },
     jumpTo(page) {
       this.page = page;
+      var query = `skip=${this.page * this.maxInPage}&limit=${this.maxInPage}`;
+      if (this.limit != "") {
+        query += `&select=${this.limit}`;
+      }
       this.axios
-        .post(
-          `http://localhost:3000/api/course/showall?skip=${this.page *
-            this.maxInPage}&limit=${this.maxInPage}`
-        )
+        .post(`http://localhost:3000/api/course/showall?${query}`)
         .then(res => {
           this.courses = res.data;
         })
@@ -466,8 +501,14 @@ export default {
       if (this.searchInput == "") {
         return alert("چیزی برای جستجو وجود ندارد");
       }
+      var query = "";
+      if (this.limit != "") {
+        query = `&select=${this.limit}`;
+      }
       this.axios
-        .get(`http://localhost:3000/api/course/find?title=${this.searchInput}`)
+        .get(
+          `http://localhost:3000/api/course/find?title=${this.searchInput}${query}`
+        )
         .then(res => {
           this.searchMode = true;
           if (this.temp == null) {
@@ -475,8 +516,6 @@ export default {
           }
           this.searchedCourses = res.data;
           this.courses = res.data;
-          // this.$refs["my-modal"].show();
-          // this.searchInput = "";
         })
         .catch(err => {
           console.log(err);
@@ -486,10 +525,57 @@ export default {
       this.courses = this.temp;
       this.searchMode = false;
       this.searchInput = "";
-    }
+      this.limitation(this.limit,true)
+    },
+    convert(x) {
+      if (x == "students") {
+        return "ققط برای دانشجویان";
+      }
+      if (x == "teachers") {
+        return "ققط برای اساتید";
+      }
+      return "بدون محدودیت";
+    },
+    limitation(limit = "",f=false) {
+      if (this.limit == limit && !f) {
+        return;
+      }
+      this.limit = limit;
+      if (this.searchMode) {
+        return this.searchCourses();
+      }
+      // this.searchMode=false
+      // this.searchInput=''
+
+      this.page = 0;
+      var query = "";
+      if (this.limit != "") {
+        query = `select=${limit}`;
+      }
+
+      this.axios
+        .get(`http://localhost:3000/api/course/count?${query}`)
+        .then(res => {
+          this.courseCount = res.data;
+        })
+        .catch(err => {
+          console.log(err);
+        });
+      this.axios
+        .post(
+          `http://localhost:3000/api/course/showall?skip=${this.page *
+            this.maxInPage}&limit=${this.maxInPage}&${query}`
+        )
+        .then(res => {
+          this.courses = res.data;
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    clicked() {}
   },
   mounted() {
-    // this.initCharts();
     this.axios
       .get(`http://localhost:3000/api/course/count`)
       .then(res => {
@@ -505,6 +591,10 @@ export default {
       )
       .then(res => {
         this.courses = res.data;
+        $("button").click(function() {
+          $("button").removeClass("active");
+          $(this).addClass("active");
+        });
       })
       .catch(err => {
         console.log(err);

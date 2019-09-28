@@ -376,7 +376,7 @@ module.exports.showAllCoursesOfTeacher = (req, res) => {
         title: "$title",
         content: "$content",
         publishable: "$publishable",
-        forAllUniversities: "$forAllUniversities",
+        limitation: "$limitation",
         date_jalali: "$date_jalali",
         date: "$date",
         user: "$user",

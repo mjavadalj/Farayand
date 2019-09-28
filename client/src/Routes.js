@@ -35,7 +35,6 @@ import Lesson from "@/pages/lesson/lesson";
 import RgLesson from "@/pages/lesson/reg_lesson";
 //Admin session
 import Session from "@/pages/session/session";
-
 import Student from "./pages/students/student.vue";
 import Question from "./pages/question/question.vue";
 import Home from "./pages/home/home.vue";

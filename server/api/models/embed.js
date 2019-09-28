@@ -6,7 +6,7 @@ const embedSchema = mongoose.Schema({
   date_jalali: { type: Object, default: null },
   date: { type: mongoose.Schema.Types.Date, default: Date.now },
   publishable: { type: Boolean, default: false },
-  forAllUniversities: { type: Boolean, default: true },
+  limitation: { type: String,enum: ["teachers", "students","all"], default: "all" },
   user:[{type: mongoose.Schema.Types.ObjectId,ref:'User'}],
   creator:{type: mongoose.Schema.Types.ObjectId,ref:'User', require: true},
   lessons: [

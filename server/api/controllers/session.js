@@ -20,8 +20,8 @@ const editItems = (req, text = "") => {
     json[`${text}secondChance`] = req.body.secondChance;
   if (req.body.publishable != undefined)
     json[`${text}publishable`] = req.body.publishable;
-  if (req.body.forAllUniversities != undefined)
-    json[`${text}forAllUniversities`] = req.body.forAllUniversities;
+  if (req.body.limitation != undefined)
+    json[`${text}limitation`] = req.body.limitation;
   if (req.body.userQCount != undefined)
     json[`${text}userQCount`] = req.body.userQCount;
   return json;
