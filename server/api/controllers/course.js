@@ -36,6 +36,9 @@ module.exports.showAllCourses = (req, res) => {
   if (req.query.select) {
     find.$and.push({ limitation: req.query.select });
   }
+  if (req.query.exception) {
+    find.$and.push({ limitation: { $ne:  req.query.exception } });
+  }
   if (find.$and.length == 0) {
     find = {};
   }

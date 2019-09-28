@@ -130,7 +130,10 @@ function initializationMessengerCode() {
   }.call(window));
 }
 /* eslint-enable */
-
+//user
+//5d8b01ad21f2fd2db8f9b917
+//teacher
+//5d8a5561acb6b226e8de83ae
 export default {
   data() {
     return {
@@ -156,7 +159,7 @@ export default {
       global.lesson=reg_lesson
       global.index=index
       this.$router.push({
-        name: "quiz"
+        name: "studentQuiz"
       });
     },
     search(e) {
@@ -187,7 +190,7 @@ export default {
         .then(result => {
           if (result.value) {
             var body={
-              userId:"5d8b01ad21f2fd2db8f9b917",
+              userId:"5d8a5561acb6b226e8de83ae",
               reg_lessonId:reg_lesson._id
             }
             this.axios.patch("http://localhost:3000/api/user/reg/delete",body)
@@ -208,7 +211,7 @@ export default {
 
     this.axios
       .post(`http://localhost:3000/api/user/reg/show`, {
-        userId: "5d8b01ad21f2fd2db8f9b917"
+        userId: "5d8a5561acb6b226e8de83ae"
       })
       .then(res => {
         console.log("res.data");

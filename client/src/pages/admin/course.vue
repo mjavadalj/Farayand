@@ -427,7 +427,7 @@ export default {
             limitation = "all";
           }
           var ok = false;
-          if (title == "" || content == ""|| limitation == "") {
+          if (title == "" || content == "" || limitation == "") {
             setTimeout(() => {
               this.editCourse(course);
             }, 0);
@@ -451,7 +451,7 @@ export default {
           courseId: course._id,
           content: formValues.content,
           title: formValues.title,
-          limitation:formValues.limitation
+          limitation: formValues.limitation
         })
         .then(res => {
           Object.keys(formValues).forEach(item => {
@@ -499,11 +499,12 @@ export default {
         return;
       }
       this.page--;
+      var query = `skip=${this.page * this.maxInPage}&limit=${this.maxInPage}`;
+      if (this.limit != "") {
+        query += `&select=${this.limit}`;
+      }
       this.axios
-        .post(
-          `http://localhost:3000/api/course/showall?skip=${this.page *
-            this.maxInPage}&limit=${this.maxInPage}`
-        )
+        .post(`http://localhost:3000/api/course/showall?${query}`)
         .then(res => {
           this.courses = res.data;
         })
@@ -516,11 +517,12 @@ export default {
         return;
       }
       this.page++;
+      var query = `skip=${this.page * this.maxInPage}&limit=${this.maxInPage}`;
+      if (this.limit != "") {
+        query += `&select=${this.limit}`;
+      }
       this.axios
-        .post(
-          `http://localhost:3000/api/course/showall?skip=${this.page *
-            this.maxInPage}&limit=${this.maxInPage}`
-        )
+        .post(`http://localhost:3000/api/course/showall?${query}`)
         .then(res => {
           this.courses = res.data;
         })
@@ -575,10 +577,10 @@ export default {
     },
     convert(x) {
       if (x == "students") {
-        return "ققط برای دانشجویان";
+        return "فقط برای دانشجویان";
       }
       if (x == "teachers") {
-        return "ققط برای اساتید";
+        return "فقط برای اساتید";
       }
       return "بدون محدودیت";
     },

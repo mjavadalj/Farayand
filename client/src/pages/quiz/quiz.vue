@@ -188,7 +188,7 @@
 <script>
 import { global } from "@/main.js";
 import "imports-loader?$=jquery,this=>window!messenger/build/js/messenger";
-import reg_lessonVue from "../lesson/reg_lesson.vue";
+// import reg_lessonVue from "../lesson/reg_lesson.vue";
 const { Messenger } = window;
 /* eslint-disable */
 function initializationMessengerCode() {

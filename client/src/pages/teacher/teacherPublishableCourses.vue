@@ -202,7 +202,7 @@ export default {
       this.axios
         .post(
           `http://localhost:3000/api/course/showall?skip=${this.page *
-            this.maxInPage}&limit=${this.maxInPage}&r=!a`
+            this.maxInPage}&limit=${this.maxInPage}&r=!a&select=students`
         )
         .then(res => {
           this.courses = res.data;
@@ -219,7 +219,7 @@ export default {
       this.axios
         .post(
           `http://localhost:3000/api/course/showall?skip=${this.page *
-            this.maxInPage}&limit=${this.maxInPage}&r=!a`
+            this.maxInPage}&limit=${this.maxInPage}&r=!a&select=students`
         )
         .then(res => {
           this.courses = res.data;
@@ -233,7 +233,7 @@ export default {
       this.axios
         .post(
           `http://localhost:3000/api/course/showall?skip=${this.page *
-            this.maxInPage}&limit=${this.maxInPage}&r=!a`
+            this.maxInPage}&limit=${this.maxInPage}&r=!a&select=students`
         )
         .then(res => {
           this.courses = res.data;
@@ -311,7 +311,7 @@ export default {
     this.axios
       .post(
         `http://localhost:3000/api/course/showall?skip=${this.page *
-          this.maxInPage}&limit=${this.maxInPage}&r=!a`
+          this.maxInPage}&limit=${this.maxInPage}&r=!a&select=students`
       )
       .then(res => {
         // console.log("res.data");

@@ -19,7 +19,7 @@
         isHeader
       />
       <NavLink
-        header="دوره های دانشجویان"
+        header="دوره های انتخاب شده"
         link="/teacher/mycourse"
         iconName="fa fa-tasks"
         index="course"
@@ -30,6 +30,20 @@
         link="/teacher/certificate"
         iconName="flaticon-list"
         index="certificate"
+        isHeader
+      />
+      <NavLink
+        header="آزمون"
+        link="/teacher/course"
+        iconName="fa fa-tasks"
+        index="course"
+        isHeader
+      />
+      <NavLink
+        header="درس های ثبت نام شده"
+        link="/teacher/mylesson"
+        iconName="fa fa-tasks"
+        index="course"
         isHeader
       />
     </ul>
