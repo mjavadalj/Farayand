@@ -257,6 +257,7 @@ export default {
     async addCourse(title = "", content = "") {
       const { value: formValues2 } = await this.$swal.fire({
         html: `
+        <div class="col-X-6">
           <div class="card">
           <div class="card-header">
             <strong>دوره جدید</strong>
@@ -278,14 +279,35 @@ export default {
           <div>
             <label for="content">توضیحات راجع به دوره</label>
             <textarea class="form-control text-center" rows="3" id="content"> ${content}</textarea>
-          </div>      
+               <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
+                    <label class="form-check-label" for="inlineRadio1">فقط برای دانشجویان</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
+                    <label class="form-check-label" for="inlineRadio2">فقط برای اساتید</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3">
+                    <label class="form-check-label" for="inlineRadio3">بدون محدودیت</label>
+                  </div>
+          </div>   
+          </div>   
           </div>`,
         focusConfirm: false,
         preConfirm: () => {
           var title = document.getElementById("title").value;
           var content = document.getElementById("content").value;
+          var limitation = "";
+          if ($("#inlineRadio1").is(":checked")) {
+            limitation = "students";
+          } else if ($("#inlineRadio2").is(":checked")) {
+            limitation = "teachers";
+          } else if ($("#inlineRadio3").is(":checked")) {
+            limitation = "all";
+          }
           var ok = false;
-          if (title == "" || content == "") {
+          if (title == "" || content == "" || limitation == "") {
             setTimeout(() => {
               this.addCourse(title, content);
             }, 0);
@@ -295,7 +317,8 @@ export default {
           return {
             ok,
             title,
-            content
+            content,
+            limitation
           };
         }
       });
@@ -306,7 +329,8 @@ export default {
         .post(`http://localhost:3000/api/course/add`, {
           creator: "5d8a50c5e8538c32f480c3fb",
           title: formValues2.title,
-          content: formValues2.content
+          content: formValues2.content,
+          limitation: formValues2.limitation
         })
         .then(res => {
           this.$swal.fire({
@@ -375,6 +399,18 @@ export default {
           <div>
             <label for="content">توضیحات راجع به دوره</label>
             <textarea class="form-control text-center" rows="3" id="content"> ${course.content}</textarea>
+            <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
+                    <label class="form-check-label" for="inlineRadio1">فقط برای دانشجویان</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
+                    <label class="form-check-label" for="inlineRadio2">فقط برای اساتید</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3">
+                    <label class="form-check-label" for="inlineRadio3">بدون محدودیت</label>
+                  </div>
           </div>      
           </div>`,
         // '<input id="swal-input6" class="swal2-input" placeholder = "جنسیت>',
@@ -382,8 +418,16 @@ export default {
         preConfirm: () => {
           var title = document.getElementById("title").value;
           var content = document.getElementById("content").value;
+          var limitation = "";
+          if ($("#inlineRadio1").is(":checked")) {
+            limitation = "students";
+          } else if ($("#inlineRadio2").is(":checked")) {
+            limitation = "teachers";
+          } else if ($("#inlineRadio3").is(":checked")) {
+            limitation = "all";
+          }
           var ok = false;
-          if (title == "" || content == "") {
+          if (title == "" || content == ""|| limitation == "") {
             setTimeout(() => {
               this.editCourse(course);
             }, 0);
@@ -393,7 +437,8 @@ export default {
           return {
             ok,
             title,
-            content
+            content,
+            limitation
           };
         }
       });
@@ -405,7 +450,8 @@ export default {
         .patch(`http://localhost:3000/api/course/edit`, {
           courseId: course._id,
           content: formValues.content,
-          title: formValues.title
+          title: formValues.title,
+          limitation:formValues.limitation
         })
         .then(res => {
           Object.keys(formValues).forEach(item => {
@@ -525,7 +571,7 @@ export default {
       this.courses = this.temp;
       this.searchMode = false;
       this.searchInput = "";
-      this.limitation(this.limit,true)
+      this.limitation(this.limit, true);
     },
     convert(x) {
       if (x == "students") {
@@ -536,7 +582,7 @@ export default {
       }
       return "بدون محدودیت";
     },
-    limitation(limit = "",f=false) {
+    limitation(limit = "", f = false) {
       if (this.limit == limit && !f) {
         return;
       }
@@ -591,10 +637,14 @@ export default {
       )
       .then(res => {
         this.courses = res.data;
-        $("button").click(function() {
-          $("button").removeClass("active");
-          $(this).addClass("active");
-        });
+        $("button")
+          .not("#fixedbutton")
+          .click(function() {
+            $("button")
+              .not("#fixedbutton")
+              .removeClass("active");
+            $(this).addClass("active");
+          });
       })
       .catch(err => {
         console.log(err);
