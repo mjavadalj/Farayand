@@ -33,7 +33,7 @@
         isHeader
       />
       <NavLink
-        header="آزمون"
+        header="انجام آزمون"
         link="/teacher/course"
         iconName="fa fa-tasks"
         index="course"

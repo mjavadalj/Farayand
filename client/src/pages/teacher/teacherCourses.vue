@@ -2,7 +2,7 @@
   <div>
     <b-breadcrumb>
       <b-breadcrumb-item>راهنما</b-breadcrumb-item>
-      <b-breadcrumb-item active>دوره ها</b-breadcrumb-item>
+      <b-breadcrumb-item active> انتخاب درس </b-breadcrumb-item>
     </b-breadcrumb>
     <div class="input-group mb-3">
       <div style="cursor: pointer;" class="input-group-prepend" @click="searchCourses">

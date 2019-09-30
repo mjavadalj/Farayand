@@ -155,7 +155,8 @@ export default new Router({
           path: "mylesson",
           name: "mylesson",
           component: RgLesson
-        },{
+        },
+        {
           path: "course",
           name: "teacherCourses",
           component: TeacherCourses
@@ -189,6 +190,11 @@ export default new Router({
           path: "session/:title",
           name: "tsession",
           component: Session
+        },
+        {
+          path: "/certificate",
+          name: "certificate",
+          component: Certificate
         }
       ]
     },
@@ -219,7 +225,7 @@ export default new Router({
         },
         {
           path: "/certificate",
-          name: "certificate",
+          name: "tcertificate",
           component: Certificate
         }
       ]
