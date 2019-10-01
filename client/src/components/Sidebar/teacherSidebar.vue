@@ -21,7 +21,7 @@
       <NavLink
         header="دوره های انتخاب شده"
         link="/teacher/mycourse"
-        iconName="fa fa-tasks"
+        iconName="fa fa-folder-open"
         index="course"
         isHeader
       />
@@ -33,16 +33,16 @@
         isHeader
       />
       <NavLink
-        header="انجام آزمون"
+        header="انتخاب درس جهت آزمون"
         link="/teacher/course"
-        iconName="fa fa-tasks"
+        iconName="fa fa-database"
         index="course"
         isHeader
       />
       <NavLink
         header="درس های ثبت نام شده"
         link="/teacher/mylesson"
-        iconName="fa fa-tasks"
+        iconName="fa fa-list"
         index="course"
         isHeader
       />

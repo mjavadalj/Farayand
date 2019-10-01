@@ -21,7 +21,7 @@
       <NavLink
         header="درس های ثبت نام شده"
         link="/mylesson"
-        iconName="fa fa-code-fork"
+        iconName="fa fa-list"
         index="course"
         isHeader
       />

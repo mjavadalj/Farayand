@@ -58,12 +58,13 @@
               >صادر نشده</button>
               <button
                 v-if="reg_lesson.passed"
+                @click="downloadCertificate(reg_lesson)"
                 data-v-17b74d76
                 type="button"
                 class="btn p-1 px-3 btn-xs btn-success lalezar"
               >صادر شده</button>
             </td>
-            <td>{{new Date(reg_lesson.date) | moment.(" jMMMM jDo YYYY, h:mm:ss a,fa")}}</td>
+            <td>{{new Date(reg_lesson.date)}}</td>
             <td>{{reg_lesson.reg_sessions.length}}</td>
             <td>{{reg_lesson.sessionLength}}</td>
             <td>{{reg_lesson.teacherName}}</td>
@@ -152,7 +153,7 @@ export default {
       return false;
     },
     push(e,reg_lesson,index) {
-      if (e.target.nodeName=='I'){
+      if (e.target.nodeName=='I' ||e.target.nodeName=='BUTTON'){
         return
       }
       // global.courseId = course._id;
@@ -204,6 +205,10 @@ export default {
             })
           }
         });
+    },
+    downloadCertificate(reg_lesson){
+      console.log(reg_lesson);
+      
     }
   },
   mounted() {
