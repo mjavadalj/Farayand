@@ -180,7 +180,7 @@ module.exports.lessonRegister = (req, res) => {
     },
     { new: true }
   )
-    .select('_id')
+    .select("_id")
     .exec()
     .then(result => {
       res.status(200).json(result);
@@ -351,10 +351,7 @@ module.exports.deleteAUser = (req, res) => {
 };
 module.exports.showAllCoursesOfTeacher = (req, res) => {
   find = {
-    $and: [
-      { user: mong(req.body.user) },
-      { publishable: true }
-    ]
+    $and: [{ user: mong(req.body.user) }, { publishable: true }]
   };
   Embed.aggregate([
     {
@@ -514,6 +511,67 @@ module.exports.removeUserrUni = (req, res) => {
     .exec()
     .then(result => {
       res.status(200).json(result);
+    })
+    .catch(err => {
+      handler(err, res, 500);
+    });
+};
+module.exports.setCertificate = (req, res) => {
+  find = {
+    $and: [
+      { _id: mong(req.body.userId) },
+      { "reg_lessons._id": mong(req.body.reg_lessonId) }
+    ]
+  };
+  User.aggregate([
+    {
+      $unwind: "$reg_lessons"
+    },
+    {
+      $match: find
+    },
+    {
+      $project: {
+        reg_lesson: "$reg_lessons"
+      }
+    }
+  ])
+    .exec()
+    .then(user => {
+      c = 0;
+      const findFalse = user[0].reg_lesson.reg_sessions.find(reg => {
+        c++;
+        return reg.passed == false;
+      });
+      if (c < user[0].reg_lesson.sessionLength || findFalse || user[0].reg_lesson.passed) {
+        handler({ err: "nothing to set" }, res, 500);
+      } else {
+        finalScore = 0;
+        user[0].reg_lesson.reg_sessions.forEach(reg_session => {
+          finalScore += reg_session.score;
+        });
+        finalScore = Math.ceil(finalScore / user[0].reg_lesson.reg_sessions.length);
+        User.findOneAndUpdate(
+          find,
+          {
+            $set: {
+              "reg_lessons.$.passed": true,
+              "reg_lessons.$.finalScore": finalScore
+            }
+          },
+          {
+            new: true
+          }
+        )
+          .exec()
+          .then(result => {
+            res.status(200).json(result);
+          })
+          .catch(err => {
+            handler({err:"can't complete lesson"}, res, 500);
+          });
+        // res.status(200).json(user[0]);
+      }
     })
     .catch(err => {
       handler(err, res, 500);

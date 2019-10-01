@@ -31,7 +31,7 @@ router.patch('/session/register',userController.sessionRegister)
 //session complete
 router.patch('/session/complete',userController.sessionComplete)
 //lesson complete
-router.patch('/lesson/complete',userController.lessonComplete)
+// router.patch('/lesson/complete',userController.lessonComplete)
 //delete all users
 router.delete('/deleteall',userController.deleteAllUsers)
 //show all teachers
@@ -58,6 +58,7 @@ router.patch('/teacher/adduni',userController.addTeacherUni)
 router.patch('/user/adduni',userController.addUserUni)
 //remove user university
 router.patch('/removeuni',userController.removeUserrUni)
+router.patch('/setcertificate',userController.setCertificate)
 
 
 module.exports = router;

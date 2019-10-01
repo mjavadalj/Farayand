@@ -159,7 +159,7 @@ export default {
       global.lesson=reg_lesson
       global.index=index
       this.$router.push({
-        name: "studentQuiz"
+        name: "teacherQuiz"
       });
     },
     search(e) {

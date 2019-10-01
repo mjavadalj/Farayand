@@ -22,6 +22,7 @@
             <tr>
               <th class>عملیات</th>
               <th class>وضعیت</th>
+              <th class>دریافت فایل آموزشی</th>
               <th class>نمره</th>
               <th class>شانس مجدد</th>
               <th class>تعداد تلاش</th>
@@ -53,6 +54,9 @@
                   class="btn p-1 px-3 btn-xs btn-success lalezar"
                 >قبول</button>
               </td>
+              <td>
+                <button>x</button>
+              </td>
               <td>{{reg_session.score}}</td>
               <td>{{reg_session.anotherChanceDate}}</td>
               <td>{{reg_session.tryCount}}</td>
@@ -78,6 +82,7 @@
           <thead>
             <tr>
               <th class>وضعیت</th>
+              <th class>دریافت فایل آموزشی</th>
               <th class>شانس مجدد</th>
               <th class>مدت زمان آزمون</th>
               <th class>حداقل نمره قبولی</th>
@@ -90,15 +95,14 @@
             <tr
               v-for="(session,index) in sessions"
               :key="session._id"
-              @click="addToRegSession(session,index)"
+              @click="addToRegSession($event,session,index)"
             >
               <td>
-                <i
-                  v-if="index==0 && check()"
-                  class="fa fa-unlock action-icon"
-                  style="font-size: 1.5em;"
-                />
+                <i v-if="index==0" class="fa fa-unlock action-icon" style="font-size: 1.5em;" />
                 <i v-else @click="aa()" class="fa fa-lock action-icon" style="font-size: 1.5em;" />
+              </td>
+              <td>
+                <button @click="setQuizTime(index,session)">x</button>
               </td>
               <td>پس از {{session.secondChance}} روز</td>
               <td>{{duration(session.duration)}}</td>
@@ -258,7 +262,8 @@ export default {
       courseId: null,
       lessonId: null,
       sessions: null,
-      reg_sessions: null
+      reg_sessions: null,
+      lock: true
     };
   },
   methods: {
@@ -281,7 +286,25 @@ export default {
         );
       }
     },
-    addToRegSession(session, index) {
+    addToRegSession(e, session, index) {
+      if (e.target.nodeName == "BUTTON") {
+        return;
+      }
+      if (
+        localStorage.getItem(session._id) &&
+        new Date() < new Date(localStorage.getItem(session._id))
+      ) {
+        var now = new Date();
+        var date = new Date(localStorage.getItem(session._id));
+        var diffMs = date - now;
+        var minutes = Math.floor(diffMs / 1000 / 60);
+        var seconds = Math.floor((diffMs / 1000) % 60);
+        return alert(
+          `پس از ${minutes} دقیقه و ${seconds} ثانیه می توانید آزمون دهید`
+        );
+      } else if (localStorage.getItem(session._id) == null) {
+        return alert("ابتدا فایل آموزشی را دریافت کنید");
+      }
       if (index != 0 || !this.check) {
         return;
       }
@@ -352,37 +375,19 @@ export default {
       if (find) {
         alert("باید در تمامی آزمون ها پذیرفته شوید تا گواهی برای شما صادر شود");
       } else {
-        var finalScore = 0;
-        this.reg_sessions.forEach(reg_session => {
-          finalScore += reg_session.score;
-        });
-        finalScore = Math.ceil(finalScore / this.reg_sessions.length);
-
-        console.log(this.reg_lesson);
         this.axios
-          .post("http://localhost:3000/api/certificate/add", {
+          .patch(`http://localhost:3000/api/user/setcertificate`, {
             userId: "5d8a5561acb6b226e8de83ae",
-            userName: "amir",
             reg_lessonId: this.reg_lesson._id
           })
           .then(res => {
-            this.axios
-              .patch(`http://localhost:3000/api/user/lesson/complete`, {
-                userId: "5d8a5561acb6b226e8de83ae",
-                reg_lessonId: this.reg_lesson._id,
-                finalScore,
-                passed: true
-              })
-              .then(res => {
-                this.reg_lesson.passed = true;
-              })
-              .catch(err => {
-                console.log(err);
-              });
+            this.reg_lesson.passed = true;
           })
           .catch(err => {
-            console.log(err);
+            alert('باید در تمام جلسات پذیرفته شوید')
           });
+
+        //TODO: certificate
       }
     },
     showQuestions(reg_session, session) {
@@ -445,9 +450,9 @@ export default {
         this.axios
           .post(`http://localhost:3000/api/session/checkquiz`, {
             answerBody,
-            courseId: "5d8f04dde455ce41504412a2",
-            lessonId: "5d8f092fe455ce41504412a5",
-            sessionId: "5d8f1308ce4d73159cd46ac4"
+            courseId: this.reg_lesson.courseId,
+            lessonId: this.reg_lesson.lessonId,
+            sessionId: session._id
           })
           .then(res1 => {
             var passed = res1.data.score >= session.minScore;
@@ -478,6 +483,7 @@ export default {
               });
           })
           .catch(err => {
+            clearInterval(this.intervalTimer);
             console.log(err);
           });
       } catch (e) {
@@ -491,11 +497,22 @@ export default {
       // const index=this.reg_sessions.length-1
       // return this.reg_sessions[index].passed
       return true;
+    },
+    setQuizTime(index, session) {
+      if (index != 0) {
+        return alert("ابتدا باید جلسات قبلی را کامل کنید");
+      }
+      if (localStorage.getItem(session._id)) {
+        return;
+      }
+      var dt = new Date();
+      dt.setMinutes(dt.getMinutes() + 1);
+      localStorage.setItem(session._id, dt);
     }
   },
   mounted() {
     if (global == undefined) {
-      this.$router.push("/");
+      this.$router.push("/teacher");
     }
     //TODO: user info
     this.reg_lesson = global.lesson;
