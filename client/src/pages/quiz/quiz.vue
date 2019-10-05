@@ -22,6 +22,7 @@
             <tr>
               <th class>عملیات</th>
               <th class>وضعیت</th>
+              <th class>دریافت فایل آموزشی</th>
               <th class>نمره</th>
               <th class>شانس مجدد</th>
               <th class>تعداد تلاش</th>
@@ -53,6 +54,9 @@
                   class="btn p-1 px-3 btn-xs btn-success lalezar"
                 >قبول</button>
               </td>
+              <td>
+                <button>x</button>
+              </td>
               <td>{{reg_session.score}}</td>
               <td>{{reg_session.anotherChanceDate}}</td>
               <td>{{reg_session.tryCount}}</td>
@@ -78,6 +82,7 @@
           <thead>
             <tr>
               <th class>وضعیت</th>
+              <th class>دریافت فایل آموزشی</th>
               <th class>شانس مجدد</th>
               <th class>مدت زمان آزمون</th>
               <th class>حداقل نمره قبولی</th>
@@ -90,14 +95,17 @@
             <tr
               v-for="(session,index) in sessions"
               :key="session._id"
-              @click="addToRegSession(session,index)"
+              @click="addToRegSession($event,session,index)"
             >
               <td>
-                <i v-if="index==0 && check()" class="fa fa-unlock action-icon" style="font-size: 1.5em;" />
+                <i v-if="index==0" class="fa fa-unlock action-icon" style="font-size: 1.5em;" />
                 <i v-else @click="aa()" class="fa fa-lock action-icon" style="font-size: 1.5em;" />
               </td>
-              <td>پس از {{session.secondChance}} روز </td>
-              <td>{{duration(session.duration)}} </td>
+              <td>
+                <button @click="setQuizTime(index,session)">x</button>
+              </td>
+              <td>پس از {{session.secondChance}} روز</td>
+              <td>{{duration(session.duration)}}</td>
               <td>{{session.minScore}}</td>
               <td>{{session.questionLength}}</td>
               <td>{{session.title}}</td>
@@ -115,7 +123,7 @@
         >دریافت گواهی این درس</button>
       </div>
       <div v-else-if="reg_lesson.passed">
-        <h5 class="lalezar text-center"> گواهی این درس برای شما صادر شده است</h5>
+        <h5 class="lalezar text-center">گواهی این درس برای شما صادر شده است</h5>
       </div>
     </div>
     <div v-else>
@@ -188,7 +196,7 @@
 <script>
 import { global } from "@/main.js";
 import "imports-loader?$=jquery,this=>window!messenger/build/js/messenger";
-import reg_lessonVue from "../lesson/reg_lesson.vue";
+// import reg_lessonVue from "../lesson/reg_lesson.vue";
 const { Messenger } = window;
 /* eslint-disable */
 function initializationMessengerCode() {
@@ -254,31 +262,49 @@ export default {
       courseId: null,
       lessonId: null,
       sessions: null,
-      reg_sessions: null
+      reg_sessions: null,
+      lock: true
     };
   },
   methods: {
     aa(reg_session, index) {
       alert("ابتدا باید جلسات قبلی را انجام دهید");
-      this.check()
+      this.check();
     },
     reQuiz(reg_session, index) {
       var now = new Date();
       var chance = new Date(reg_session.anotherChanceDate);
-      if (reg_session.passed) {
+      // reg_session.passed
+      if (false) {
         return alert("شما در این آزمون پذیرفته شده اید");
       } else if (now > chance) {
         return alert("بعدا");
-      } else if (
-        true
-      ) {
+      } else if (true) {
         this.showQuestions(
           reg_session,
           this.deletedSessions[reg_session.sessionId]
         );
       }
     },
-    addToRegSession(session, index) {
+    addToRegSession(e, session, index) {
+      if (e.target.nodeName == "BUTTON") {
+        return;
+      }
+      if (
+        localStorage.getItem(session._id) &&
+        new Date() < new Date(localStorage.getItem(session._id))
+      ) {
+        var now = new Date();
+        var date = new Date(localStorage.getItem(session._id));
+        var diffMs = date - now;
+        var minutes = Math.floor(diffMs / 1000 / 60);
+        var seconds = Math.floor((diffMs / 1000) % 60);
+        return alert(
+          `پس از ${minutes} دقیقه و ${seconds} ثانیه می توانید آزمون دهید`
+        );
+      } else if (localStorage.getItem(session._id) == null) {
+        return alert("ابتدا فایل آموزشی را دریافت کنید");
+      }
       if (index != 0 || !this.check) {
         return;
       }
@@ -292,7 +318,7 @@ export default {
       if (session.questionLength == 0) {
         this.axios
           .patch(`http://localhost:3000/api/user/session/register`, {
-            userId: "5d8b01ad21f2fd2db8f9b917",
+            userId: "5d8a5561acb6b226e8de83ae",
             reg_lessonId: this.reg_lesson._id,
             sessionId: session._id,
             title: session.title,
@@ -314,7 +340,7 @@ export default {
       } else {
         this.axios
           .patch(`http://localhost:3000/api/user/session/register`, {
-            userId: "5d8b01ad21f2fd2db8f9b917",
+            userId: "5d8a5561acb6b226e8de83ae",
             reg_lessonId: this.reg_lesson._id,
             sessionId: session._id,
             title: session.title,
@@ -347,39 +373,21 @@ export default {
         return reg.passed == false;
       });
       if (find) {
-        alert('باید در تمامی آزمون ها پذیرفته شوید تا گواهی برای شما صادر شود')
+        alert("باید در تمامی آزمون ها پذیرفته شوید تا گواهی برای شما صادر شود");
       } else {
-        var finalScore = 0;
-        this.reg_sessions.forEach(reg_session => {
-          finalScore += reg_session.score;
-        });
-        finalScore = Math.ceil(finalScore / this.reg_sessions.length);
-
-        console.log(this.reg_lesson);
         this.axios
-          .post("http://localhost:3000/api/certificate/add", {
-            userId: "5d8b01ad21f2fd2db8f9b917",
-            userName: "amir",
+          .patch(`http://localhost:3000/api/user/setcertificate`, {
+            userId: "5d8a5561acb6b226e8de83ae",
             reg_lessonId: this.reg_lesson._id
           })
           .then(res => {
-            this.axios
-              .patch(`http://localhost:3000/api/user/lesson/complete`, {
-                userId: "5d8b01ad21f2fd2db8f9b917",
-                reg_lessonId: this.reg_lesson._id,
-                finalScore,
-                passed: true
-              })
-              .then(res => {
-                this.reg_lesson.passed=true
-              })
-              .catch(err => {
-                console.log(err);
-              });
+            this.reg_lesson.passed = true;
           })
           .catch(err => {
-            console.log(err);
+            alert('باید در تمام جلسات پذیرفته شوید')
           });
+
+        //TODO: certificate
       }
     },
     showQuestions(reg_session, session) {
@@ -423,6 +431,7 @@ export default {
     },
     endQuiz(reg_session, session, force = false) {
       var BreakException = {};
+      var answerBody = {};
       var correct = 0;
       var tryCount = parseInt(reg_session.tryCount) + 1;
       try {
@@ -432,34 +441,48 @@ export default {
             alert(`به سوال شماره ${i + 1} پاسخ ندادید`);
             throw BreakException;
           }
-          if (ans[0] != undefined && question[ans[0].id].correct) {
-            correct++;
+          if (ans.length == 0) {
+            answerBody[question._id] = undefined;
+          } else {
+            answerBody[question._id] = ans[0].id;
           }
         });
-        var score = Math.ceil((correct / this.questions.length) * 100);
-        var passed = score >= session.minScore;
         this.axios
-          .patch(`http://localhost:3000/api/user/session/complete`, {
-            userId: "5d8b01ad21f2fd2db8f9b917",
-            reg_lessonId: this.reg_lesson._id,
-            reg_sessionId: reg_session._id,
-            passed: passed,
-            score: score,
-            anotherChanceDate: reg_session.anotherChanceDate,
-            title: reg_session.title,
-            date: reg_session.date,
-            sessionId: reg_session.sessionId,
-            tryCount
+          .post(`http://localhost:3000/api/session/checkquiz`, {
+            answerBody,
+            courseId: this.reg_lesson.courseId,
+            lessonId: this.reg_lesson.lessonId,
+            sessionId: session._id
           })
-          .then(res => {
-            reg_session.passed = passed;
-            reg_session.score = score;
-            reg_session.tryCount = tryCount;
-            this.isQuiz = false;
-            clearInterval(this.intervalTimer);
+          .then(res1 => {
+            var passed = res1.data.score >= session.minScore;
+            this.axios
+              .patch(`http://localhost:3000/api/user/session/complete`, {
+                userId: "5d8a5561acb6b226e8de83ae",
+                reg_lessonId: this.reg_lesson._id,
+                reg_sessionId: reg_session._id,
+                passed: passed,
+                score: res1.data.score,
+                anotherChanceDate: reg_session.anotherChanceDate,
+                title: reg_session.title,
+                date: reg_session.date,
+                sessionId: reg_session.sessionId,
+                tryCount
+              })
+              .then(res => {
+                reg_session.passed = passed;
+                reg_session.score = res1.data.score;
+                reg_session.tryCount = tryCount;
+                this.isQuiz = false;
+                clearInterval(this.intervalTimer);
+              })
+              .catch(err => {
+                this.isQuiz = false;
+                clearInterval(this.intervalTimer);
+                console.log(err);
+              });
           })
           .catch(err => {
-            this.isQuiz = false;
             clearInterval(this.intervalTimer);
             console.log(err);
           });
@@ -467,19 +490,29 @@ export default {
         if (e !== BreakException) throw e;
       }
     },
-    duration(d){
-      return `${d}'`
+    duration(d) {
+      return `${d}'`;
     },
-    check(){
+    check() {
       // const index=this.reg_sessions.length-1
       // return this.reg_sessions[index].passed
-      return true
-      
+      return true;
+    },
+    setQuizTime(index, session) {
+      if (index != 0) {
+        return alert("ابتدا باید جلسات قبلی را کامل کنید");
+      }
+      if (localStorage.getItem(session._id)) {
+        return;
+      }
+      var dt = new Date();
+      dt.setMinutes(dt.getMinutes() + 1);
+      localStorage.setItem(session._id, dt);
     }
   },
   mounted() {
     if (global == undefined) {
-      this.$router.push("/");
+      this.$router.push("/teacher");
     }
     //TODO: user info
     this.reg_lesson = global.lesson;

@@ -20,8 +20,8 @@ const editItems = (req, text = "") => {
     json[`${text}secondChance`] = req.body.secondChance;
   if (req.body.publishable != undefined)
     json[`${text}publishable`] = req.body.publishable;
-  if (req.body.forAllUniversities != undefined)
-    json[`${text}forAllUniversities`] = req.body.forAllUniversities;
+  if (req.body.limitation != undefined)
+    json[`${text}limitation`] = req.body.limitation;
   if (req.body.userQCount != undefined)
     json[`${text}userQCount`] = req.body.userQCount;
   return json;
@@ -147,9 +147,11 @@ module.exports.showAllQuestions = (req, res) => {
 };
 module.exports.showRandomQuestions = (req, res) => {
   find = {
-    _id: mongoose.Types.ObjectId(req.body.courseId),
-    "lessons._id": mongoose.Types.ObjectId(req.body.lessonId),
-    "lessons.sessions._id": mongoose.Types.ObjectId(req.body.sessionId)
+    $and: [
+      { _id: mongoose.Types.ObjectId(req.body.courseId) },
+      { "lessons._id": mongoose.Types.ObjectId(req.body.lessonId) },
+      { "lessons.sessions._id": mongoose.Types.ObjectId(req.body.sessionId) }
+    ]
   };
   Embed.aggregate([
     {
@@ -168,15 +170,40 @@ module.exports.showRandomQuestions = (req, res) => {
     },
     {
       $match: find
+    },
+    {
+      $project: {
+        userQCount: "$lessons.sessions.userQCount",
+        questions: "$lessons.sessions.questions"
+      }
     }
   ])
     .exec()
     .then(result => {
-      const userQCount=result[0].lessons.sessions.userQCount
-      const length=result[0].lessons.sessions.questions.length
+      var limitedQuestions=[]
+      result[0].questions.forEach(question=>{
+        limitedQuestions.push({
+          option_1:{
+            text:question.option_1.text
+          },
+          option_2:{
+            text:question.option_2.text
+          },
+          option_3:{
+            text:question.option_3.text
+          },
+          option_4:{
+            text:question.option_4.text
+          },
+          text:question.text,
+          _id:question._id
+        })
+      })
+      const userQCount = result[0].userQCount;
+      const length = result[0].questions.length;
       var number;
-      number=userQCount>length?length:userQCount
-      randomQuestions(res,result[0].lessons.sessions.questions,number)
+      number = userQCount > length ? length : userQCount;
+      randomQuestions(res, limitedQuestions, number);
       // handler(result[0].lessons.sessions, res, 200);
     })
     .catch(err => {
@@ -252,4 +279,59 @@ module.exports.editASession = (req, res) => {
 
 module.exports.addFile = (req, res) => {
   console.log(req.file.mimetype, "\n", req.file);
+};
+module.exports.checkQuiz = (req, res) => {
+  find = {
+    $and: [
+      { _id: mongoose.Types.ObjectId(req.body.courseId) },
+      { "lessons._id": mongoose.Types.ObjectId(req.body.lessonId) },
+      { "lessons.sessions._id": mongoose.Types.ObjectId(req.body.sessionId) }
+    ]
+  };
+  Embed.aggregate([
+    {
+      $unwind: {
+        path: "$lessons",
+        includeArrayIndex: "index"
+        // "preserveNullAndEmptyArrays": true
+      }
+    },
+    {
+      $unwind: {
+        path: "$lessons.sessions",
+        includeArrayIndex: "index"
+        // "preserveNullAndEmptyArrays": true
+      }
+    },
+    {
+      $match: find
+    },
+    {
+      $project: {
+        minScore: "$lessons.sessions.minScore",
+        questions: "$lessons.sessions.questions",
+        userQCount: "$lessons.sessions.userQCount"
+      }
+    }
+  ])
+    .exec()
+    .then(result => {
+      correctAnswer = 0;
+      answerBody = req.body.answerBody;
+      Object.keys(answerBody).forEach(id => {
+        result[0].questions.forEach(question => {
+          if (question._id == id && question[answerBody[id]].correct) {
+            correctAnswer++;
+          }
+        });
+      });
+      handler(
+        { score: Math.ceil((correctAnswer / result[0].userQCount) * 100) },
+        res,
+        200
+      );
+    })
+    .catch(err => {
+      handler(err, res, 200);
+    });
 };

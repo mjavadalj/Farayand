@@ -143,7 +143,7 @@ export default {
           user: teacher._id
         })
         .then(res => {
-          console.log("course load");          
+          console.log("course load");
           this.courses = res.data;
           this.courseOpen = true;
           this.lessonOpen = false;
@@ -174,11 +174,11 @@ export default {
         .then(res => {
           console.log("lesson load");
           console.log(res.data);
-
           this.lessons = res.data;
           this.loadedLessons[course._id] = res.data;
           this.courseSelected = course;
           this.lessonOpen = true;
+          
         })
         .catch(err => {
           console.log(err);
@@ -221,7 +221,7 @@ export default {
                     title: "!",
                     text: " شما قبلا  در این درس ثبت نام کردید"
                   });
-                  return
+                  return;
                 }
                 this.$swal.fire({
                   type: "success",
@@ -280,6 +280,10 @@ export default {
     } catch (error) {
       console.log(error);
     }
+    $("button").click(function() {
+      $("button").removeClass("active");
+      $(this).addClass("active");
+    });
   }
 };
 </script>

@@ -2,7 +2,7 @@
   <div>
     <b-breadcrumb>
       <b-breadcrumb-item>راهنما</b-breadcrumb-item>
-      <b-breadcrumb-item active>دوره ها</b-breadcrumb-item>
+      <b-breadcrumb-item active> انتخاب درس </b-breadcrumb-item>
     </b-breadcrumb>
     <div class="input-group mb-3">
       <div style="cursor: pointer;" class="input-group-prepend" @click="searchCourses">
@@ -26,7 +26,6 @@
       <table id="dtBasicExample" align="center" class="table">
         <thead>
           <tr>
-            <th class>وضعیت ثبت نام</th>
             <th class>تاریخ</th>
             <th class>تعداد درس</th>
             <th class>استاد</th>
@@ -35,22 +34,7 @@
           </tr>
         </thead>
         <tbody id="myTable">
-          <tr v-for="(course,index) in courses" :key="course._id" @click="push($event,course)">
-            <td>
-              <button
-                v-if="checkRegistration(course)!=undefined"
-                data-v-17b74d76
-                type="button"
-                class="btn p-1 px-3 btn-xs btn-success lalezar"
-              >ثبت نام شده</button>
-              <button
-                v-else-if="course['ok']==undefined"
-                @click="courseRegister(course)"
-                data-v-17b74d76
-                type="button"
-                class="btn p-1 px-3 btn-xs btn-warning lalezar"
-              >برای ثبت نام کلیک کنید</button>
-            </td>
+          <tr v-for="(course,index) in courses" :key="course._id" @click="showModal($event,course)">
             <td>{{course.date}}</td>
             <td>{{course.lessons.length}}</td>
             <td>{{course.creator.name}}</td>
@@ -84,6 +68,41 @@
       <button class="btn btn-danger" type="button" @click="back()">
         <i class="fa fa-minus" />
       </button>
+    </div>
+    <div id="modaaal">
+      <b-modal id="my-modal" ref="my-modal" hide-footer title>
+        <div class="d-block text-center lalezar">
+          <h3>درس را انتخاب کنید</h3>
+        </div>
+        <div
+          id="table_data"
+          class="table-resposive"
+          style="text-align:center;max-height:500px; overflow: auto;margin-bottom:10px;"
+        >
+          <table id="dtBasicExample" align="center" class="table">
+            <thead>
+              <tr>
+                <th class>تاریخ</th>
+                <th class>تعداد جلسه</th>
+                <th class>عنوان</th>
+                <th class>#</th>
+              </tr>
+            </thead>
+            <tbody id="myTable2">
+              <tr
+                v-for="(lesson,index) in lessons"
+                :key="lesson._id"
+                @click="lessonRegister(lesson)"
+              >
+                <td>{{lesson.date}}</td>
+                <td>{{lesson.sessionLength}}</td>
+                <td>{{lesson.title}}</td>
+                <td>{{index+1}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </b-modal>
     </div>
   </div>
 </template>
@@ -152,7 +171,9 @@ export default {
       isReg: {},
       searchInput: "",
       searchMode: false,
-      temp: null
+      temp: null,
+      lessons: null,
+      courseSelected: null
     };
   },
   methods: {
@@ -202,7 +223,7 @@ export default {
       this.axios
         .post(
           `http://localhost:3000/api/course/showall?skip=${this.page *
-            this.maxInPage}&limit=${this.maxInPage}&r=!a`
+            this.maxInPage}&limit=${this.maxInPage}&r=!a&exception=students`
         )
         .then(res => {
           this.courses = res.data;
@@ -219,7 +240,7 @@ export default {
       this.axios
         .post(
           `http://localhost:3000/api/course/showall?skip=${this.page *
-            this.maxInPage}&limit=${this.maxInPage}&r=!a`
+            this.maxInPage}&limit=${this.maxInPage}&r=!a&exception=students`
         )
         .then(res => {
           this.courses = res.data;
@@ -233,41 +254,10 @@ export default {
       this.axios
         .post(
           `http://localhost:3000/api/course/showall?skip=${this.page *
-            this.maxInPage}&limit=${this.maxInPage}&r=!a`
+            this.maxInPage}&limit=${this.maxInPage}&r=!a&exception=students`
         )
         .then(res => {
           this.courses = res.data;
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-    checkRegistration(course) {
-      //5d8a5561acb6b226e8de83ae
-      var find = course.user.find(obj => {
-        return obj._id == "5d8a5561acb6b226e8de83ae";
-      });
-      if (find) {
-        this.isReg[course._id] = true;
-      }
-      return find;
-    },
-    courseRegister(course) {
-      this.axios
-        .patch(`http://localhost:3000/api/course/user/add`, {
-          courseId: course._id,
-          teacherId: "5d8a5561acb6b226e8de83ae"
-        })
-        .then(res => {
-          console.log("res.data");
-          console.log(res.data);
-          console.log(course);
-          course["ok"] = true;
-          Object.keys(course).forEach(item => {
-            if (item != "user" && item != "creator") {
-              //  course[item] = res.data[item];
-            }
-          });
         })
         .catch(err => {
           console.log(err);
@@ -278,7 +268,9 @@ export default {
         return alert("چیزی برای جستجو وجود ندارد");
       }
       this.axios
-        .get(`http://localhost:3000/api/course/find?title=${this.searchInput}&r=!a`)
+        .get(
+          `http://localhost:3000/api/course/find?title=${this.searchInput}&r=!a`
+        )
         .then(res => {
           this.searchMode = true;
           if (this.temp == null) {
@@ -296,6 +288,77 @@ export default {
       this.courses = this.temp;
       this.searchMode = false;
       this.searchInput = "";
+    },
+    showModal(e, course) {
+      this.axios
+        .post(`http://localhost:3000/api/lesson/showall`, {
+          courseId: course._id
+        })
+        .then(res => {
+          this.courseSelected = course;
+          this.lessons = res.data;
+          this.$refs["my-modal"].show();
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    hideModal() {
+      this.$refs["my-modal"].hide();
+    },
+    toggleModal() {
+      // We pass the ID of the button that we want to return focus to
+      // when the modal has hidden
+      this.$refs["my-modal"].toggle("#toggle-btn");
+    },
+    lessonRegister(lesson) {
+      this.$swal
+        .fire({
+          title: "Are you sure?",
+          text: "می خواهید در این درس ثبت نام کنید؟",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, delete it!"
+        })
+        .then(result => {
+          if (result.value) {
+            var body = {
+              userId: "5d8a5561acb6b226e8de83ae",
+              courseTitle: this.courseSelected.title,
+              lessonTitle: lesson.title,
+              teacherName: this.courseSelected.creator.name,
+              sessionLength: lesson.sessionLength,
+              lessonId: lesson._id,
+              courseId: this.courseSelected._id,
+              teacherId: this.courseSelected.creator._id
+            };
+            this.axios
+              .patch(`http://localhost:3000/api/user/lesson/register`, body)
+              .then(res => {
+                console.log(res.data);
+                if (res.data == null) {
+                  this.$swal.fire({
+                    type: "warning",
+                    title: "!",
+                    text: " شما قبلا  در این درس ثبت نام کردید"
+                  });
+                  this.hideModal();
+                  return;
+                }
+                this.$swal.fire({
+                  type: "success",
+                  title: "موفق",
+                  text: " شما با موفقیت در این درس ثبت نام کردید"
+                });
+                this.hideModal();
+              })
+              .catch(err => {
+                console.log(err);
+              });
+          }
+        });
     }
   },
   mounted() {
@@ -311,7 +374,7 @@ export default {
     this.axios
       .post(
         `http://localhost:3000/api/course/showall?skip=${this.page *
-          this.maxInPage}&limit=${this.maxInPage}&r=!a`
+          this.maxInPage}&limit=${this.maxInPage}&r=!a&exception=students`
       )
       .then(res => {
         // console.log("res.data");

@@ -4,6 +4,37 @@
       <b-breadcrumb-item>راهنما</b-breadcrumb-item>
       <b-breadcrumb-item active>دوره ها</b-breadcrumb-item>
     </b-breadcrumb>
+
+    <div style="margin-bottom:5px;" class="text-center">
+      <button
+        id="teacher"
+        style="margin:2px;font-family:lalezar"
+        class="btn btn-outline-secondary"
+        type="button"
+        @click="limitation('teachers')"
+      >دوره های اساتید</button>
+      <button
+        id="student"
+        style="margin:2px;font-family:lalezar"
+        class="btn btn-outline-secondary"
+        type="button"
+        @click="limitation('students')"
+      >دوره های دانشجویان</button>
+      <button
+        id="all"
+        style="margin:2px;font-family:lalezar"
+        class="btn btn-outline-secondary"
+        type="button"
+        @click="limitation('all')"
+      >دوره های بدون محدودیت</button>
+      <button
+        id="none"
+        style="margin:2px;font-family:lalezar"
+        class="btn btn-outline-secondary active"
+        type="button"
+        @click="limitation()"
+      >همه</button>
+    </div>
     <div class="input-group mb-3">
       <div style="cursor: pointer;" class="input-group-prepend" @click="searchCourses">
         <span class="input-group-text" id="basic-addon1">
@@ -28,6 +59,7 @@
           <tr>
             <th class>عملیات</th>
             <th class>وضعیت انتشار</th>
+            <th class>محدودیت</th>
             <th class>تاریخ</th>
             <th class>تعداد درس</th>
             <th class>استاد</th>
@@ -75,6 +107,7 @@
                 class="btn p-1 px-3 btn-xs btn-success lalezar"
               >منتشر شده</button>
             </td>
+            <td>{{convert(course.limitation)}}</td>
             <td>{{course.date}}</td>
             <td>{{course.lessons.length}}</td>
             <td>{{course.creator.name}}</td>
@@ -97,7 +130,7 @@
           </li>
           <li
             class="page-item pagination-sm"
-            v-for="index in calculateCourseCount()"
+            v-for="index in Math.ceil(this.courseCount / this.maxInPage)"
             :key="index"
             @click="jumpTo(index-1)"
           >
@@ -181,7 +214,8 @@ export default {
       searchInput: "",
       searchedCourses: null,
       searchMode: false,
-      temp: null
+      temp: null,
+      limit: ""
     };
   },
   methods: {
@@ -223,6 +257,7 @@ export default {
     async addCourse(title = "", content = "") {
       const { value: formValues2 } = await this.$swal.fire({
         html: `
+        <div class="col-X-6">
           <div class="card">
           <div class="card-header">
             <strong>دوره جدید</strong>
@@ -244,14 +279,35 @@ export default {
           <div>
             <label for="content">توضیحات راجع به دوره</label>
             <textarea class="form-control text-center" rows="3" id="content"> ${content}</textarea>
-          </div>      
+               <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
+                    <label class="form-check-label" for="inlineRadio1">فقط برای دانشجویان</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
+                    <label class="form-check-label" for="inlineRadio2">فقط برای اساتید</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3">
+                    <label class="form-check-label" for="inlineRadio3">بدون محدودیت</label>
+                  </div>
+          </div>   
+          </div>   
           </div>`,
         focusConfirm: false,
         preConfirm: () => {
           var title = document.getElementById("title").value;
           var content = document.getElementById("content").value;
+          var limitation = "";
+          if ($("#inlineRadio1").is(":checked")) {
+            limitation = "students";
+          } else if ($("#inlineRadio2").is(":checked")) {
+            limitation = "teachers";
+          } else if ($("#inlineRadio3").is(":checked")) {
+            limitation = "all";
+          }
           var ok = false;
-          if (title == "" || content == "") {
+          if (title == "" || content == "" || limitation == "") {
             setTimeout(() => {
               this.addCourse(title, content);
             }, 0);
@@ -261,7 +317,8 @@ export default {
           return {
             ok,
             title,
-            content
+            content,
+            limitation
           };
         }
       });
@@ -272,7 +329,8 @@ export default {
         .post(`http://localhost:3000/api/course/add`, {
           creator: "5d8a50c5e8538c32f480c3fb",
           title: formValues2.title,
-          content: formValues2.content
+          content: formValues2.content,
+          limitation: formValues2.limitation
         })
         .then(res => {
           this.$swal.fire({
@@ -341,6 +399,18 @@ export default {
           <div>
             <label for="content">توضیحات راجع به دوره</label>
             <textarea class="form-control text-center" rows="3" id="content"> ${course.content}</textarea>
+            <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
+                    <label class="form-check-label" for="inlineRadio1">فقط برای دانشجویان</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
+                    <label class="form-check-label" for="inlineRadio2">فقط برای اساتید</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3">
+                    <label class="form-check-label" for="inlineRadio3">بدون محدودیت</label>
+                  </div>
           </div>      
           </div>`,
         // '<input id="swal-input6" class="swal2-input" placeholder = "جنسیت>',
@@ -348,8 +418,16 @@ export default {
         preConfirm: () => {
           var title = document.getElementById("title").value;
           var content = document.getElementById("content").value;
+          var limitation = "";
+          if ($("#inlineRadio1").is(":checked")) {
+            limitation = "students";
+          } else if ($("#inlineRadio2").is(":checked")) {
+            limitation = "teachers";
+          } else if ($("#inlineRadio3").is(":checked")) {
+            limitation = "all";
+          }
           var ok = false;
-          if (title == "" || content == "") {
+          if (title == "" || content == "" || limitation == "") {
             setTimeout(() => {
               this.editCourse(course);
             }, 0);
@@ -359,7 +437,8 @@ export default {
           return {
             ok,
             title,
-            content
+            content,
+            limitation
           };
         }
       });
@@ -371,7 +450,8 @@ export default {
         .patch(`http://localhost:3000/api/course/edit`, {
           courseId: course._id,
           content: formValues.content,
-          title: formValues.title
+          title: formValues.title,
+          limitation: formValues.limitation
         })
         .then(res => {
           Object.keys(formValues).forEach(item => {
@@ -419,11 +499,12 @@ export default {
         return;
       }
       this.page--;
+      var query = `skip=${this.page * this.maxInPage}&limit=${this.maxInPage}`;
+      if (this.limit != "") {
+        query += `&select=${this.limit}`;
+      }
       this.axios
-        .post(
-          `http://localhost:3000/api/course/showall?skip=${this.page *
-            this.maxInPage}&limit=${this.maxInPage}`
-        )
+        .post(`http://localhost:3000/api/course/showall?${query}`)
         .then(res => {
           this.courses = res.data;
         })
@@ -436,11 +517,12 @@ export default {
         return;
       }
       this.page++;
+      var query = `skip=${this.page * this.maxInPage}&limit=${this.maxInPage}`;
+      if (this.limit != "") {
+        query += `&select=${this.limit}`;
+      }
       this.axios
-        .post(
-          `http://localhost:3000/api/course/showall?skip=${this.page *
-            this.maxInPage}&limit=${this.maxInPage}`
-        )
+        .post(`http://localhost:3000/api/course/showall?${query}`)
         .then(res => {
           this.courses = res.data;
         })
@@ -450,11 +532,12 @@ export default {
     },
     jumpTo(page) {
       this.page = page;
+      var query = `skip=${this.page * this.maxInPage}&limit=${this.maxInPage}`;
+      if (this.limit != "") {
+        query += `&select=${this.limit}`;
+      }
       this.axios
-        .post(
-          `http://localhost:3000/api/course/showall?skip=${this.page *
-            this.maxInPage}&limit=${this.maxInPage}`
-        )
+        .post(`http://localhost:3000/api/course/showall?${query}`)
         .then(res => {
           this.courses = res.data;
         })
@@ -466,8 +549,14 @@ export default {
       if (this.searchInput == "") {
         return alert("چیزی برای جستجو وجود ندارد");
       }
+      var query = "";
+      if (this.limit != "") {
+        query = `&select=${this.limit}`;
+      }
       this.axios
-        .get(`http://localhost:3000/api/course/find?title=${this.searchInput}`)
+        .get(
+          `http://localhost:3000/api/course/find?title=${this.searchInput}${query}`
+        )
         .then(res => {
           this.searchMode = true;
           if (this.temp == null) {
@@ -475,8 +564,6 @@ export default {
           }
           this.searchedCourses = res.data;
           this.courses = res.data;
-          // this.$refs["my-modal"].show();
-          // this.searchInput = "";
         })
         .catch(err => {
           console.log(err);
@@ -486,10 +573,57 @@ export default {
       this.courses = this.temp;
       this.searchMode = false;
       this.searchInput = "";
-    }
+      this.limitation(this.limit, true);
+    },
+    convert(x) {
+      if (x == "students") {
+        return "فقط برای دانشجویان";
+      }
+      if (x == "teachers") {
+        return "فقط برای اساتید";
+      }
+      return "بدون محدودیت";
+    },
+    limitation(limit = "", f = false) {
+      if (this.limit == limit && !f) {
+        return;
+      }
+      this.limit = limit;
+      if (this.searchMode) {
+        return this.searchCourses();
+      }
+      // this.searchMode=false
+      // this.searchInput=''
+
+      this.page = 0;
+      var query = "";
+      if (this.limit != "") {
+        query = `select=${limit}`;
+      }
+
+      this.axios
+        .get(`http://localhost:3000/api/course/count?${query}`)
+        .then(res => {
+          this.courseCount = res.data;
+        })
+        .catch(err => {
+          console.log(err);
+        });
+      this.axios
+        .post(
+          `http://localhost:3000/api/course/showall?skip=${this.page *
+            this.maxInPage}&limit=${this.maxInPage}&${query}`
+        )
+        .then(res => {
+          this.courses = res.data;
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    clicked() {}
   },
   mounted() {
-    // this.initCharts();
     this.axios
       .get(`http://localhost:3000/api/course/count`)
       .then(res => {
@@ -505,6 +639,14 @@ export default {
       )
       .then(res => {
         this.courses = res.data;
+        $("button")
+          .not("#fixedbutton")
+          .click(function() {
+            $("button")
+              .not("#fixedbutton")
+              .removeClass("active");
+            $(this).addClass("active");
+          });
       })
       .catch(err => {
         console.log(err);

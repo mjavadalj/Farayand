@@ -70,7 +70,7 @@
         iconName="flaticon-star"
         index="notifications"
         isHeader
-      />
+      />-->
       <NavLink
         :activeItem="activeItem"
         header="Components"
@@ -82,7 +82,7 @@
           { header: 'Icons', link: '/app/components/icons' },
           { header: 'Maps', link: '/app/components/maps' },
         ]"
-      /> -->
+      /> 
     </ul>
     
   </nav>

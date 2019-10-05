@@ -58,12 +58,13 @@
               >صادر نشده</button>
               <button
                 v-if="reg_lesson.passed"
+                @click="downloadCertificate(reg_lesson)"
                 data-v-17b74d76
                 type="button"
                 class="btn p-1 px-3 btn-xs btn-success lalezar"
               >صادر شده</button>
             </td>
-            <td>{{new Date(reg_lesson.date) | moment.(" jMMMM jDo YYYY, h:mm:ss a,fa")}}</td>
+            <td>{{new Date(reg_lesson.date)}}</td>
             <td>{{reg_lesson.reg_sessions.length}}</td>
             <td>{{reg_lesson.sessionLength}}</td>
             <td>{{reg_lesson.teacherName}}</td>
@@ -130,7 +131,10 @@ function initializationMessengerCode() {
   }.call(window));
 }
 /* eslint-enable */
-
+//user
+//5d8b01ad21f2fd2db8f9b917
+//teacher
+//5d8a5561acb6b226e8de83ae
 export default {
   data() {
     return {
@@ -149,14 +153,14 @@ export default {
       return false;
     },
     push(e,reg_lesson,index) {
-      if (e.target.nodeName=='I'){
+      if (e.target.nodeName=='I' ||e.target.nodeName=='BUTTON'){
         return
       }
       // global.courseId = course._id;
       global.lesson=reg_lesson
       global.index=index
       this.$router.push({
-        name: "quiz"
+        name: "teacherQuiz"
       });
     },
     search(e) {
@@ -187,7 +191,7 @@ export default {
         .then(result => {
           if (result.value) {
             var body={
-              userId:"5d8b01ad21f2fd2db8f9b917",
+              userId:"5d8a5561acb6b226e8de83ae",
               reg_lessonId:reg_lesson._id
             }
             this.axios.patch("http://localhost:3000/api/user/reg/delete",body)
@@ -201,6 +205,10 @@ export default {
             })
           }
         });
+    },
+    downloadCertificate(reg_lesson){
+      console.log(reg_lesson);
+      
     }
   },
   mounted() {
@@ -208,7 +216,7 @@ export default {
 
     this.axios
       .post(`http://localhost:3000/api/user/reg/show`, {
-        userId: "5d8b01ad21f2fd2db8f9b917"
+        userId: "5d8a5561acb6b226e8de83ae"
       })
       .then(res => {
         console.log("res.data");

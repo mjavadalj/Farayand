@@ -13,6 +13,7 @@ module.exports.addCourse = (req, res) => {
     date_jalali: moment(),
     title: req.body.title,
     content: req.body.content,
+    limitation: req.body.limitation,
     publishable: req.body.publishable,
     creator: req.body.creator
   })
@@ -26,11 +27,20 @@ module.exports.addCourse = (req, res) => {
 };
 
 module.exports.showAllCourses = (req, res) => {
-  find = {};
+  find = {
+    $and: []
+  };
   if (req.query.r == "!a") {
-    find = {
-      publishable: true
-    };
+    find.$and.push({ publishable: true });
+  }
+  if (req.query.select) {
+    find.$and.push({ limitation: req.query.select });
+  }
+  if (req.query.exception) {
+    find.$and.push({ limitation: { $ne:  req.query.exception } });
+  }
+  if (find.$and.length == 0) {
+    find = {};
   }
   Embed.find(find)
     .skip(parseInt(req.query.skip))
@@ -49,12 +59,19 @@ module.exports.showAllCourses = (req, res) => {
     });
 };
 module.exports.courseConut = (req, res) => {
-  find = {};
+  find = {
+    $and: []
+  };
   if (req.query.r == "!a") {
-    find = {
-      publishable: true
-    };
+    find.$and.push({ publishable: true });
   }
+  if (req.query.select) {
+    find.$and.push({ limitation: req.query.select });
+  }
+  if (find.$and.length == 0) {
+    find = {};
+  }
+  Embed.find(find);
   Embed.find(find)
     .count()
     .exec()
@@ -105,8 +122,8 @@ module.exports.editACourse = (req, res) => {
   if (req.body.content != undefined) newItems.content = req.body.content;
   if (req.body.publishable != undefined)
     newItems.publishable = req.body.publishable;
-  if (req.body.forAllUniversities != undefined)
-    newItems.forAllUniversities = req.body.forAllUniversities;
+  if (req.body.limitation != undefined)
+    newItems.limitation = req.body.limitation;
 
   Embed.findByIdAndUpdate(
     req.body.courseId,
@@ -160,14 +177,12 @@ module.exports.deleteTeacherFromCourse = (req, res) => {
     });
 };
 module.exports.searchCourse = (req, res) => {
-  var find = { title: { $regex: req.query.title, $options: "i" } };
-  if(req.query.r=='!a'){
-    find={
-      $and:[
-        { title: { $regex: req.query.title, $options: "i" } },
-        {publishable:true}
-      ]
-    }
+  var find = { $and: [{ title: { $regex: req.query.title, $options: "i" } }] };
+  if (req.query.r == "!a") {
+    find.$and.push({ publishable: true });
+  }
+  if (req.query.select) {
+    find.$and.push({ limitation: req.query.select });
   }
   Embed.find(find)
     .select("-lessons.sessions")

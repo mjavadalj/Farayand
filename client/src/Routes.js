@@ -24,25 +24,25 @@ import ChartsPage from "@/pages/Charts/Charts";
 import IconsPage from "@/pages/Icons/Icons";
 import NotificationsPage from "@/pages/Notifications/Notifications";
 //teacher
-import Teacher from "@/pages/teacher/teacher";
+import Teacher from "@/pages/admin/teacher";
 //certificate
-import Certificate from "@/pages/certificate/certificate";
+import Certificate from "@/pages/admin/certificate";
 //Admin course
-import Course from "@/pages/course/course";
-import TCourse from "@/pages/course/teacherCourse";
+import Course from "@/pages/admin/course";
+import ChosenCourses from "@/pages/teacher/chosenCourses";
 //Admin lesson
-import Lesson from "@/pages/lesson/lesson";
-import RgLesson from "@/pages/lesson/reg_lesson";
+import Lesson from "@/pages/admin/lesson";
+import RgLesson from "@/pages/student/reg_lesson";
 //Admin session
-import Session from "@/pages/session/session";
-
-import Student from "./pages/students/student.vue";
-import Question from "./pages/question/question.vue";
-import Home from "./pages/home/home.vue";
+import Session from "@/pages/admin/session";
+import Student from "./pages/admin/student.vue";
+import Question from "./pages/admin/question.vue";
+import Home from "./pages/student/home.vue";
 import Quiz from "./pages/quiz/quiz.vue";
-import Uni from "./pages/uni/uni.vue";
-import AdminMain from "./pages/main/adminMain.vue";
-import TPCourse from "./pages/course/teacherPublishableCourses.vue";
+import Uni from "./pages/admin/uni.vue";
+import AdminMain from "./pages/admin/adminMain.vue";
+import TPCourse from "./pages/teacher/teacherPublishableCourses.vue";
+import TeacherCourses from "./pages/teacher/teacherCourses.vue";
 
 Vue.use(Router);
 
@@ -53,6 +53,11 @@ export default new Router({
       path: "/login",
       name: "Login",
       component: Login
+    },
+    {
+      path: "/quiz",
+      name: "quiz",
+      component: Quiz
     },
     {
       path: "/error",
@@ -152,6 +157,16 @@ export default new Router({
       component: TeacherLayout,
       children: [
         {
+          path: "mylesson",
+          name: "mylesson",
+          component: RgLesson
+        },
+        {
+          path: "course",
+          name: "teacherCourses",
+          component: TeacherCourses
+        },
+        {
           path: "tpcourse",
           name: "tpcourse",
           component: TPCourse
@@ -169,7 +184,7 @@ export default new Router({
         {
           path: "mycourse",
           name: "mycourse",
-          component: TCourse
+          component: ChosenCourses
         },
         {
           path: "lesson/:title",
@@ -180,6 +195,16 @@ export default new Router({
           path: "session/:title",
           name: "tsession",
           component: Session
+        },
+        {
+          path: "/certificate",
+          name: "certificate",
+          component: Certificate
+        },
+        {
+          path: "/quiz",
+          name: "teacherQuiz",
+          component: Quiz
         }
       ]
     },
@@ -205,12 +230,12 @@ export default new Router({
         },
         {
           path: "/quiz",
-          name: "quiz",
+          name: "studentQuiz",
           component: Quiz
         },
         {
           path: "/certificate",
-          name: "certificate",
+          name: "tcertificate",
           component: Certificate
         }
       ]

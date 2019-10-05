@@ -50,6 +50,7 @@ router.patch("/edit", sessionController.editASession);
 router.patch("/delete", sessionController.deleteSingleSession);
 //delete all sessions
 router.patch("/deleteall", sessionController.deleteAllSessons);
+router.post("/checkquiz", sessionController.checkQuiz);
 
 router.post("/addFile", upload.single('file'), sessionController.addFile);
 
