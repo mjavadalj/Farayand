@@ -108,11 +108,11 @@
               >منتشر شده</button>
             </td>
             <td>{{convert(course.limitation)}}</td>
-            <td>{{course.date}}</td>
-            <td>{{course.lessons.length}}</td>
+            <td id="numeric-td">{{new Date(course.date) | moment("jYYYY/jM/jD")}}</td>
+            <td id="numeric-td">{{course.lessons.length}}</td>
             <td>{{course.creator.name}}</td>
             <td>{{course.title}}</td>
-            <td>{{index+(page*maxInPage)+1}}</td>
+            <td id="numeric-td">{{index+(page*maxInPage)+1}}</td>
           </tr>
         </tbody>
       </table>

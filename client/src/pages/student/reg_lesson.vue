@@ -64,7 +64,7 @@
                 class="btn p-1 px-3 btn-xs btn-success lalezar"
               >صادر شده</button>
             </td>
-            <td>{{new Date(reg_lesson.date)}}</td>
+            <td id="numeric-td">{{new Date(reg_lesson.date) | moment("jYYYY/jM/jD")}}</td>
             <td>{{reg_lesson.reg_sessions.length}}</td>
             <td>{{reg_lesson.sessionLength}}</td>
             <td>{{reg_lesson.teacherName}}</td>

@@ -53,14 +53,14 @@
                 style="font-size: 1.5em;"
               />
             </td>
-            <td>{{session.quizDate}}</td>
-            <td>{{session.secondChance}}</td>
-            <td>{{session.duration}}</td>
-            <td>{{session.minScore}}</td>
-            <td>{{session.questionLength}}</td>
+            <td id="numeric-td">{{new Date(session.quizDate) | moment("jYYYY/jM/jD")}}</td>
+            <td id="numeric-td">{{session.secondChance}}</td>
+            <td id="numeric-td">{{session.duration}}</td>
+            <td id="numeric-td">{{session.minScore}}</td>
+            <td id="numeric-td">{{session.questionLength}}</td>
             <!-- <td>{{session.userQCount}}</td> -->
             <td>{{session.title}}</td>
-            <td>{{index+1}}</td>
+            <td id="numeric-td">{{index+1}}</td>
           </tr>
         </tbody>
       </table>

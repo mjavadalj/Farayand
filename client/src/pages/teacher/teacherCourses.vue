@@ -35,11 +35,11 @@
         </thead>
         <tbody id="myTable">
           <tr v-for="(course,index) in courses" :key="course._id" @click="showModal($event,course)">
-            <td>{{course.date}}</td>
-            <td>{{course.lessons.length}}</td>
+            <td id="numeric-td">{{ new Date(course.date) | moment("jYYYY/jM/jD")}}</td>
+            <td id="numeric-td">{{course.lessons.length}}</td>
             <td>{{course.creator.name}}</td>
             <td>{{course.title}}</td>
-            <td>{{index+(page*maxInPage)+1}}</td>
+            <td id="numeric-td">{{index+(page*maxInPage)+1}}</td>
           </tr>
         </tbody>
       </table>
@@ -94,7 +94,7 @@
                 :key="lesson._id"
                 @click="lessonRegister(lesson)"
               >
-                <td>{{lesson.date}}</td>
+                <td id="numeric-td">{{ new Date(lesson.date) | moment("jYYYY/jM/jD")}}</td>
                 <td>{{lesson.sessionLength}}</td>
                 <td>{{lesson.title}}</td>
                 <td>{{index+1}}</td>

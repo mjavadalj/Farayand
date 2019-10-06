@@ -51,11 +51,11 @@
                 class="btn p-1 px-3 btn-xs btn-warning lalezar"
               >برای ثبت نام کلیک کنید</button>
             </td>
-            <td>{{course.date}}</td>
-            <td>{{course.lessons.length}}</td>
+            <td id="numeric-td">{{ new Date(course.date) | moment("jYYYY/jM/jD")}}</td>
+            <td id="numeric-td">{{course.lessons.length}}</td>
             <td>{{course.creator.name}}</td>
             <td>{{course.title}}</td>
-            <td>{{index+(page*maxInPage)+1}}</td>
+            <td id="numeric-td">{{index+(page*maxInPage)+1}}</td>
           </tr>
         </tbody>
       </table>
