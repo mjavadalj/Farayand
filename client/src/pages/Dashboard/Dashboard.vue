@@ -133,7 +133,7 @@
                   <td>{{row.email}}</td>
                   <td>{{row.product}}</td>
                   <td>{{row.price}}</td>
-                  <td>{{row.date}}</td>
+                  <td id="numeric-td">{{ new Date(row.date) | moment("jYYYY/jM/jD")}}</td>
                   <td>{{row.city}}</td>
                   <td>
                     <b-button

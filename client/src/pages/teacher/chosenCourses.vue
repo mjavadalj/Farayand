@@ -43,11 +43,11 @@
                 class="btn p-1 px-3 btn-xs btn-warning lalezar"
               >حذف</button>
             </td>
-            <td>{{course.date}}</td>
-            <td>{{course.lessonLength}}</td>
+            <td id="numeric-td">{{ new Date(course.date) | moment("jYYYY/jM/jD")}}</td>
+            <td id="numeric-td">{{course.lessonLength}}</td>
             <td>{{course.creator[0]}}</td>
             <td>{{course.title}}</td>
-            <td>{{index+1}}</td>
+            <td id="numeric-td">{{index+1}}</td>
           </tr>
         </tbody>
       </table>

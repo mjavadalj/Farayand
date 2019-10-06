@@ -57,12 +57,12 @@
               <td>
                 <button>x</button>
               </td>
-              <td>{{reg_session.score}}</td>
-              <td>{{reg_session.anotherChanceDate}}</td>
-              <td>{{reg_session.tryCount}}</td>
-              <td>{{reg_session.date}}</td>
+              <td id="numeric-td">{{reg_session.score}}</td>
+              <td id="numeric-td">{{reg_session.anotherChanceDate}}</td>
+              <td id="numeric-td">{{reg_session.tryCount}}</td>
+              <td id="numeric-td">{{ new Date(reg_session.date) | moment("jYYYY/jM/jD")}}</td>
               <td>{{reg_session.title}}</td>
-              <td>{{index+1}}</td>
+              <td id="numeric-td">{{index+1}}</td>
             </tr>
           </tbody>
         </table>
@@ -104,12 +104,12 @@
               <td>
                 <button @click="setQuizTime(index,session)">x</button>
               </td>
-              <td>پس از {{session.secondChance}} روز</td>
-              <td>{{duration(session.duration)}}</td>
-              <td>{{session.minScore}}</td>
-              <td>{{session.questionLength}}</td>
+              <td id="numeric-td">پس از {{session.secondChance}} روز</td>
+              <td id="numeric-td">{{duration(session.duration)}}</td>
+              <td id="numeric-td">{{session.minScore}}</td>
+              <td id="numeric-td">{{session.questionLength}}</td>
               <td>{{session.title}}</td>
-              <td>{{index+1}}</td>
+              <td id="numeric-td">{{index+1}}</td>
             </tr>
           </tbody>
         </table>

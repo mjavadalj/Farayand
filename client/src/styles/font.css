@@ -102,3 +102,9 @@ tbody {
 a{
   font-family: samin;
 }
+tbody{
+  font-family: samim !important;
+}
+#numeric-td{
+  font-family: yekan !important;
+}

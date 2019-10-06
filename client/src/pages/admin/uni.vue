@@ -49,7 +49,7 @@
             <td>{{uni.city}}</td>
             <td>{{uni.state}}</td>
             <td>{{uni.name}}</td>
-            <td>{{index+1}}</td>
+            <td id="numeric-td">{{index+1}}</td>
           </tr>
         </tbody>
       </table>

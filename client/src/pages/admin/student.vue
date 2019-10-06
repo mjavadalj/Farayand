@@ -85,11 +85,11 @@
               >فعال</button>
             </td>
             <td>{{user.email}}</td>
-            <td>{{user.date}}</td>
+            <td id="numeric-td">{{ new Date(user.date) | moment("jYYYY/jM/jD")}}</td>
             <td>{{retUni(user.university)}}</td>
             <td>{{user.username}}</td>
             <td>{{user.name}}</td>
-            <td>{{index+1}}</td>
+            <td id="numeric-td">{{index+1}}</td>
           </tr>
         </tbody>
       </table>
