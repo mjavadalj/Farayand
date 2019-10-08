@@ -6,7 +6,18 @@ const handler = (json, res, code) => {
 const mong = id => {
   return mongoose.Types.ObjectId(id);
 };
-const Cid = "5d9b6c7c7fd485019064660e";
+const Cid = "5d9c1abe52cf8b11e4534099";
+module.exports.showAll = (req, res) => {
+  Geo.find()
+    .sort("name")
+    .exec()
+    .then(result => {
+      handler(result, res, 200);
+    })
+    .catch(err => {
+      handler(err, res, 500);
+    });
+};
 module.exports.addCountry = (req, res) => {
   const geo = new Geo({
     _id: mongoose.Types.ObjectId(),
@@ -21,11 +32,13 @@ module.exports.addCountry = (req, res) => {
     });
 };
 module.exports.addProvince = (req, res) => {
-  id = Cid;
-  Geo.findByIdAndUpdate(
-    id,
+  find = {
+    $and: [{ _id: Cid }, { "province.name": { $ne: req.body.name } }]
+  };
+  Geo.findOneAndUpdate(
+    find,
     {
-      $addToSet: {
+      $push: {
         province: {
           name: req.body.name
         }
@@ -43,16 +56,94 @@ module.exports.addProvince = (req, res) => {
       handler(err, res, 500);
     });
 };
-module.exports.addCity = (req, res) => {
+module.exports.deleteProvince = (req, res) => {
+  id = Cid;
+  Geo.findByIdAndUpdate(
+    id,
+    {
+      $pull: {
+        province: {
+          _id: mong(req.body.provinceId)
+        }
+      }
+    },
+    {
+      new: true
+    }
+  )
+    .exec()
+    .then(result => {
+      handler(result, res, 200);
+    })
+    .catch(err => {
+      handler(err, res, 500);
+    });
+};
+module.exports.editProvince = (req, res) => {
   find = {
     $and: [{ _id: Cid }, { "province._id": mong(req.body.provinceId) }]
   };
   Geo.findOneAndUpdate(
     find,
     {
-      $addToSet: {
+      $set: {
+        "province.$": {
+          name: req.body.name,
+          _id: mong(req.body.provinceId)
+        }
+      }
+    },
+    {
+      new: true
+    }
+  )
+    .exec()
+    .then(result => {
+      handler(result, res, 200);
+    })
+    .catch(err => {
+      handler(err, res, 500);
+    });
+};
+module.exports.addCity = (req, res) => {
+  find = {
+    $and: [
+      { _id: Cid },
+      { "province._id": mong(req.body.provinceId) },
+      { "province.city.name": { $ne: req.body.name } }
+    ]
+  };
+  Geo.findOneAndUpdate(
+    find,
+    {
+      $push: {
         "province.$.city": {
           name: req.body.name
+        }
+      }
+    },
+    {
+      new: true
+    }
+  )
+    .exec()
+    .then(result => {
+      handler(result, res, 200);
+    })
+    .catch(err => {
+      handler(err, res, 500);
+    });
+};
+module.exports.deleteCity = (req, res) => {
+  find = {
+    $and: [{ "province.city._id": mong(req.body.cityId) }]
+  };
+  Geo.findOneAndUpdate(
+    find,
+    {
+      $pull: {
+        "province.$.city": {
+          _id: mong(req.body.cityId)
         }
       }
     },
