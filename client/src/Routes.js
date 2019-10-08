@@ -55,11 +55,6 @@ export default new Router({
       component: Login
     },
     {
-      path: "/quiz",
-      name: "quiz",
-      component: Quiz
-    },
-    {
       path: "/error",
       name: "Error",
       component: ErrorPage
@@ -232,11 +227,6 @@ export default new Router({
           path: "/quiz",
           name: "studentQuiz",
           component: Quiz
-        },
-        {
-          path: "/certificate",
-          name: "tcertificate",
-          component: Certificate
         }
       ]
     }

@@ -51,7 +51,7 @@
                 class="btn p-1 px-3 btn-xs btn-warning lalezar"
               >برای ثبت نام کلیک کنید</button>
             </td>
-            <td id="numeric-td">{{ new Date(course.date) | moment("jYYYY/jM/jD")}}</td>
+            <td id="numeric-td">{{ new Date(course.date) | moment("jYYYY/jM/jD | HH:mm ")}}</td>
             <td id="numeric-td">{{course.lessons.length}}</td>
             <td>{{course.creator.name}}</td>
             <td>{{course.title}}</td>
@@ -152,7 +152,8 @@ export default {
       isReg: {},
       searchInput: "",
       searchMode: false,
-      temp: null
+      temp: null,
+      user: {}
     };
   },
   methods: {
@@ -243,9 +244,9 @@ export default {
         });
     },
     checkRegistration(course) {
-      //5d8a5561acb6b226e8de83ae
+      //5d983723f0fd300f6068a9ee
       var find = course.user.find(obj => {
-        return obj._id == "5d8a5561acb6b226e8de83ae";
+        return obj._id == this.user.id
       });
       if (find) {
         this.isReg[course._id] = true;
@@ -256,7 +257,7 @@ export default {
       this.axios
         .patch(`http://localhost:3000/api/course/user/add`, {
           courseId: course._id,
-          teacherId: "5d8a5561acb6b226e8de83ae"
+          teacherId: this.user.id
         })
         .then(res => {
           console.log("res.data");
@@ -278,7 +279,9 @@ export default {
         return alert("چیزی برای جستجو وجود ندارد");
       }
       this.axios
-        .get(`http://localhost:3000/api/course/find?title=${this.searchInput}&r=!a`)
+        .get(
+          `http://localhost:3000/api/course/find?title=${this.searchInput}&r=!a`
+        )
         .then(res => {
           this.searchMode = true;
           if (this.temp == null) {
@@ -299,7 +302,8 @@ export default {
     }
   },
   mounted() {
-    // this.initCharts();
+    this.user.id = this.$cookie.get('id');
+    //TODO: if not cookie redirect login
     this.axios
       .get(`http://localhost:3000/api/course/count?r=!a`)
       .then(res => {

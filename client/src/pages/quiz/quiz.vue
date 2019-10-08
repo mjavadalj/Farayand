@@ -58,9 +58,9 @@
                 <button>x</button>
               </td>
               <td id="numeric-td">{{reg_session.score}}</td>
-              <td id="numeric-td">{{reg_session.anotherChanceDate}}</td>
+              <td id="numeric-td">{{new Date(reg_session.anotherChanceDate) | moment("jYYYY/jM/jD | HH:mm ")}}</td>
               <td id="numeric-td">{{reg_session.tryCount}}</td>
-              <td id="numeric-td">{{ new Date(reg_session.date) | moment("jYYYY/jM/jD")}}</td>
+              <td id="numeric-td">{{ new Date(reg_session.date) | moment("jYYYY/jM/jD | HH:mm ")}}</td>
               <td>{{reg_session.title}}</td>
               <td id="numeric-td">{{index+1}}</td>
             </tr>
@@ -263,7 +263,8 @@ export default {
       lessonId: null,
       sessions: null,
       reg_sessions: null,
-      lock: true
+      lock: true,
+      user: {}
     };
   },
   methods: {
@@ -318,7 +319,7 @@ export default {
       if (session.questionLength == 0) {
         this.axios
           .patch(`http://localhost:3000/api/user/session/register`, {
-            userId: "5d8a5561acb6b226e8de83ae",
+            userId: this.user.id,
             reg_lessonId: this.reg_lesson._id,
             sessionId: session._id,
             title: session.title,
@@ -340,7 +341,7 @@ export default {
       } else {
         this.axios
           .patch(`http://localhost:3000/api/user/session/register`, {
-            userId: "5d8a5561acb6b226e8de83ae",
+            userId: this.user.id,
             reg_lessonId: this.reg_lesson._id,
             sessionId: session._id,
             title: session.title,
@@ -377,14 +378,14 @@ export default {
       } else {
         this.axios
           .patch(`http://localhost:3000/api/user/setcertificate`, {
-            userId: "5d8a5561acb6b226e8de83ae",
+            userId: this.user.id,
             reg_lessonId: this.reg_lesson._id
           })
           .then(res => {
             this.reg_lesson.passed = true;
           })
           .catch(err => {
-            alert('باید در تمام جلسات پذیرفته شوید')
+            alert("باید در تمام جلسات پذیرفته شوید");
           });
 
         //TODO: certificate
@@ -458,7 +459,7 @@ export default {
             var passed = res1.data.score >= session.minScore;
             this.axios
               .patch(`http://localhost:3000/api/user/session/complete`, {
-                userId: "5d8a5561acb6b226e8de83ae",
+                userId: this.user.id,
                 reg_lessonId: this.reg_lesson._id,
                 reg_sessionId: reg_session._id,
                 passed: passed,
@@ -511,6 +512,8 @@ export default {
     }
   },
   mounted() {
+    this.user.id = this.$cookie.get('id');
+    //TODO: if not cookie redirect login
     if (global == undefined) {
       this.$router.push("/teacher");
     }

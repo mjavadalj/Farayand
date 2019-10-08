@@ -48,7 +48,7 @@
                 style="font-size: 1.5em;"
               />
             </td>
-            <td id="numeric-td">{{ new Date(lesson.date) | moment("jYYYY/jM/jD")}}</td>
+            <td id="numeric-td">{{ new Date(lesson.date) | moment("jYYYY/jM/jD | HH:mm ")}}</td>
             <td id="numeric-td">{{lesson.sessionLength}}</td>
             <td>{{lesson.title}}</td>
             <td id="numeric-td">{{index+1}}</td>

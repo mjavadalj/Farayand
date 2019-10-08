@@ -242,10 +242,10 @@ export default {
     // this.initializationMessengerCode();
     // this.initCharts();
     //mohammad
-    //5d8b01ad21f2fd2db8f9b917
+    //5d983785f0fd300f6068a9ef
     this.axios
       .post(`http://localhost:3000/api/user/show`, {
-        userId: "5d8b01ad21f2fd2db8f9b917"
+        userId: this.$cookie.get('id')
       })
       .then(res => {
         this.user = res.data;

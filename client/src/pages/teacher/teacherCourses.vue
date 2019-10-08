@@ -2,7 +2,7 @@
   <div>
     <b-breadcrumb>
       <b-breadcrumb-item>راهنما</b-breadcrumb-item>
-      <b-breadcrumb-item active> انتخاب درس </b-breadcrumb-item>
+      <b-breadcrumb-item active>انتخاب درس</b-breadcrumb-item>
     </b-breadcrumb>
     <div class="input-group mb-3">
       <div style="cursor: pointer;" class="input-group-prepend" @click="searchCourses">
@@ -35,7 +35,7 @@
         </thead>
         <tbody id="myTable">
           <tr v-for="(course,index) in courses" :key="course._id" @click="showModal($event,course)">
-            <td id="numeric-td">{{ new Date(course.date) | moment("jYYYY/jM/jD")}}</td>
+            <td id="numeric-td">{{ new Date(course.date) | moment("jYYYY/jM/jD | HH:mm ")}}</td>
             <td id="numeric-td">{{course.lessons.length}}</td>
             <td>{{course.creator.name}}</td>
             <td>{{course.title}}</td>
@@ -94,7 +94,7 @@
                 :key="lesson._id"
                 @click="lessonRegister(lesson)"
               >
-                <td id="numeric-td">{{ new Date(lesson.date) | moment("jYYYY/jM/jD")}}</td>
+                <td id="numeric-td">{{ new Date(lesson.date) | moment("jYYYY/jM/jD | HH:mm ")}}</td>
                 <td>{{lesson.sessionLength}}</td>
                 <td>{{lesson.title}}</td>
                 <td>{{index+1}}</td>
@@ -173,7 +173,8 @@ export default {
       searchMode: false,
       temp: null,
       lessons: null,
-      courseSelected: null
+      courseSelected: null,
+      user: {}
     };
   },
   methods: {
@@ -325,7 +326,7 @@ export default {
         .then(result => {
           if (result.value) {
             var body = {
-              userId: "5d8a5561acb6b226e8de83ae",
+              userId: this.user.id,
               courseTitle: this.courseSelected.title,
               lessonTitle: lesson.title,
               teacherName: this.courseSelected.creator.name,
@@ -362,7 +363,8 @@ export default {
     }
   },
   mounted() {
-    // this.initCharts();
+    this.user.id = this.$cookie.get('id');
+    //TODO: if not cookie redirect login// this.initCharts();
     this.axios
       .get(`http://localhost:3000/api/course/count?r=!a`)
       .then(res => {

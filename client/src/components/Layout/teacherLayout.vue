@@ -42,6 +42,9 @@ export default {
     }),
   },
   created() {
+    //TODO: check role
+    this.$cookie.set('id', '5d983723f0fd300f6068a9ee');
+    this.$cookie.set('role', 'teacher');
     const staticSidebar = JSON.parse(localStorage.getItem('sidebarStatic'));
 
     if (staticSidebar) {

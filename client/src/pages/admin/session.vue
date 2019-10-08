@@ -53,7 +53,7 @@
                 style="font-size: 1.5em;"
               />
             </td>
-            <td id="numeric-td">{{new Date(session.quizDate) | moment("jYYYY/jM/jD")}}</td>
+            <td id="numeric-td">{{new Date(session.quizDate) | moment("jYYYY/jM/jD | HH:mm ")}}</td>
             <td id="numeric-td">{{session.secondChance}}</td>
             <td id="numeric-td">{{session.duration}}</td>
             <td id="numeric-td">{{session.minScore}}</td>
