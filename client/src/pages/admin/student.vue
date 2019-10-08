@@ -85,7 +85,7 @@
               >فعال</button>
             </td>
             <td>{{user.email}}</td>
-            <td id="numeric-td">{{ new Date(user.date) | moment("jYYYY/jM/jD")}}</td>
+            <td id="numeric-td">{{ new Date(user.date) | moment("jYYYY/jM/jD | HH:mm ")}}</td>
             <td>{{retUni(user.university)}}</td>
             <td>{{user.username}}</td>
             <td>{{user.name}}</td>

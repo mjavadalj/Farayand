@@ -316,6 +316,10 @@ module.exports.checkQuiz = (req, res) => {
   ])
     .exec()
     .then(result => {
+      Qlength=result[0].userQCount
+      if (result[0].userQCount>result[0].questions.length){
+        Qlength=result[0].questions.length
+      }
       correctAnswer = 0;
       answerBody = req.body.answerBody;
       Object.keys(answerBody).forEach(id => {
@@ -326,7 +330,7 @@ module.exports.checkQuiz = (req, res) => {
         });
       });
       handler(
-        { score: Math.ceil((correctAnswer / result[0].userQCount) * 100) },
+        { score: Math.ceil((correctAnswer / Qlength) * 100) },
         res,
         200
       );

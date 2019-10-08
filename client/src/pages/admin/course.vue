@@ -108,7 +108,7 @@
               >منتشر شده</button>
             </td>
             <td>{{convert(course.limitation)}}</td>
-            <td id="numeric-td">{{new Date(course.date) | moment("jYYYY/jM/jD")}}</td>
+            <td id="numeric-td">{{new Date(course.date) | moment("jYYYY/jM/jD | HH:mm ")}}</td>
             <td id="numeric-td">{{course.lessons.length}}</td>
             <td>{{course.creator.name}}</td>
             <td>{{course.title}}</td>
@@ -327,7 +327,7 @@ export default {
       }
       this.axios
         .post(`http://localhost:3000/api/course/add`, {
-          creator: "5d8a50c5e8538c32f480c3fb",
+          creator: "5d997314a2779f20c4688d5a",
           title: formValues2.title,
           content: formValues2.content,
           limitation: formValues2.limitation
@@ -624,6 +624,8 @@ export default {
     clicked() {}
   },
   mounted() {
+  },
+  created() {
     this.axios
       .get(`http://localhost:3000/api/course/count`)
       .then(res => {
@@ -638,7 +640,7 @@ export default {
           this.maxInPage}&limit=${this.maxInPage}`
       )
       .then(res => {
-        this.courses = res.data;
+        this.courses = res.data;        
         $("button")
           .not("#fixedbutton")
           .click(function() {
@@ -651,9 +653,6 @@ export default {
       .catch(err => {
         console.log(err);
       });
-  },
-  created() {
-    // this.initializationMessengerCode();
   }
 };
 </script>

@@ -43,7 +43,7 @@
                 class="btn p-1 px-3 btn-xs btn-warning lalezar"
               >حذف</button>
             </td>
-            <td id="numeric-td">{{ new Date(course.date) | moment("jYYYY/jM/jD")}}</td>
+            <td id="numeric-td">{{ new Date(course.date) | moment("jYYYY/jM/jD | HH:mm ")}}</td>
             <td id="numeric-td">{{course.lessonLength}}</td>
             <td>{{course.creator[0]}}</td>
             <td>{{course.title}}</td>
@@ -113,7 +113,8 @@ export default {
     return {
       teacher: null,
       locationClasses: "messenger-fixed messenger-on-bottom messenger-on-right",
-      courses: null
+      courses: null,
+      user: null
     };
   },
   methods: {
@@ -170,7 +171,7 @@ export default {
             this.axios
               .patch(`http://localhost:3000/api/course/user/delete`, {
                 courseId: course._id,
-                teacherId: "5d8a5561acb6b226e8de83ae"
+                teacherId: this.user.id
               })
               .then(res => {
                 this.courses.splice(index, 1);
@@ -183,9 +184,12 @@ export default {
     }
   },
   mounted() {
+    this.user = {};
+    this.user.id = this.$cookie.get('id');
+    //TODO: if not cookie redirect login
     this.axios
       .post(`http://localhost:3000/api/user/course/showall`, {
-        user: "5d8a5561acb6b226e8de83ae"
+        user: this.user.id
       })
       .then(res => {
         console.log("res.data");
@@ -195,9 +199,10 @@ export default {
       .catch(err => {
         console.log(err);
       });
+    //TODO: delete below
     this.axios
       .post(`http://localhost:3000/api/user/show`, {
-        userId: "5d8a50c5e8538c32f480c3fb"
+        userId: "5d997314a2779f20c4688d5a"
       })
       .then(res => {
         this.teacher = res.data;

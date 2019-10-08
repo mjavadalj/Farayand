@@ -95,7 +95,7 @@
               >فعال</button>
             </td>
             <td>{{teacher.email}}</td>
-            <td id="numeric-td">{{ new Date(teacher.date) | moment("jYYYY/jM/jD")}}</td>
+            <td id="numeric-td">{{ new Date(teacher.date) | moment("jYYYY/jM/jD | HH:mm ")}}</td>
             <td>
               <div v-for="(uni,uniIndex) in teacher.university" :key="uni._id">
                 <p class="mb-0">

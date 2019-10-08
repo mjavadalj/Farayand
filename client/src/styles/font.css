@@ -39,18 +39,18 @@
   src: url("../fonts/BYekan.woff");
 }
 @font-face {
-  font-family: "samin";
+  font-family: "samim";
   src: url("../fonts/Samim.woff2");
 }
 @font-face {
-  font-family: "saminb";
+  font-family: "samimb";
   src: url("../fonts/Samim-Bold.woff2");
 }
-.samin {
-  font-family: samin;
+.samim {
+  font-family: samim;
 }
-.saminb {
-  font-family: saminb;
+.samimb {
+  font-family: samimb;
 }
 .iransans {
   font-family: iransans;
@@ -96,11 +96,11 @@ tbody {
 }
 .breadcrumb
 {
-  font-family: samin;
+  font-family: samim;
 
 }
 a{
-  font-family: samin;
+  font-family: samim;
 }
 tbody{
   font-family: samim !important;

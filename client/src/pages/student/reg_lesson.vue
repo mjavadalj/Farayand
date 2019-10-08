@@ -64,7 +64,7 @@
                 class="btn p-1 px-3 btn-xs btn-success lalezar"
               >صادر شده</button>
             </td>
-            <td id="numeric-td">{{new Date(reg_lesson.date) | moment("jYYYY/jM/jD")}}</td>
+            <td id="numeric-td">{{new Date(reg_lesson.date) | moment("jYYYY/jM/jD | HH:mm ")}}</td>
             <td>{{reg_lesson.reg_sessions.length}}</td>
             <td>{{reg_lesson.sessionLength}}</td>
             <td>{{reg_lesson.teacherName}}</td>
@@ -134,12 +134,13 @@ function initializationMessengerCode() {
 //user
 //5d8b01ad21f2fd2db8f9b917
 //teacher
-//5d8a5561acb6b226e8de83ae
+//5d983723f0fd300f6068a9ee
 export default {
   data() {
     return {
       locationClasses: "messenger-fixed messenger-on-bottom messenger-on-right",
-      reg_lessons: null
+      reg_lessons: null,
+      user: {}
     };
   },
   methods: {
@@ -152,16 +153,24 @@ export default {
       });
       return false;
     },
-    push(e,reg_lesson,index) {
-      if (e.target.nodeName=='I' ||e.target.nodeName=='BUTTON'){
-        return
+    push(e, reg_lesson, index) {
+      if (e.target.nodeName == "I" || e.target.nodeName == "BUTTON") {
+        return;
       }
+      var role = this.$cookie.get("role");
       // global.courseId = course._id;
-      global.lesson=reg_lesson
-      global.index=index
-      this.$router.push({
-        name: "teacherQuiz"
-      });
+      global.lesson = reg_lesson;
+      global.index = index;
+      if (role == "teacher") {
+        this.$router.push({
+          name: "teacherQuiz"
+        });
+      }
+      else if (role == "student") {
+        this.$router.push({
+          name: "studentQuiz"
+        });
+      }
     },
     search(e) {
       var value = $("#myInput")
@@ -175,9 +184,8 @@ export default {
             .indexOf(value) > -1
         );
       });
-      console.log(value);
     },
-    deleteRegLesson(reg_lesson,index){
+    deleteRegLesson(reg_lesson, index) {
       this.$swal
         .fire({
           title: "Are you sure?",
@@ -190,33 +198,32 @@ export default {
         })
         .then(result => {
           if (result.value) {
-            var body={
-              userId:"5d8a5561acb6b226e8de83ae",
-              reg_lessonId:reg_lesson._id
-            }
-            this.axios.patch("http://localhost:3000/api/user/reg/delete",body)
-            .then(res=>{
-              this.reg_lessons=res.data.reg_lessons
-              
-            })
-            .catch(err=>{
-              console.log(err);
-              
-            })
+            var body = {
+              userId: this.user.id,
+              reg_lessonId: reg_lesson._id
+            };
+            this.axios
+              .patch("http://localhost:3000/api/user/reg/delete", body)
+              .then(res => {
+                this.reg_lessons = res.data.reg_lessons;
+              })
+              .catch(err => {
+                console.log(err);
+              });
           }
         });
     },
-    downloadCertificate(reg_lesson){
+    downloadCertificate(reg_lesson) {
       console.log(reg_lesson);
-      
     }
   },
   mounted() {
     // this.initCharts();
-
+    this.user.id = this.$cookie.get("id");
+    //TODO: if not cookie redirect login
     this.axios
       .post(`http://localhost:3000/api/user/reg/show`, {
-        userId: "5d8a5561acb6b226e8de83ae"
+        userId: this.user.id
       })
       .then(res => {
         console.log("res.data");

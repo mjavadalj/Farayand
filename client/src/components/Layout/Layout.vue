@@ -42,6 +42,7 @@ export default {
     }),
   },
   created() {
+    //TODO: check role
     const staticSidebar = JSON.parse(localStorage.getItem('sidebarStatic'));
 
     if (staticSidebar) {
