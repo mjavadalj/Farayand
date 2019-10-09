@@ -46,6 +46,14 @@
   font-family: "samimb";
   src: url("../fonts/Samim-Bold.woff2");
 }
+@font-face {
+  font-family: "xtx";
+  src: url("../fonts/XTX-FNT-XEROSANS-BLACK.woff");
+}
+@font-face {
+  font-family: "xtx-b";
+  src: url("../fonts/XTX-FNT-XEROSANS-BOLD.woff");
+}
 .samim {
   font-family: samim;
 }
@@ -103,7 +111,7 @@ a{
   font-family: samim;
 }
 tbody{
-  font-family: samim !important;
+  font-family: xtx-b !important;
 }
 #numeric-td{
   font-family: yekan !important;
