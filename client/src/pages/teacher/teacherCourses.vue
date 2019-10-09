@@ -70,7 +70,7 @@
       </button>
     </div>
     <div id="modaaal">
-      <b-modal id="my-modal" ref="my-modal" hide-footer title>
+      <b-modal id="my-modal" ref="my-modal" scrollable  hide-footer title>
         <div class="d-block text-center lalezar">
           <h3>درس را انتخاب کنید</h3>
         </div>

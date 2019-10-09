@@ -65,8 +65,8 @@
               >صادر شده</button>
             </td>
             <td id="numeric-td">{{new Date(reg_lesson.date) | moment("jYYYY/jM/jD | HH:mm ")}}</td>
-            <td>{{reg_lesson.reg_sessions.length}}</td>
-            <td>{{reg_lesson.sessionLength}}</td>
+            <td id="numeric-td">{{reg_lesson.reg_sessions.length}}</td>
+            <td id="numeric-td">{{reg_lesson.sessionLength}}</td>
             <td>{{reg_lesson.teacherName}}</td>
             <td>{{reg_lesson.lessonTitle}}</td>
             <td>{{reg_lesson.courseTitle}}</td>

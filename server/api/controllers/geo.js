@@ -73,7 +73,8 @@ module.exports.showAllCitiesOfProvince = (req, res) => {
 };
 module.exports.addCountry = (req, res) => {
   const geo = new Geo({
-    _id: mongoose.Types.ObjectId(),
+    //TODO: handle this
+    _id: mong("5d9c1abe52cf8b11e4534099"),
     country: req.body.country
   })
     .save()
@@ -103,7 +104,7 @@ module.exports.addProvince = (req, res) => {
   )
     .exec()
     .then(result => {
-      handler(result.province[result.province.length-1], res, 200);
+      handler(result.province[result.province.length - 1], res, 200);
     })
     .catch(err => {
       handler(err, res, 500);
@@ -207,6 +208,37 @@ module.exports.deleteCity = (req, res) => {
     .exec()
     .then(result => {
       handler(result, res, 200);
+    })
+    .catch(err => {
+      handler(err, res, 500);
+    });
+};
+module.exports.editCity = (req, res) => {
+  find = {
+    "province.city._id": mong(req.body.cityId)
+  };
+  Geo.findOneAndUpdate(
+    find,
+    {
+      $set: {
+        "province.$[].city.$[elem]": {
+          _id: mong(req.body.cityId),
+          name: req.body.name
+        }
+      }
+    },
+    {
+      new: true,
+      arrayFilters: [{ "elem._id": mong(req.body.cityId) }]
+    }
+  )
+    .exec()
+    .then(result => {
+      if (result) {
+        handler({name:req.body.name,_id:req.body.cityId}, res, 200);
+      } else {
+        handler({mes:"nack"}, res, 500);
+      }
     })
     .catch(err => {
       handler(err, res, 500);

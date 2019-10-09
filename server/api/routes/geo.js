@@ -20,6 +20,8 @@ router.patch('/province/edit', geoController.editProvince);
 router.post('/city/add', geoController.addCity);
 //delete city
 router.patch('/city/delete', geoController.deleteCity);
+//edit city
+router.patch('/city/edit', geoController.editCity);
 //delete all
 router.delete('/deleteall', geoController.deleteAll);
 module.exports = router;

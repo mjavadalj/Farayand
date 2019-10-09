@@ -43,7 +43,7 @@ export default {
   },
   created() {
     //TODO: check role
-    this.$cookie.set('id', '5d983785f0fd300f6068a9ef');
+    this.$cookie.set('id', '5d8b01ad21f2fd2db8f9b917');
     this.$cookie.set('role', 'student');
     const staticSidebar = JSON.parse(localStorage.getItem('sidebarStatic'));
 

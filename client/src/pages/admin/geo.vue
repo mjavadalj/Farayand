@@ -70,9 +70,14 @@
       <i class="fa fa-plus" />
     </button>
     <div id="modaaal">
-      <b-modal id="my-modal" ref="my-modal" hide-footer title>
+      <b-modal id="my-modal" ref="my-modal" scrollable hide-footer title>
+        <template v-slot:modal-header="{ close }">
+          <b-button size="sm" variant="outline-danger" @click="addCity('',selectedProvince)">+</b-button>
+        </template>
         <div class="d-block text-center lalezar">
-          <h3>لیست شهر ها</h3>
+          <span>
+            <h3>لیست شهر ها</h3>
+          </span>
         </div>
         <div class="input-group mb-3">
           <div class="input-group-prepend">
@@ -107,8 +112,16 @@
             <tbody id="myTable2">
               <tr v-for="(city,index) in cities" :key="city._id">
                 <td>
-                  <i class="fa fa-remove action-icon" style="font-size: 1.5em;" />
-                  <i class="fa fa-edit action-icon" style="font-size: 1.5em;" />
+                  <i
+                    @click="deleteCity(city)"
+                    class="fa fa-remove action-icon"
+                    style="font-size: 1.5em;"
+                  />
+                  <i
+                    @click="editCity(city)"
+                    class="fa fa-edit action-icon"
+                    style="font-size: 1.5em;"
+                  />
                 </td>
                 <td>{{city.name}}</td>
                 <td>{{index+1}}</td>
@@ -138,7 +151,8 @@ export default {
       users: [],
       selectedUser: null,
       provinces: null,
-      cities: null
+      cities: null,
+      selectedProvince: null
     };
   },
 
@@ -193,6 +207,7 @@ export default {
         })
         .then(res => {
           this.$refs["my-modal"].show();
+          this.selectedProvince = province;
           this.cities = res.data;
         })
         .catch(err => {
@@ -372,7 +387,7 @@ export default {
       this.axios
         .patch(`http://localhost:3000/api/geo/province/edit`, {
           name: formValues2.name,
-          provinceId:province._id
+          provinceId: province._id
         })
         .then(res => {
           this.$swal.fire({
@@ -380,13 +395,14 @@ export default {
             title: "موفق",
             text: "استان با موفقیت ویرایش شد"
           });
-          province.name=formValues2.name
+          province.name = formValues2.name;
         })
         .catch(err => {
           console.log(err);
         });
     },
-    async addCity(name = "",province) {
+    async addCity(name = "", province) {
+      this.hideModal()
       const { value: formValues2 } = await this.$swal.fire({
         html: `
         <div class="col-X-6">
@@ -415,7 +431,7 @@ export default {
           var ok = false;
           if (name == "") {
             setTimeout(() => {
-              this.addProvince(name,province);
+              this.addProvince(name, province);
             }, 0);
           } else {
             ok = true;
@@ -432,7 +448,7 @@ export default {
       this.axios
         .post(`http://localhost:3000/api/geo/city/add`, {
           name: formValues2.name,
-          provinceId:province._id
+          provinceId: province._id
         })
         .then(res => {
           this.$swal.fire({
@@ -440,7 +456,100 @@ export default {
             title: "موفق",
             text: "شهر با موفقیت ثبت شد"
           });
-          // console.log(res.data);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    deleteCity(city) {
+      this.$swal
+        .fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, delete it!"
+        })
+        .then(result => {
+          if (result.value) {
+            this.axios
+              .patch(`http://localhost:3000/api/geo/city/delete`, {
+                cityId: city._id
+              })
+              .then(res => {
+                let index = this.cities.indexOf(city);
+                this.cities.splice(index, 1);
+                this.$swal.fire({
+                  type: "success",
+                  title: "موفق",
+                  text: "شهر با موفقیت حذف شد"
+                });
+              })
+              .catch(err => {
+                console.log(err);
+              });
+          }
+        });
+    },
+    async editCity(city) {
+      this.hideModal();
+      const { value: formValues2 } = await this.$swal.fire({
+        html: `
+        <div style="z-index:10;" class="col-X-6">
+          <div class="card">
+          <div class="card-header">
+            <strong> ویرایش شهر</strong>
+          </div>
+          </br>
+          <div class="form-group">
+          <div class="">
+            <label for="title">نام شهر</label>
+                  <input
+                    value="${city.name}"
+                    type="text"
+                    id="name"
+                    name="name"
+                    placeholder="نام شهر را وارد کنید"
+                    class="form-control"
+                  />
+          </div>  
+          </div>   
+          </div>`,
+        focusConfirm: false,
+        preConfirm: () => {
+          var name = document.getElementById("name").value;
+          var ok = false;
+          if (name == "") {
+            setTimeout(() => {
+              this.editProvince(city);
+            }, 0);
+          } else {
+            ok = true;
+          }
+          return {
+            ok,
+            name
+          };
+        }
+      });
+      if (formValues2 == undefined || formValues2.ok == false) {
+        return;
+      }
+      this.axios
+        .patch(`http://localhost:3000/api/geo/city/edit`, {
+          name: formValues2.name,
+          cityId: city._id
+        })
+        .then(res => {
+          this.$swal.fire({
+            type: "success",
+            title: "موفق",
+            text: "شهر با موفقیت ویرایش شد"
+          });
+          city.name = formValues2.name;
+          this.showModal(this.selectedProvince);
         })
         .catch(err => {
           console.log(err);

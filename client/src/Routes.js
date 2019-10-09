@@ -44,12 +44,18 @@ import AdminMain from "./pages/admin/adminMain.vue";
 import TPCourse from "./pages/teacher/teacherPublishableCourses.vue";
 import TeacherCourses from "./pages/teacher/teacherCourses.vue";
 import Geo from "./pages/admin/geo.vue";
+import SignUp from "./pages/Login/signup.vue";
 
 Vue.use(Router);
 
 export default new Router({
   mode: "history",
   routes: [
+    {
+      path: "/signup",
+      name: "signup",
+      component: SignUp
+    },
     {
       path: "/login",
       name: "Login",
