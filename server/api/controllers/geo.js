@@ -18,6 +18,59 @@ module.exports.showAll = (req, res) => {
       handler(err, res, 500);
     });
 };
+module.exports.showAllProvinces = (req, res) => {
+  Geo.findOne()
+    .select("-province.city")
+    .exec()
+    .then(result => {
+      result.province.sort(function(a, b) {
+        if (a.name < b.name) {
+          return -1;
+        }
+        if (a.name > b.name) {
+          return 1;
+        }
+        return 0;
+      });
+      handler(result.province, res, 200);
+    })
+    .catch(err => {
+      handler(err, res, 500);
+    });
+};
+module.exports.showAllCitiesOfProvince = (req, res) => {
+  Geo.aggregate([
+    {
+      $unwind: "$province"
+    },
+    {
+      $match: {
+        "province._id": mong(req.body.provinceId)
+      }
+    },
+    {
+      $project: {
+        city: "$province.city"
+      }
+    }
+  ])
+    .exec()
+    .then(result => {
+      result[0].city.sort(function(a, b) {
+        if (a.name < b.name) {
+          return -1;
+        }
+        if (a.name > b.name) {
+          return 1;
+        }
+        return 0;
+      });
+      handler(result[0].city, res, 200);
+    })
+    .catch(err => {
+      handler(err, res, 500);
+    });
+};
 module.exports.addCountry = (req, res) => {
   const geo = new Geo({
     _id: mongoose.Types.ObjectId(),
@@ -50,7 +103,7 @@ module.exports.addProvince = (req, res) => {
   )
     .exec()
     .then(result => {
-      handler(result, res, 200);
+      handler(result.province[result.province.length-1], res, 200);
     })
     .catch(err => {
       handler(err, res, 500);

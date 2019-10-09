@@ -4,6 +4,10 @@ const geoController = require('../controllers/geo');
 
 //show all
 router.get('/showall', geoController.showAll)
+//show all provinces
+router.get('/province/showall', geoController.showAllProvinces)
+//show all cities
+router.post('/city/showall', geoController.showAllCitiesOfProvince)
 //Add new country
 router.post('/country/add', geoController.addCountry);
 //Add new province

@@ -43,6 +43,7 @@ import Uni from "./pages/admin/uni.vue";
 import AdminMain from "./pages/admin/adminMain.vue";
 import TPCourse from "./pages/teacher/teacherPublishableCourses.vue";
 import TeacherCourses from "./pages/teacher/teacherCourses.vue";
+import Geo from "./pages/admin/geo.vue";
 
 Vue.use(Router);
 
@@ -64,6 +65,11 @@ export default new Router({
       name: "Layout",
       component: Layout,
       children: [
+        {
+          path: "geo",
+          name: "geo",
+          component: Geo
+        },
         {
           path: "main",
           name: "adminMain",

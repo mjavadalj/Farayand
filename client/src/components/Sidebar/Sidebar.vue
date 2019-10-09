@@ -43,6 +43,13 @@
         index="uni"
         isHeader
       />
+      <NavLink
+        header="مدیریت استان ها"
+        link="/app/geo"
+        iconName="fa fa-university"
+        index="geo"
+        isHeader
+      />
       <!-- <NavLink
         header="Dashboard"
         link="/app/dashboard"
