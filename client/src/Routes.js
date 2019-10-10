@@ -45,6 +45,7 @@ import TPCourse from "./pages/teacher/teacherPublishableCourses.vue";
 import TeacherCourses from "./pages/teacher/teacherCourses.vue";
 import Geo from "./pages/admin/geo.vue";
 import SignUp from "./pages/Login/signup.vue";
+import Edit from "./pages/edit/edit.vue";
 
 Vue.use(Router);
 
@@ -164,6 +165,11 @@ export default new Router({
       component: TeacherLayout,
       children: [
         {
+          path: "edit",
+          name: "teacherEdit",
+          component: Edit
+        },
+        {
           path: "mylesson",
           name: "mylesson",
           component: RgLesson
@@ -220,6 +226,11 @@ export default new Router({
       name: "userLayout",
       component: UserLayout,
       children: [
+        {
+          path: "edit",
+          name: "studentEdit",
+          component: Edit
+        },
         {
           path: "main",
           name: "studentMain",

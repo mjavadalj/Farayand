@@ -46,6 +46,13 @@
         index="course"
         isHeader
       />
+      <NavLink
+        header="ویرایش اطلاعات"
+        link="/teacher/edit"
+        iconName="fa fa-edit"
+        index="edit"
+        isHeader
+      />
     </ul>
   </nav>
 </template>

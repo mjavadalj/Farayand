@@ -46,7 +46,7 @@
       <NavLink
         header="مدیریت استان ها"
         link="/app/geo"
-        iconName="fa fa-university"
+        iconName="fa fa-globe"
         index="geo"
         isHeader
       />

@@ -6,23 +6,24 @@
   >
     <header class="logo">
       <router-link to="/teacher">
-      پنل
+        پنل
         <span class="text-warning">دانشجو</span>
       </router-link>
     </header>
     <ul class="nav">
-      <NavLink
-        header="خانه"
-        link="/home"
-        iconName="fa fa-home"
-        index="course"
-        isHeader
-      />
+      <NavLink header="خانه" link="/home" iconName="fa fa-home" index="course" isHeader />
       <NavLink
         header="درس های ثبت نام شده"
         link="/mylesson"
         iconName="fa fa-list"
         index="course"
+        isHeader
+      />
+      <NavLink
+        header="ویرایش اطلاعات"
+        link="/edit"
+        iconName="fa fa-edit"
+        index="edit"
         isHeader
       />
       <!-- <NavLink
@@ -38,7 +39,7 @@
         iconName="flaticon-list"
         index="certificate"
         isHeader
-      /> -->
+      />-->
     </ul>
   </nav>
 </template>
