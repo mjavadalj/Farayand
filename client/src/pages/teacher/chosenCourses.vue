@@ -202,7 +202,7 @@ export default {
     //TODO: delete below
     this.axios
       .post(`http://localhost:3000/api/user/show`, {
-        userId: "5d8a50c5e8538c32f480c3fb"
+        userId: "5d997314a2779f20c4688d5a"
       })
       .then(res => {
         this.teacher = res.data;

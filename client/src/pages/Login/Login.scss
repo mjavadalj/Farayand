@@ -1,5 +1,18 @@
 @import "../../styles/app";
 
+.page-middle {
+  position: absolute;
+  left: 50%;
+  top:50%;
+  transform: translate(-50%, -50%);
+}
+figure:hover {
+  background-color: rgb(242, 243, 237);
+  cursor: pointer;
+}
+.refresh:hover{
+  cursor: pointer;
+}
 .login-page {
   padding-top: 20vh;
   // padding-left: 140vh;
