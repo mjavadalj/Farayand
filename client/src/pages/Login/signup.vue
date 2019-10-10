@@ -280,6 +280,8 @@ export default {
           return obj.name == uni.name;
         });
         if (!find) {
+          let index = this.universities.indexOf(uni);
+          this.universities.splice(index, 1);
           return this.selectedUniversities.push(uni);
         }
 
@@ -291,8 +293,9 @@ export default {
     },
     setUniForTeacher() {
       this.hideModal();
-      if (this.selectedUniversities.length==0){
-        return document.getElementById("uni").value = "دانشگاه خود را انتخاب کنید";
+      if (this.selectedUniversities.length == 0) {
+        return (document.getElementById("uni").value =
+          "دانشگاه خود را انتخاب کنید");
       }
       document.getElementById("uni").value = "";
       this.selectedUniversities.forEach((uni, index) => {
@@ -319,6 +322,7 @@ export default {
     removeTeacherUni(uni) {
       let index = this.selectedUniversities.indexOf(uni);
       this.selectedUniversities.splice(index, 1);
+      this.universities.push(uni)
     }
   },
   created() {
