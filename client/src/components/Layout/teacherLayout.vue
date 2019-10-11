@@ -45,7 +45,7 @@ export default {
     //TODO: check role
     //TODO: jome, inja cookie ro get kon, age rolesh ok nabood edame nade
  if(this.$jwt.decode(this.$cookie.get('authorization').role != "teacher")){
-      this.$router.push('/notFoundPage') // fix this later..idontknow
+      this.$router.push('/error') // fix this later..idontknow
     }
 
 
