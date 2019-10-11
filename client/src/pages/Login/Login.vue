@@ -49,7 +49,7 @@ export default {
     login() {
       const username = this.$refs.username.value;
       const password = this.$refs.password.value;
-
+      //TODO: jome, inja cookie ro set kon, jwt ya harchiz dg, push kon be pagesh bar asas role
       // if (username.length !== 0 && password.length !== 0) {
       //   window.localStorage.setItem('authenticated', true);
       //   this.$router.push('/app/main/analytics');

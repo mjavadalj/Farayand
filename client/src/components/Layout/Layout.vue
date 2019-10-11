@@ -43,6 +43,7 @@ export default {
   },
   created() {
     //TODO: check role
+    //TODO: jome, inja cookie ro get kon, age rolesh ok nabood edame nade
     const staticSidebar = JSON.parse(localStorage.getItem('sidebarStatic'));
 
     if (staticSidebar) {
