@@ -63,7 +63,7 @@ module.exports.showAllUsers = (req, res) => {
 
 module.exports.signup = (req, res) => {
   if (validationResult(req).errors.length > 0) {
-    return res.status(422).json(validationResult(req));
+    return res.status(401).json(validationResult(req));
   }
   User.find({
     email: req.body.email
@@ -73,11 +73,15 @@ module.exports.signup = (req, res) => {
         message: "email already exist"
       });
     } else {
+
       bcrypt
         .hash(req.body.password, 10, (err, hash) => {
           if (err) {
+
+            console.log('2')
             return res.status(500).json({
-              err
+              err,
+              message: "son of a bitch"
             });
           } else {
             new User({
@@ -85,7 +89,7 @@ module.exports.signup = (req, res) => {
               email: req.body.email,
               username: req.body.username,
               password: hash,
-              role: "normal"
+              role: "student"
             })
               .save()
               .then(user => {
@@ -94,22 +98,24 @@ module.exports.signup = (req, res) => {
                 });
               })
               .catch(err => {
+                console.log('1')
                 return res.status(500).json({
-                  err
+                  err,
+                  message: "what"
                 });
               });
           }
         })
-        .catch(err => {
-          return res.status(500).json({
-            err
-          });
-        });
+      // .catch(err => { // ? is this shit?
+      //   return res.status(500).json({
+      //     err
+      //   });
+      // });
     }
   });
 };
 
-module.exports.signin = (req, res) => {
+module.exports.signin = (req, res) => { //
   User.findOne({
     email: req.body.email
   })
@@ -146,7 +152,7 @@ module.exports.signin = (req, res) => {
                 } else {
                   return res.status(200).json({
                     done: true,
-                    secret: "bearer " + encoded
+                    jwt: encoded
                   });
                 }
               }
@@ -568,7 +574,7 @@ module.exports.setCertificate = (req, res) => {
             res.status(200).json(result);
           })
           .catch(err => {
-            handler({err:"can't complete lesson"}, res, 500);
+            handler({ err: "can't complete lesson" }, res, 500);
           });
         // res.status(200).json(user[0]);
       }

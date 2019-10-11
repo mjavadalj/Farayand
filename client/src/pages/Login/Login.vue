@@ -21,8 +21,8 @@
           </div>
           <div class="clearfix">
             <div class="btn-toolbar float-right">
-              <b-button type="reset" size="sm" variant="default">Create an Account</b-button>
-              <b-button type="submit" size="sm" variant="inverse">Login</b-button>
+              <b-button type="reset" size="sm" variant="default" >Create an Account</b-button>
+              <b-button type="submit" size="sm" variant="inverse" @click="login()">Login</b-button>
             </div>
           </div>
         </form>
@@ -36,6 +36,7 @@
 
 <script>
 import Widget from '@/components/Widget/Widget';
+import VueJWT from 'vuejs-jwt';
 
 export default {
   name: 'LoginPage',
@@ -50,6 +51,28 @@ export default {
       const username = this.$refs.username.value;
       const password = this.$refs.password.value;
       //TODO: jome, inja cookie ro set kon, jwt ya harchiz dg, push kon be pagesh bar asas role
+
+      // ? Done , I think
+
+      this.axios.post('http://localhost:3000/user/signin',{
+
+      }).then(loginResponse=>{
+        this.$cookie.set('authorization',loginResponse.data.jwt);
+            if(this.$jwt.decode(this.$cookie.get('authorization')).role=="student"){
+              this.$router.push('/')
+            }
+            if(this.$jwt.decode(this.$cookie.get('authorization')).role=="teacher"){
+              this.$router.push('/teacher')
+            }
+            if(this.$jwt.decode(this.$cookie.get('authorization')).role=="admin"){
+              this.$router.push('/app')
+            }
+      }).catch(loginError=>{
+
+      })
+
+      // ? ---------------------------------------------
+
       // if (username.length !== 0 && password.length !== 0) {
       //   window.localStorage.setItem('authenticated', true);
       //   this.$router.push('/app/main/analytics');

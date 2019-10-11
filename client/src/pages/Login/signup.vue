@@ -105,7 +105,7 @@
             </div>
             <div class="clearfix">
               <div class="btn-toolbar float-right">
-                <b-button type="submit" size="sm" variant="inverse">
+                <b-button type="submit" size="sm" variant="inverse" v-on:click="signup()">
                   <i class="fa fa-sign-in">
                     <span style="margin-left:2px;" class="lalezar">ثبت نام</span>
                   </i>
@@ -234,11 +234,10 @@ export default {
     };
   },
   methods: {
-    signup() {
+    signup() { 
       const username = this.$refs.username.value;
       const password = this.$refs.password.value;
       console.log(this.$refs);
-
       // if (username.length !== 0 && password.length !== 0) {
       //   window.localStorage.setItem('authenticated', true);
       //   this.$router.push('/app/main/analytics');

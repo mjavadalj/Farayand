@@ -13,6 +13,8 @@ import store from "./store";
 import router from "./Routes";
 import App from "./App";
 import VueSweetalert2 from "vue-sweetalert2";
+import VueJWT from 'vuejs-jwt'
+Vue.use(VueJWT)
 Vue.use(require('vue-cookie'));
 Vue.use(require('vue-moment-jalaali'));
 Vue.use(VueSweetalert2);
@@ -41,11 +43,11 @@ export const global = new Vue({
     courseId: null,
     lessonId: null,
     teacherId: null,
-    sessionId:null,
-    course:null,
-    lesson:null,
-    session:null,
-    teacher:null,
-    index:null,
+    sessionId: null,
+    course: null,
+    lesson: null,
+    session: null,
+    teacher: null,
+    index: null,
   }
 });
