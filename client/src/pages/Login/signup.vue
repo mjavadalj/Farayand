@@ -85,11 +85,11 @@
             </div>
             <div class="form-group text-center">
               <label class="radio-inline" style="margin-right:10px;">
-                <input type="radio" name="optradio" checked />
+                <input type="radio" name="optradio" checked id="man-radio" />
                 <span class="lalezar">آقا</span>
               </label>
               <label class="radio-inline">
-                <input type="radio" name="optradio" />
+                <input type="radio" name="optradio" id="woman-radio" />
                 <span class="lalezar">خانم</span>
               </label>
             </div>
@@ -105,7 +105,7 @@
             </div>
             <div class="clearfix">
               <div class="btn-toolbar float-right">
-                <b-button type="submit" size="sm" variant="inverse" v-on:click="signup()">
+                <b-button type="submit" size="sm" variant="inverse">
                   <i class="fa fa-sign-in">
                     <span style="margin-left:2px;" class="lalezar">ثبت نام</span>
                   </i>
@@ -234,10 +234,37 @@ export default {
     };
   },
   methods: {
-    signup() { 
+    signup() {
       const username = this.$refs.username.value;
       const password = this.$refs.password.value;
-      console.log(this.$refs);
+      const name = this.$refs.name.value;
+      const phoneNumber = this.$refs.phoneNumber.value;
+      const email = this.$refs.email.value;
+      const role = this.role;
+      var gender;
+      const uni = this.role == "student" ? this.university : this.universities;
+      if ($("#man-radio").is(":checked")) {
+        gender = "man";
+      } else if ($("#woman-radio").is(":checked")) {
+        gender = "woman";
+      }
+      var body = {
+        username,
+        password,
+        name,
+        phoneNumber,
+        email,
+        gender,
+        role
+      };
+      this.axios
+        .post("http://localhost:3000/api/user/signup", body)
+        .then(res => {console.log(res);
+        })
+        .catch(err => {
+          console.log(err.message);
+          
+        });
       // if (username.length !== 0 && password.length !== 0) {
       //   window.localStorage.setItem('authenticated', true);
       //   this.$router.push('/app/main/analytics');
@@ -321,7 +348,7 @@ export default {
     removeTeacherUni(uni) {
       let index = this.selectedUniversities.indexOf(uni);
       this.selectedUniversities.splice(index, 1);
-      this.universities.push(uni)
+      this.universities.push(uni);
     }
   },
   created() {

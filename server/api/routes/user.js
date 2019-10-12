@@ -41,7 +41,7 @@ router.get('/student/showall',userController.showAllStudents)
 //edit user
 router.patch('/edit',userController.editUser)
 //delete a user
-router.post('/delete',delete_ref.course,userController.deleteAUser)
+router.post('/delete',userController.deleteAUser)
 //show all courses of a teacher
 router.post('/course/showall',userController.showAllCoursesOfTeacher)
 //show a user

@@ -70,7 +70,7 @@
       </button>
     </div>
     <div id="modaaal">
-      <b-modal id="my-modal" ref="my-modal" scrollable  hide-footer title>
+      <b-modal id="my-modal" ref="my-modal" scrollable hide-footer title>
         <div class="d-block text-center lalezar">
           <h3>درس را انتخاب کنید</h3>
         </div>
@@ -174,7 +174,7 @@ export default {
       temp: null,
       lessons: null,
       courseSelected: null,
-      user: {}
+      user: null
     };
   },
   methods: {
@@ -326,7 +326,7 @@ export default {
         .then(result => {
           if (result.value) {
             var body = {
-              userId: this.user.id,
+              userId: this.user.userId,
               courseTitle: this.courseSelected.title,
               lessonTitle: lesson.title,
               teacherName: this.courseSelected.creator.name,
@@ -362,8 +362,9 @@ export default {
         });
     }
   },
-  mounted() {
-    this.user.id = this.$cookie.get('id');
+  mounted() {},
+  created() {
+    this.user = JSON.parse(this.$cookie.get("authorization"));
     //TODO: if not cookie redirect login// this.initCharts();
     this.axios
       .get(`http://localhost:3000/api/course/count?r=!a`)
@@ -386,8 +387,6 @@ export default {
       .catch(err => {
         console.log(err);
       });
-  },
-  created() {
     // this.initializationMessengerCode();
   }
 };

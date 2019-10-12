@@ -215,7 +215,8 @@ export default {
       searchedCourses: null,
       searchMode: false,
       temp: null,
-      limit: ""
+      limit: "",
+      adminUser:null
     };
   },
   methods: {
@@ -327,7 +328,7 @@ export default {
       }
       this.axios
         .post(`http://localhost:3000/api/course/add`, {
-          creator: "5d8a50c5e8538c32f480c3fb",
+          creator: this.adminUser.userId,
           title: formValues2.title,
           content: formValues2.content,
           limitation: formValues2.limitation
@@ -626,6 +627,7 @@ export default {
   mounted() {
   },
   created() {
+    this.adminUser=JSON.parse(this.$cookie.get("authorization"));
     this.axios
       .get(`http://localhost:3000/api/course/count`)
       .then(res => {

@@ -1,8 +1,8 @@
 <template>
   <div>
     <b-breadcrumb>
-      <b-breadcrumb-item>صفحه مدیریت</b-breadcrumb-item>
-      <b-breadcrumb-item active>دوره ها</b-breadcrumb-item>
+      <b-breadcrumb-item>راهنما</b-breadcrumb-item>
+      <b-breadcrumb-item active>درس های ثبت نام شده</b-breadcrumb-item>
     </b-breadcrumb>
     <div class="input-group mb-3">
       <div class="input-group-prepend">
@@ -26,28 +26,51 @@
         <thead>
           <tr>
             <th class>عملیات</th>
-            <th class>تاریخ</th>
-            <th class>تعداد درس</th>
+            <th class>وضعیت گواهی</th>
+            <th class>تاریخ ثبت نام</th>
+            <th class>جلسات انجام شده</th>
+            <th class>جلسات این درس</th>
             <th class>استاد</th>
-            <th class>عنوان</th>
+            <th class>عنوان درس</th>
+            <th class>عنوان دوره</th>
             <th class>#</th>
           </tr>
         </thead>
         <tbody id="myTable">
-          <tr v-for="(course,index) in courses" :key="course._id">
+          <tr
+            v-for="(reg_lesson,index) in reg_lessons"
+            :key="reg_lesson._id"
+            @click="push($event,reg_lesson,index)"
+          >
+            <td>
+              <i
+                @click="deleteRegLesson(reg_lesson,index)"
+                class="fa fa-remove action-icon"
+                style="font-size: 1.5em;"
+              />
+            </td>
             <td>
               <button
-                @click="deleteCourse(course,index)"
+                v-if="!reg_lesson.passed"
                 data-v-17b74d76
                 type="button"
-                class="btn p-1 px-3 btn-xs btn-warning lalezar"
-              >حذف</button>
+                class="btn p-1 px-3 btn-xs btn-danger lalezar"
+              >صادر نشده</button>
+              <button
+                v-if="reg_lesson.passed"
+                @click="downloadCertificate(reg_lesson)"
+                data-v-17b74d76
+                type="button"
+                class="btn p-1 px-3 btn-xs btn-success lalezar"
+              >صادر شده</button>
             </td>
-            <td id="numeric-td">{{ new Date(course.date) | moment("jYYYY/jM/jD | HH:mm ")}}</td>
-            <td id="numeric-td">{{course.lessonLength}}</td>
-            <td>{{course.creator[0]}}</td>
-            <td>{{course.title}}</td>
-            <td id="numeric-td">{{index+1}}</td>
+            <td id="numeric-td">{{new Date(reg_lesson.date) | moment("jYYYY/jM/jD | HH:mm ")}}</td>
+            <td id="numeric-td">{{reg_lesson.reg_sessions.length}}</td>
+            <td id="numeric-td">{{reg_lesson.sessionLength}}</td>
+            <td>{{reg_lesson.teacherName}}</td>
+            <td>{{reg_lesson.lessonTitle}}</td>
+            <td>{{reg_lesson.courseTitle}}</td>
+            <td>{{index+1}}</td>
           </tr>
         </tbody>
       </table>
@@ -108,13 +131,16 @@ function initializationMessengerCode() {
   }.call(window));
 }
 /* eslint-enable */
+//user
+//5d8b01ad21f2fd2db8f9b917
+//teacher
+//5d983723f0fd300f6068a9ee
 export default {
   data() {
     return {
-      teacher: null,
       locationClasses: "messenger-fixed messenger-on-bottom messenger-on-right",
-      courses: null,
-      user: null
+      reg_lessons: null,
+      user: {}
     };
   },
   methods: {
@@ -127,20 +153,18 @@ export default {
       });
       return false;
     },
-    // push(e, course) {
-    //   if (e.target.nodeName == "I") {
-    //     return;
-    //   }
-    //   global.courseId = course._id;
-    //   global.teacherId = this.teacher._id;
-    //   global.course = course;
-    //   this.$router.push({
-    //     name: "tlesson",
-    //     params: {
-    //       title: course.title
-    //     }
-    //   });
-    // },
+    push(e, reg_lesson, index) {
+      if (e.target.nodeName == "I" || e.target.nodeName == "BUTTON") {
+        return;
+      }
+      var role = this.$cookie.get("role");
+      // global.courseId = course._id;
+      global.lesson = reg_lesson;
+      global.index = index;
+      this.$router.push({
+        name: "teacherQuiz"
+      });
+    },
     search(e) {
       var value = $("#myInput")
         .val()
@@ -153,13 +177,12 @@ export default {
             .indexOf(value) > -1
         );
       });
-      console.log(value);
     },
-    deleteCourse(course, index) {
+    deleteRegLesson(reg_lesson, index) {
       this.$swal
         .fire({
           title: "Are you sure?",
-          text: "از این دوره خارج می شوید",
+          text: "حذف درس",
           type: "warning",
           showCancelButton: true,
           confirmButtonColor: "#3085d6",
@@ -168,76 +191,51 @@ export default {
         })
         .then(result => {
           if (result.value) {
+            var body = {
+              userId: this.user.userId,
+              reg_lessonId: reg_lesson._id
+            };
             this.axios
-              .patch(`http://localhost:3000/api/course/user/delete`, {
-                courseId: course._id,
-                teacherId: this.user.userId
-              })
+              .patch("http://localhost:3000/api/user/reg/delete", body)
               .then(res => {
-                this.courses.splice(index, 1);
+                this.reg_lessons = res.data.reg_lessons;
               })
               .catch(err => {
                 console.log(err);
               });
           }
         });
+    },
+    downloadCertificate(reg_lesson) {
+      console.log(reg_lesson);
     }
   },
-  mounted() {},
+  mounted() {
+    // this.initCharts();
+  },
   created() {
     this.user = JSON.parse(this.$cookie.get("authorization"));
     //TODO: if not cookie redirect login
     this.axios
-      .post(`http://localhost:3000/api/user/course/showall`, {
-        user: this.user.userId
+      .post(`http://localhost:3000/api/user/reg/show`, {
+        userId: this.user.id
       })
       .then(res => {
         console.log("res.data");
         console.log(res.data);
-        this.courses = res.data;
+        this.reg_lessons = res.data.reg_lessons;
       })
       .catch(err => {
         console.log(err);
       });
-    //TODO: delete below
-    this.axios
-      .post(`http://localhost:3000/api/user/show`, {
-        userId: this.adminUser.userId
-      })
-      .then(res => {
-        this.teacher = res.data;
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    // this.initializationMessengerCode();
   }
 };
 </script>
 
-<style src="./Notifications.scss" lang="scss" scoped>
+<style>
 tr:hover {
   background-color: rgb(236, 238, 245);
   cursor: pointer;
-}
-input {
-  text-align: center;
-}
-#fixedbutton {
-  position: fixed;
-  bottom: 10px;
-  right: 10px;
-}
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  /* display: none; <- Crashes Chrome on hover */
-  -webkit-appearance: none;
-  margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
-}
-
-input[type="number"] {
-  -moz-appearance: textfield; /* Firefox */
-}
-.action-icon {
-  margin-right: 5px;
 }
 </style>

@@ -32,7 +32,8 @@ import Course from "@/pages/admin/course";
 import ChosenCourses from "@/pages/teacher/chosenCourses";
 //Admin lesson
 import Lesson from "@/pages/admin/lesson";
-import RgLesson from "@/pages/student/reg_lesson";
+import studentRegLesson from "@/pages/student/reg_lesson";
+import teacherRegLesson from "@/pages/teacher/reg_lesson";
 //Admin session
 import Session from "@/pages/admin/session";
 import Student from "./pages/admin/student.vue";
@@ -172,7 +173,7 @@ export default new Router({
         {
           path: "mylesson",
           name: "mylesson",
-          component: RgLesson
+          component: teacherRegLesson
         },
         {
           path: "course",
@@ -244,7 +245,7 @@ export default new Router({
         {
           path: "/mylesson",
           name: "reg_lesson",
-          component: RgLesson
+          component: studentRegLesson
         },
         {
           path: "/quiz",

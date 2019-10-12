@@ -63,49 +63,53 @@ module.exports.showAllUsers = (req, res) => {
 
 module.exports.signup = (req, res) => {
   if (validationResult(req).errors.length > 0) {
+    console.log(validationResult(req).errors);
+
     return res.status(401).json(validationResult(req));
   }
   User.find({
-    email: req.body.email
+    $or: [{ email: req.body.email }, { username: req.body.username }]
   }).then(user => {
     if (user.length > 0) {
       return res.status(401).json({
         message: "email already exist"
       });
     } else {
-
-      bcrypt
-        .hash(req.body.password, 10, (err, hash) => {
-          if (err) {
-
-            console.log('2')
-            return res.status(500).json({
-              err,
-              message: "son of a bitch"
-            });
-          } else {
-            new User({
-              _id: mongoose.Types.ObjectId(),
-              email: req.body.email,
-              username: req.body.username,
-              password: hash,
-              role: "student"
-            })
-              .save()
-              .then(user => {
-                return res.status(200).json({
-                  message: "sign up compelete"
-                });
-              })
-              .catch(err => {
-                console.log('1')
-                return res.status(500).json({
-                  err,
-                  message: "what"
-                });
+      bcrypt.hash(req.body.password, 10, (err, hash) => {
+        if (err) {
+          return res.status(500).json({
+            err,
+            message: "cannot hash"
+          });
+        } else if (req.body.role != "teacher" && req.body.role != "student") {
+          return handler({ error: "role not supported" }, res, 500);
+        } else {
+          new User({
+            _id: mongoose.Types.ObjectId(),
+            name: req.body.name,
+            role: req.body.role,
+            confirmed: false,
+            username: req.body.username,
+            password: hash,
+            phoneNumber: req.body.phoneNumber,
+            gender: req.body.gender,
+            email: req.body.email
+          })
+            .save()
+            .then(user => {
+              return res.status(200).json({
+                message: "sign up compelete",
+                user
               });
-          }
-        })
+            })
+            .catch(err => {
+              return res.status(500).json({
+                err,
+                message: "what"
+              });
+            });
+        }
+      });
       // .catch(err => { // ? is this shit?
       //   return res.status(500).json({
       //     err
@@ -115,22 +119,23 @@ module.exports.signup = (req, res) => {
   });
 };
 
-module.exports.signin = (req, res) => { //
+module.exports.signin = (req, res) => {
+  //
   User.findOne({
-    email: req.body.email
+    username: req.body.username
   })
     .exec()
     .then(user => {
       if (!user) {
         return res.status(401).json({
-          message: "email not exist"
+          message: "username not exist"
         });
       } else {
-        console.log(user);
         bcrypt.compare(req.body.password, user.password, (err, same) => {
-          if (err) {
+          if (err || !same) {
             return res.status(500).json({
-              message: "cannot compare"
+              message: "cannot compare",
+              same
             });
           } else if (same) {
             const jwtpayload = {
@@ -140,6 +145,7 @@ module.exports.signin = (req, res) => { //
               userName: user.username,
               role: user.role
             };
+
             jwt.sign(
               jwtpayload,
               jwtSecret,
@@ -346,7 +352,7 @@ module.exports.editUser = (req, res) => {
     });
 };
 module.exports.deleteAUser = (req, res) => {
-  User.deleteOne({ _id: req.body.userId })
+  User.remove({ _id: req.body.userId })
     .exec()
     .then(result => {
       res.status(200).json(result);
@@ -549,14 +555,20 @@ module.exports.setCertificate = (req, res) => {
         c++;
         return reg.passed == false;
       });
-      if (c < user[0].reg_lesson.sessionLength || findFalse || user[0].reg_lesson.passed) {
+      if (
+        c < user[0].reg_lesson.sessionLength ||
+        findFalse ||
+        user[0].reg_lesson.passed
+      ) {
         handler({ err: "nothing to set" }, res, 500);
       } else {
         finalScore = 0;
         user[0].reg_lesson.reg_sessions.forEach(reg_session => {
           finalScore += reg_session.score;
         });
-        finalScore = Math.ceil(finalScore / user[0].reg_lesson.reg_sessions.length);
+        finalScore = Math.ceil(
+          finalScore / user[0].reg_lesson.reg_sessions.length
+        );
         User.findOneAndUpdate(
           find,
           {

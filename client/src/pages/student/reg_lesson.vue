@@ -161,16 +161,9 @@ export default {
       // global.courseId = course._id;
       global.lesson = reg_lesson;
       global.index = index;
-      if (role == "teacher") {
-        this.$router.push({
-          name: "teacherQuiz"
-        });
-      }
-      else if (role == "student") {
-        this.$router.push({
-          name: "studentQuiz"
-        });
-      }
+      this.$router.push({
+        name: "studentQuiz"
+      });
     },
     search(e) {
       var value = $("#myInput")
@@ -199,7 +192,7 @@ export default {
         .then(result => {
           if (result.value) {
             var body = {
-              userId: this.user.id,
+              userId: this.user.userId,
               reg_lessonId: reg_lesson._id
             };
             this.axios
@@ -219,7 +212,9 @@ export default {
   },
   mounted() {
     // this.initCharts();
-    this.user.id = this.$cookie.get("id");
+  },
+  created() {
+    this.user = JSON.parse(this.$cookie.get("authorization"));
     //TODO: if not cookie redirect login
     this.axios
       .post(`http://localhost:3000/api/user/reg/show`, {
@@ -233,8 +228,6 @@ export default {
       .catch(err => {
         console.log(err);
       });
-  },
-  created() {
     // this.initializationMessengerCode();
   }
 };

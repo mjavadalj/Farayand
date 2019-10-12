@@ -119,7 +119,8 @@ export default {
       user: null,
       teachers: null,
       locationClasses: "messenger-fixed messenger-on-bottom messenger-on-right",
-      courses: null
+      courses: null,
+      userData:null
     };
   },
   methods: {
@@ -202,7 +203,7 @@ export default {
         .then(result => {
           if (result.value) {
             var body = {
-              userId: this.user._id,
+              userId: this.userData._id,
               courseTitle: this.courseSelected.title,
               lessonTitle: lesson.title,
               teacherName: this.teacherSelected.name,
@@ -239,16 +240,13 @@ export default {
   mounted() {},
 
   async created() {
-    // this.initializationMessengerCode();
-    // this.initCharts();
-    //mohammad
-    //5d983785f0fd300f6068a9ef
+    this.user = JSON.parse(this.$cookie.get("authorization"));
     this.axios
       .post(`http://localhost:3000/api/user/show`, {
-        userId: this.$cookie.get('id')
+        userId: this.user.userId
       })
       .then(res => {
-        this.user = res.data;
+        this.userData = res.data;
       })
       .catch(err => {
         console.log(err);

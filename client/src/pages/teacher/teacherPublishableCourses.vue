@@ -153,7 +153,7 @@ export default {
       searchInput: "",
       searchMode: false,
       temp: null,
-      user: {}
+      user: null
     };
   },
   methods: {
@@ -246,7 +246,7 @@ export default {
     checkRegistration(course) {
       //5d983723f0fd300f6068a9ee
       var find = course.user.find(obj => {
-        return obj._id == this.user.id
+        return obj._id == this.user.userId;
       });
       if (find) {
         this.isReg[course._id] = true;
@@ -257,7 +257,7 @@ export default {
       this.axios
         .patch(`http://localhost:3000/api/course/user/add`, {
           courseId: course._id,
-          teacherId: this.user.id
+          teacherId: this.user.userId
         })
         .then(res => {
           console.log("res.data");
@@ -301,8 +301,9 @@ export default {
       this.searchInput = "";
     }
   },
-  mounted() {
-    this.user.id = this.$cookie.get('id');
+  mounted() {},
+  created() {
+    this.user = JSON.parse(this.$cookie.get("authorization"));
     //TODO: if not cookie redirect login
     this.axios
       .get(`http://localhost:3000/api/course/count?r=!a`)
@@ -325,8 +326,6 @@ export default {
       .catch(err => {
         console.log(err);
       });
-  },
-  created() {
     // this.initializationMessengerCode();
   }
 };
