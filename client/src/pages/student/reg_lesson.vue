@@ -157,7 +157,6 @@ export default {
       if (e.target.nodeName == "I" || e.target.nodeName == "BUTTON") {
         return;
       }
-      var role = this.$cookie.get("role");
       // global.courseId = course._id;
       global.lesson = reg_lesson;
       global.index = index;
@@ -218,7 +217,7 @@ export default {
     //TODO: if not cookie redirect login
     this.axios
       .post(`http://localhost:3000/api/user/reg/show`, {
-        userId: this.user.id
+        userId: this.user.userId
       })
       .then(res => {
         console.log("res.data");

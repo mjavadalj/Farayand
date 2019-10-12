@@ -58,7 +58,9 @@
                 <button>x</button>
               </td>
               <td id="numeric-td">{{reg_session.score}}</td>
-              <td id="numeric-td">{{new Date(reg_session.anotherChanceDate) | moment("jYYYY/jM/jD | HH:mm ")}}</td>
+              <td
+                id="numeric-td"
+              >{{new Date(reg_session.anotherChanceDate) | moment("jYYYY/jM/jD | HH:mm ")}}</td>
               <td id="numeric-td">{{reg_session.tryCount}}</td>
               <td id="numeric-td">{{ new Date(reg_session.date) | moment("jYYYY/jM/jD | HH:mm ")}}</td>
               <td>{{reg_session.title}}</td>
@@ -264,7 +266,7 @@ export default {
       sessions: null,
       reg_sessions: null,
       lock: true,
-      user: {}
+      user: null
     };
   },
   methods: {
@@ -319,7 +321,7 @@ export default {
       if (session.questionLength == 0) {
         this.axios
           .patch(`http://localhost:3000/api/user/session/register`, {
-            userId: this.user.id,
+            userId: this.user.userId,
             reg_lessonId: this.reg_lesson._id,
             sessionId: session._id,
             title: session.title,
@@ -341,7 +343,7 @@ export default {
       } else {
         this.axios
           .patch(`http://localhost:3000/api/user/session/register`, {
-            userId: this.user.id,
+            userId: this.user.userId,
             reg_lessonId: this.reg_lesson._id,
             sessionId: session._id,
             title: session.title,
@@ -378,7 +380,7 @@ export default {
       } else {
         this.axios
           .patch(`http://localhost:3000/api/user/setcertificate`, {
-            userId: this.user.id,
+            userId: this.user.userId,
             reg_lessonId: this.reg_lesson._id
           })
           .then(res => {
@@ -459,7 +461,7 @@ export default {
             var passed = res1.data.score >= session.minScore;
             this.axios
               .patch(`http://localhost:3000/api/user/session/complete`, {
-                userId: this.user.id,
+                userId: this.user.userId,
                 reg_lessonId: this.reg_lesson._id,
                 reg_sessionId: reg_session._id,
                 passed: passed,
@@ -511,8 +513,9 @@ export default {
       localStorage.setItem(session._id, dt);
     }
   },
-  mounted() {
-    this.user.id = this.$cookie.get('id');
+  mounted() {},
+  created() {
+    this.user = JSON.parse(this.$cookie.get("authorization"));
     //TODO: if not cookie redirect login
     if (global == undefined) {
       this.$router.push("/teacher");

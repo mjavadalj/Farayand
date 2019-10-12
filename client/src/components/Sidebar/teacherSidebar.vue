@@ -53,6 +53,13 @@
         index="edit"
         isHeader
       />
+      <button
+        id="logout"
+        style="margin:2px;font-family:lalezar"
+        class="btn btn-outline-danger active"
+        type="button"
+        @click="logout()"
+      >خروج</button>
     </ul>
   </nav>
 </template>
@@ -103,6 +110,10 @@ export default {
       //     this.switchSidebar(true);
       //     this.changeSidebarActive(null);
       //   }
+    },
+    logout(){
+      this.$cookie.delete("authorization")
+      this.$router.push('/login')
     }
   },
   created() {
