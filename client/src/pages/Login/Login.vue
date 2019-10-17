@@ -84,7 +84,7 @@ export default {
               this.$router.push("/teacher");
               break;
             case "admin":
-              this.$router.push("/app");
+              this.$router.push("/app/main");
               break;
           }
         })

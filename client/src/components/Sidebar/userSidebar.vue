@@ -13,19 +13,20 @@
     <ul class="nav">
       <NavLink header="خانه" link="/home" iconName="fa fa-home" index="course" isHeader />
       <NavLink
+        header="صفحه اصلی"
+        link="/main"
+        iconName="fa fa-home"
+        index="main"
+        isHeader
+      />
+      <NavLink
         header="درس های ثبت نام شده"
         link="/mylesson"
         iconName="fa fa-list"
         index="course"
         isHeader
       />
-      <NavLink
-        header="ویرایش اطلاعات"
-        link="/edit"
-        iconName="fa fa-edit"
-        index="edit"
-        isHeader
-      />
+      <NavLink header="ویرایش اطلاعات" link="/edit" iconName="fa fa-edit" index="edit" isHeader />
       <button
         id="logout"
         style="margin:2px;font-family:lalezar"
@@ -98,9 +99,9 @@ export default {
       //     this.changeSidebarActive(null);
       //   }
     },
-    logout(){
-      this.$cookie.delete("authorization")
-      this.$router.push('/login')
+    logout() {
+      this.$cookie.delete("authorization");
+      this.$router.push("/login");
     }
   },
   created() {

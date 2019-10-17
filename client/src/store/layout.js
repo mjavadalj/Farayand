@@ -26,7 +26,7 @@ export default {
     },
     toggleSidebar(state) {
       const nextState = !state.sidebarStatic;
-
+      
       localStorage.sidebarStatic = nextState;
       state.sidebarStatic = nextState;
 

@@ -120,7 +120,7 @@ export default {
       teachers: null,
       locationClasses: "messenger-fixed messenger-on-bottom messenger-on-right",
       courses: null,
-      userData:null
+      userData: null
     };
   },
   methods: {
@@ -179,7 +179,6 @@ export default {
           this.loadedLessons[course._id] = res.data;
           this.courseSelected = course;
           this.lessonOpen = true;
-          
         })
         .catch(err => {
           console.log(err);

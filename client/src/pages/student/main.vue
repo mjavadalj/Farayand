@@ -1,10 +1,5 @@
 <template lang="">
-    <div class="text-center">
-        <div class="text-center">
-          
-    </div>
-        <img src="../../assets/image/home-img.jpg" width="1000px"  class="img-fluid" alt="Responsive image">
-    </div>
+
 </template>
 <script>
 import "imports-loader?$=jquery,this=>window!messenger/build/js/messenger"; // eslint-disable-line
@@ -75,7 +70,7 @@ export default {
     addSuccessNotification() {
       Messenger().post({
         extraClasses: this.locationClasses,
-        message: "شما با موفقیت وارد پنل مدیریت شدید",
+        message: "شما با موفقیت شدید",
         type: "success",
         showCloseButton: true
       });
@@ -141,4 +136,5 @@ export default {
   }
 };
 </script>
+
 <style src="./Notifications.scss" lang="scss" scoped />

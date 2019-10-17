@@ -1,7 +1,5 @@
 <template>
-  <div>
-    
-  </div>
+  <div></div>
 </template>
 <script>
 import { global } from "@/main.js";
@@ -61,11 +59,10 @@ export default {
   data() {
     return {
       locationClasses: "messenger-fixed messenger-on-bottom messenger-on-right",
-      certificates: null,
-      
+      certificates: null
     };
   },
-  methods: { },
+  methods: {},
   mounted() {
     this.axios
       .post(`http://localhost:3000/api/user/reg/showall`)
@@ -79,8 +76,7 @@ export default {
         console.log(err);
       });
   },
-  created() {
-  }
+  created() {}
 };
 </script>
 

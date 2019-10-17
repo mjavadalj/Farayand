@@ -47,12 +47,19 @@ import TeacherCourses from "./pages/teacher/teacherCourses.vue";
 import Geo from "./pages/admin/geo.vue";
 import SignUp from "./pages/Login/signup.vue";
 import Edit from "./pages/edit/edit.vue";
+import StudentMain from "./pages/student/main.vue";
+import MainPage from "./pages/main.vue";
 
 Vue.use(Router);
 
 export default new Router({
   mode: "history",
   routes: [
+    {
+      path: "/mainpage",
+      name: "mainpage",
+      component: MainPage
+    },
     {
       path: "/signup",
       name: "signup",
@@ -228,12 +235,17 @@ export default new Router({
       component: UserLayout,
       children: [
         {
+          path: "main",
+          name: "studentMain",
+          component: StudentMain
+        },
+        {
           path: "edit",
           name: "studentEdit",
           component: Edit
         },
         {
-          path: "main",
+          path: "/main",
           name: "studentMain",
           component: AdminMain
         },

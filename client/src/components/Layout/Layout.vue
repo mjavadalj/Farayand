@@ -51,11 +51,19 @@ export default {
     //TODO: check role
     //TODO: jome, inja cookie ro get kon, age rolesh ok nabood edame nade
     const decoded = JSON.parse(this.$cookie.get("authorization"));
-    if (!decoded ||decoded.role != "admin") {
-      this.$router.push("/login");
+    if (!decoded) {
+      return this.$router.push("/mainpage");
+    }
+    switch (decoded.role) {
+      case "teacher":
+        this.$router.push("/teacher");
+        break;
+      case "student":
+        this.$router.push("/");
+        break;
     }
     const staticSidebar = JSON.parse(localStorage.getItem("sidebarStatic"));
-
+    
     if (staticSidebar) {
       this.$store.state.layout.sidebarStatic = true;
     } else if (!this.sidebarClose) {

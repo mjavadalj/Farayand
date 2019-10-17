@@ -294,18 +294,18 @@ export default {
         return;
       }
       if (
-        localStorage.getItem(session._id) &&
-        new Date() < new Date(localStorage.getItem(session._id))
+        localStorage.getItem(session._id+this.user.userId) &&
+        new Date() < new Date(localStorage.getItem(session._id+this.user.userId))
       ) {
         var now = new Date();
-        var date = new Date(localStorage.getItem(session._id));
+        var date = new Date(localStorage.getItem(session._id+this.user.userId));
         var diffMs = date - now;
         var minutes = Math.floor(diffMs / 1000 / 60);
         var seconds = Math.floor((diffMs / 1000) % 60);
         return alert(
           `پس از ${minutes} دقیقه و ${seconds} ثانیه می توانید آزمون دهید`
         );
-      } else if (localStorage.getItem(session._id) == null) {
+      } else if (localStorage.getItem(session._id+this.user.userId) == null) {
         return alert("ابتدا فایل آموزشی را دریافت کنید");
       }
       if (index != 0 || !this.check) {
@@ -505,12 +505,12 @@ export default {
       if (index != 0) {
         return alert("ابتدا باید جلسات قبلی را کامل کنید");
       }
-      if (localStorage.getItem(session._id)) {
+      if (localStorage.getItem(session._id+this.user.userId)) {
         return;
       }
       var dt = new Date();
       dt.setMinutes(dt.getMinutes() + 1);
-      localStorage.setItem(session._id, dt);
+      localStorage.setItem(session._id+this.user.userId, dt);
     }
   },
   mounted() {},
