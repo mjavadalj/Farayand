@@ -48,7 +48,7 @@ import Geo from "./pages/admin/geo.vue";
 import SignUp from "./pages/Login/signup.vue";
 import Edit from "./pages/edit/edit.vue";
 import StudentMain from "./pages/student/main.vue";
-import MainPage from "./pages/main.vue";
+import landing_page from "./pages/landing_page.vue";
 
 Vue.use(Router);
 
@@ -56,9 +56,9 @@ export default new Router({
   mode: "history",
   routes: [
     {
-      path: "/mainpage",
-      name: "mainpage",
-      component: MainPage
+      path: "/landing",
+      name: "landing",
+      component: landing_page
     },
     {
       path: "/signup",
