@@ -3,7 +3,7 @@ const User = require("../models/user");
 const Embed = require("../models/embed");
 const config = require("config");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const jwtSecret = config.get("app.webServer.jwtSecret");
 const { validationResult } = require("express-validator");
 const handler = (json, res, code) => {
