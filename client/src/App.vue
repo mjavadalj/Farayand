@@ -12,7 +12,7 @@ export default {
     // console.log(decoded);
 
     // if (!decoded) {
-    //   return this.$router.push("/mainpage");
+    //   return this.$router.push("/landing");
     // }
     // switch (decoded.role) {
     //   case "student":
@@ -27,7 +27,7 @@ export default {
     // }
 
     if (window.localStorage.getItem("authenticated") === "false") {
-      this.$router.push("/mainpage");
+      this.$router.push("/landing");
     }
 
     // if (currentPath === '/' || currentPath === '/app') {
