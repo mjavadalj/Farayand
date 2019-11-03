@@ -1,10 +1,22 @@
 <template>
   <div>
-    <img src="../assets/image/home-img.jpg" class="img-fluid" alt="Responsive image">
+    <div class="container">
+      <nav class="fixed-nav-bar">
+        <a class="brand">
+          <img
+            src="../assets/image/basij-logo.png"
+          />
+        </a>
+        <a class="link" href="#"><span class="lalezar">ورود</span></a>
+        <a class="link" href="#"><span class="lalezar">ثبت نام</span></a>
+      </nav>
+    </div>
+    <div class="container" style="margin-bottom:20px;">
+      <img src="../assets/image/home-img.jpg" class="img-fluid" alt="Responsive image" />
+    </div>
   </div>
 </template>
 <script>
-
 /* eslint-disable */
 function initializationMessengerCode() {
   (function() {
@@ -57,20 +69,80 @@ function initializationMessengerCode() {
 /* eslint-enable */
 export default {
   data() {
-    return {
-      
-    };
+    return {};
   },
-  methods: {
-    
-  },
-  mounted() {
-    
-  },
+  methods: {},
+  mounted() {},
   created() {}
 };
 </script>
 
 <style>
+a {
+  text-decoration: none;
+  color: gray;
+}
 
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+  /*   border: 1px solid red; */
+}
+
+.fixed-nav-bar {
+  position: fixed;
+  align-items: flex-end;
+  justify-content: flex-end;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  width: 100%;
+  height: 60px;
+  background-color: #fafbff;
+  box-shadow: 0px 0px 10px #fafbff;
+  display: flex;
+  line-height: 60px;
+}
+
+nav img {
+  height: 50px;
+}
+
+nav .brand {
+  flex: 1;
+  align-self: flex-start;
+  height: 50px;
+  margin-left: 15px;
+}
+
+nav .link {
+  flex: 1;
+  max-width: max-content;
+  margin-right: 40px;
+}
+
+.page-container {
+  margin-top: 50px;
+  margin-bottom: 100px;
+  display: flex;
+  justify-content: center;
+}
+
+.page-container > .post {
+  flex: 1;
+  max-width: 500px;
+}
+
+.post > .link {
+  text-align: center;
+  font-family: courier;
+  font-size: 2.5em;
+  font-weight: lighter;
+  margin: 50px 0px;
+}
+
+a:hover {
+  color: black;
+}
 </style>
