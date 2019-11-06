@@ -15,28 +15,32 @@
           <b-alert class="alert-sm" variant="danger" :show="!!errorMessage">{{errorMessage}}</b-alert>
           <div class="form-group">
             <input
-              class="form-control no-border"
+              class="form-control no-border lalezar"
               ref="username"
               required
               type="text"
               name="username"
-              placeholder="Username"
+              placeholder="نام کاربری"
             />
           </div>
           <div class="form-group">
             <input
-              class="form-control no-border"
+              class="form-control no-border lalezar"
               ref="password"
               required
               type="password"
               name="password"
-              placeholder="Password"
+              placeholder="رمز عبور"
             />
           </div>
           <div class="clearfix">
             <div class="btn-toolbar float-right">
-              <b-button type="reset" size="sm" variant="default">Create an Account</b-button>
-              <b-button type="submit" size="sm" variant="inverse">Login</b-button>
+              <b-button @click="signup" type="reset" size="sm" variant="default">
+                <span class="lalezar">ثبت نام کنید</span>
+              </b-button>
+              <b-button type="submit" size="sm" variant="inverse">
+                <span class="lalezar">ورود</span>
+              </b-button>
             </div>
           </div>
         </form>
@@ -75,7 +79,7 @@ export default {
         .then(loginResponse => {
           const jwt = loginResponse.data.jwt;
           const decoded = this.$jwt.decode(jwt);
-          this.$cookie.set('authorization',JSON.stringify(decoded))
+          this.$cookie.set("authorization", JSON.stringify(decoded));
           switch (decoded.role) {
             case "student":
               this.$router.push("/");
@@ -96,6 +100,9 @@ export default {
       //   window.localStorage.setItem('authenticated', true);
       //   this.$router.push('/app/main/analytics');
       // }
+    },
+    signup(){
+      this.$router.push("/signup");
     }
   },
   created() {

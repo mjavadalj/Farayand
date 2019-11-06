@@ -19,37 +19,50 @@
       </div>
       <div class="login-box">
         <div class="text-center">
-          <span class="lalezar" style="font-size:1.5em">وارد شوید</span>
+          <!-- <span class="lalezar" style="font-size:1.5em">وارد شوید</span> -->
+          <h5 class="logo">
+            <i style="margin-right:5px;" class="fa fa-circle text-gray" />
+            <span class="lalezar" style="color:black;">بسیج اساتید</span>
+            <i style="margin-left:5px;" class="fa fa-circle text-warning" />
+          </h5>
         </div>
-        <form class="mt" @submit.prevent="login">
-          <b-alert class="alert-sm" variant="danger" :show="!!errorMessage">{{errorMessage}}</b-alert>
-          <div class="form-group">
-            <input
-              class="form-control no-border"
-              ref="username"
-              required
-              type="text"
-              name="username"
-              placeholder="Username"
-            />
-          </div>
-          <div class="form-group">
-            <input
-              class="form-control no-border"
-              ref="password"
-              required
-              type="password"
-              name="password"
-              placeholder="Password"
-            />
-          </div>
-          <div class="clearfix">
-            <div class="btn-toolbar float-right">
-              <b-button type="reset" size="sm" variant="default">Create an Account</b-button>
-              <b-button type="submit" size="sm" variant="inverse">Login</b-button>
-            </div>
-          </div>
-        </form>
+        <b-container>
+          <Widget
+            class="mx-auto"
+            title=""
+            customHeader
+          >
+            <form class="mt" @submit.prevent="login">
+              <b-alert class="alert-sm" variant="danger" :show="!!errorMessage">{{errorMessage}}</b-alert>
+              <div class="form-group">
+                <input
+                  class="form-control no-border lalezar"
+                  ref="username"
+                  required
+                  type="text"
+                  name="username"
+                  placeholder="نام کاربری"
+                />
+              </div>
+              <div class="form-group">
+                <input
+                  class="form-control no-border lalezar"
+                  ref="password"
+                  required
+                  type="password"
+                  name="password"
+                  placeholder="رمز عبور"
+                />
+              </div>
+              <div class="clearfix">
+                <div class="btn-toolbar float-right">
+                  <b-button @click="signup" type="reset" size="sm" variant="default"><span class="lalezar">ثبت نام کنید</span></b-button>
+                  <b-button type="submit" size="sm" variant="inverse"><span class="lalezar">ورود</span></b-button>
+                </div>
+              </div>
+            </form>
+          </Widget>
+        </b-container>
       </div>
     </div>
   </div>
@@ -105,20 +118,53 @@ function initializationMessengerCode() {
   }.call(window));
 }
 /* eslint-enable */
+import Widget from "@/components/Widget/Widget";
+import VueJWT from "vuejs-jwt";
 export default {
   data() {
     return {};
   },
-  methods: {},
+  methods: {
+    login() {
+      const username = this.$refs.username.value;
+      const password = this.$refs.password.value;
+      var body = {
+        username,
+        password
+      };
+      console.log(body);
+      this.axios
+        .post("http://localhost:3000/api/user/signin", body)
+        .then(loginResponse => {
+          const jwt = loginResponse.data.jwt;
+          const decoded = this.$jwt.decode(jwt);
+          this.$cookie.set('authorization',JSON.stringify(decoded))
+          switch (decoded.role) {
+            case "student":
+              this.$router.push("/");
+              break;
+            case "teacher":
+              this.$router.push("/teacher");
+              break;
+            case "admin":
+              this.$router.push("/app/main");
+              break;
+          }
+        })
+        .catch(loginError => {});
+      
+    },
+    signup(){
+      this.$router.push("/signup");
+    }
+  },
   mounted() {},
   created() {}
 };
 </script>
 
 <style>
-input{
-  width: 240px !important;
-}
+
 a {
   text-decoration: none;
   color: gray;
@@ -189,10 +235,12 @@ a:hover {
 .login-box {
   position: absolute;
   top: 50px;
-  right: 4%;
+  right: 2%;
+  
   /* border: solid #0033ff; */
-  border-bottom  : 1px solid black;
-  border-top  : 1px solid black;
-   padding-bottom : 1.5em;
+  border-bottom: 1px solid black;
+  border-top: 1px solid black;
+  padding-top: 1.5em;
+  padding-bottom: 1.5em;
 }
 </style>
