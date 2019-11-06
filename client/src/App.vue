@@ -26,9 +26,9 @@ export default {
     //     break;
     // }
 
-    if (window.localStorage.getItem("authenticated") === "false") {
-      this.$router.push("/landing");
-    }
+    // if (window.localStorage.getItem("authenticated") === "false") {
+    //   this.$router.push("/landing");
+    // }
 
     // if (currentPath === '/' || currentPath === '/app') {
     //   this.$router.push('/app/dashboard');

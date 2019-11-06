@@ -433,7 +433,15 @@ export default {
     upload(){
       const formatData= new FormData()
       //TODO: key value
-      
+      formatData.append('file', this.file);
+      formatData.append('sessionId', this.sessionId);
+      this.axios.post("http://localhost:3000/api/session/addfile",
+      formatData,
+      {
+        headers:{
+          'content-type': 'multipart/form-data'
+        }
+      })
     },
     save_name(){
       // console.log(this.$refs["inputGroupFile01"]);
