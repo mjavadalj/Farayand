@@ -283,10 +283,11 @@ module.exports.addFile = (req, res) => {
     req.body.sessionId +
     "." +
     req.file.originalname;
+
   find = {
     $and: [
-      { _id: req.body.courseId },
-      { "lessons._id": req.body.lessonId },
+      { _id: mong(req.body.courseId) },
+      { "lessons._id": mong(req.body.lessonId) },
       { "lessons.sessions._id": mong(req.body.sessionId) }
     ]
   };
@@ -294,7 +295,75 @@ module.exports.addFile = (req, res) => {
     find,
     {
       $addToSet: {
-        "lessons.$[].sessions.$[elem].files": filename
+        "lessons.$[].sessions.$[elem].files": {
+          //TODO: type
+          name: filename,
+          type: "pdf"
+        }
+      }
+    },
+    {
+      new: true,
+      arrayFilters: [{ "elem._id": mong(req.body.sessionId) }]
+    }
+  )
+    .exec()
+    .then(result => {
+      handler(result, res, 200);
+    })
+    .catch(err => {
+      handler(err, res, 500);
+    });
+};
+module.exports.showFiles = (req, res) => {
+  find = {
+    _id: mongoose.Types.ObjectId(req.body.courseId),
+    "lessons._id": mongoose.Types.ObjectId(req.body.lessonId),
+    "lessons.sessions._id": mongoose.Types.ObjectId(req.body.sessionId)
+  };
+  Embed.aggregate([
+    {
+      $unwind: {
+        path: "$lessons",
+        includeArrayIndex: "index"
+        // "preserveNullAndEmptyArrays": true
+      }
+    },
+    {
+      $unwind: {
+        path: "$lessons.sessions",
+        includeArrayIndex: "index"
+        // "preserveNullAndEmptyArrays": true
+      }
+    },
+    {
+      $match: find
+    }
+  ])
+    .exec()
+    .then(result => {
+      handler(result[0].lessons.sessions.files, res, 200);
+    })
+    .catch(err => {
+      handler(err, res, 200);
+    });
+};
+module.exports.deleteFile = (req, res) => {
+  find = {
+    $and: [
+      { _id: req.body.courseId },
+      { "lessons._id": req.body.lessonId },
+      { "lessons.sessions._id": mong(req.body.sessionId) },
+      { "lessons.sessions.files._id": mong(req.body.fileId) }
+    ]
+  };
+  Embed.updateOne(
+    find,
+    {
+      $pull: {
+        "lessons.$[].sessions.$[elem].files": {
+          _id: req.body.fileId
+        }
       }
     },
     {

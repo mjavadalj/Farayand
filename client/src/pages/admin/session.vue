@@ -52,6 +52,11 @@
                 class="fa fa-edit action-icon"
                 style="font-size: 1.5em;"
               />
+              <i
+                @click="showModal(session)"
+                class="fa fa-file action-icon"
+                style="font-size: 1.5em;"
+              />
             </td>
             <td id="numeric-td">{{new Date(session.quizDate) | moment("jYYYY/jM/jD | HH:mm ")}}</td>
             <td id="numeric-td">{{session.secondChance}}</td>
@@ -69,6 +74,53 @@
       <button id="fixedbutton" class="btn btn-primary" type="button" @click="addSession()">
         <i class="fa fa-plus" />
       </button>
+
+      <div id="modaaal">
+        <b-modal id="my-modal" ref="my-modal" scrollable hide-footer title>
+          <div class="d-block text-center lalezar">
+            <h3>فایل ها</h3>
+          </div>
+          <button @click="upload" type="button" class="btn btn-light"><i class="fa fa-upload"></i></button>
+          <b-form-file
+            v-model="uploadedFile"
+            placeholder="Choose a file or drop it here..."
+            drop-placeholder="Drop file here..."
+          ></b-form-file>
+          <!-- <div class="mt-3">Selected file: {{ file ? file.name : '' }}</div> -->
+          <div
+            id="table_data"
+            class="table-resposive"
+            style="text-align:center;max-height:500px; overflow: auto;margin-bottom:10px;"
+          >
+            <table id="dtBasicExample" align="center" class="table">
+              <thead>
+                <tr>
+                  <th class>عملیات</th>
+                  <th class>فرمت</th>
+                  <th class>نام</th>
+                  <th class>#</th>
+                </tr>
+              </thead>
+              <tbody id="myTable2">
+                <tr v-for="(file,index) in files" :key="file._id">
+                  <td>
+                    <i
+                      @click="removeFile(file,index)"
+                      class="fa fa-remove action-icon"
+                      style="font-size: 1.5em;"
+                    />
+                  </td>
+                  <td>{{file.type}}</td>
+                  <td>
+                    <a :href="file.name" target="_blank">{{file.name.split('.')[1]}}</a>
+                  </td>
+                  <td>{{index+1}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </b-modal>
+      </div>
     </div>
   </div>
 </template>
@@ -80,7 +132,10 @@ export default {
       course: null,
       lesson: null,
       sessions: null,
-      courseId: null
+      courseId: null,
+      files: null,
+      uploadedFile:null,
+      selectedSession: null
     };
   },
 
@@ -129,31 +184,31 @@ export default {
       duration = "",
       secondChance = "",
       minScore = "",
-      userQCount=""
-      ) {
+      userQCount = ""
+    ) {
       const { value: formValues2 } = await this.$swal.fire({
         html: `
-                <div class="card">
-                <div class="card-header">
-                  <strong class="lalezar" >جلسه جدید</strong>
-                </div>
-                </br>
-                <div class="form-group">
-                <div class="">
-                  <label class="lalezar" for="title">عنوان جلسه</label>
-                        <input
-                          value="${title}"
-                          type="text"
-                          id="title"
-                          name="title"
-                          placeholder="عنوان جلسه را وارد کنید"
-                          class="form-control"
-                        />
-                </div>
-                </br>
-                <div>
-                  <label class="lalezar"  for="content">توضیحات راجع به جلسه</label>
-                  <textarea class="form-control text-center" rows="3" id="content"> ${content}</textarea>
+                  <div class="card">
+                  <div class="card-header">
+                    <strong class="lalezar" >جلسه جدید</strong>
+                  </div>
+                  </br>
+                  <div class="form-group">
+                  <div class="">
+                    <label class="lalezar" for="title">عنوان جلسه</label>
+                          <input
+                            value="${title}"
+                            type="text"
+                            id="title"
+                            name="title"
+                            placeholder="عنوان جلسه را وارد کنید"
+                            class="form-control"
+                          />
+                  </div>
+                  </br>
+                  <div>
+                    <label class="lalezar"  for="content">توضیحات راجع به جلسه</label>
+                    <textarea class="form-control text-center" rows="3" id="content"> ${content}</textarea>
                 </div> 
                 </br>
                 <div class="">
@@ -217,11 +272,18 @@ export default {
             content == "" ||
             duration == "" ||
             minScore == "" ||
-            secondChance == ""||
-            userQCount==""
+            secondChance == "" ||
+            userQCount == ""
           ) {
             setTimeout(() => {
-              this.addSession(title, content, duration, secondChance, minScore,userQCount);
+              this.addSession(
+                title,
+                content,
+                duration,
+                secondChance,
+                minScore,
+                userQCount
+              );
             }, 0);
           } else {
             ok = true;
@@ -251,8 +313,7 @@ export default {
             secondChance: formValues2.secondChance,
             duration: parseInt(formValues2.duration),
             minScore: parseInt(formValues2.minScore),
-            userQCount: parseInt(formValues2.userQCount),
-
+            userQCount: parseInt(formValues2.userQCount)
           }
         })
         .then(res => {
@@ -390,8 +451,8 @@ export default {
             content == "" ||
             duration == "" ||
             minScore == "" ||
-            secondChance == ""||
-            userQCount==""
+            secondChance == "" ||
+            userQCount == ""
           ) {
             setTimeout(() => {
               this.editSession(session);
@@ -424,7 +485,6 @@ export default {
           minScore: formValues2.minScore,
           userQCount: formValues2.userQCount,
           secondChance: formValues2.secondChance
-
         })
         .then(res => {
           this.$swal.fire({
@@ -439,9 +499,8 @@ export default {
           // console.log(lesson.sessions[index]);
 
           Object.keys(formValues2).forEach(item => {
-            if (session[item]){
-              session[item]=formValues2[item]
-              
+            if (session[item]) {
+              session[item] = formValues2[item];
             }
             // session.item="54"
           });
@@ -449,13 +508,81 @@ export default {
         .catch(err => {
           console.log(err);
         });
+    },
+    showModal(session) {
+      this.axios
+        .post(`http://localhost:3000/api/session/showfiles`, {
+          sessionId: session._id,
+          lessonId: this.lessonId,
+          courseId: this.courseId
+        })
+        .then(res => {
+          console.log(res.data);
+          this.$refs["my-modal"].show();
+          this.selectedSession = session;
+          this.files = res.data;
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    hideModal() {
+      this.$refs["my-modal"].hide();
+    },
+    toggleModal() {
+      // We pass the ID of the button that we want to return focus to
+      // when the modal has hidden
+      this.$refs["my-modal"].toggle("#toggle-btn");
+    },
+    files(session, index) {
+      console.log("aaaaaaaaaaaaa");
+
+      // this.showModal(session);
+    },
+    removeFile(file, index) {
+      this.axios
+        .patch(`http://localhost:3000/api/session/deletefile/`, {
+          courseId: this.course._id,
+          lessonId: this.lesson._id,
+          sessionId: this.selectedSession._id,
+          fileId: file._id
+        })
+        .then(res => {
+          this.files.splice(index, 1);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    upload(){
+      if (this.uploadedFile==null){
+        return
+      }
+      var formatData = new FormData();
+      //TODO: key value
+      formatData.append("sessionId", this.selectedSession._id);
+      formatData.append("lessonId", this.lessonId);
+      formatData.append("courseId", this.courseId);
+      formatData.append("file", this.uploadedFile);      
+      this.axios.post("http://localhost:3000/api/session/addfile", formatData, {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      }).then(result=>{
+        console.log(result);
+        this.uploadedFile=null
+        
+      })
+      .catch(err=>{
+        console.log(err);
+        
+      })
     }
   },
   mounted() {
     if (global == undefined) {
       this.$router.push("/teacher/course");
     }
-    console.log(global.lessonId);
     this.courseId = global.courseId;
     this.lessonId = global.lessonId;
     this.axios
@@ -466,7 +593,7 @@ export default {
       .then(res => {
         this.sessions = res.data;
         console.log(res.data);
-        
+
         this.course = global.course;
         this.lesson = global.lesson;
       })

@@ -52,7 +52,6 @@ const embedSchema = mongoose.Schema({
             {
               name: { type: String, default: null },
               type: { type: String, default: null },
-              size: { type: String, default: null }
             }
           ]
         }

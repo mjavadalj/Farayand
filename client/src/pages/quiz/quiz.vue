@@ -55,8 +55,9 @@
                 >قبول</button>
               </td>
               <td>
-                <button>x</button>
-                <a href="http://localhost:3000/files/5da180afe473fc04346ddc52.Doc1.pdf">file</a>
+                <span @click="showModal(deletedSessions[reg_session.sessionId],0)">
+                  <i class="fa fa-download" style="font-size: 1.5em;"></i>
+                </span>
               </td>
               <td id="numeric-td">{{reg_session.score}}</td>
               <td
@@ -105,7 +106,9 @@
                 <i v-else @click="aa()" class="fa fa-lock action-icon" style="font-size: 1.5em;" />
               </td>
               <td>
-                <button @click="setQuizTime(index,session)">x</button>
+                <span @click="showModal(session, index)">
+                  <i class="fa fa-download" style="font-size: 1.5em;"></i>
+                </span>
               </td>
               <td id="numeric-td">پس از {{session.secondChance}} روز</td>
               <td id="numeric-td">{{duration(session.duration)}}</td>
@@ -194,6 +197,41 @@
         </button>
       </div>
     </div>
+    <div id="modaaal">
+      <b-modal id="my-modal" ref="my-modal" scrollable hide-footer title>
+        <div class="d-block text-center lalezar">
+          <h3>فایل ها</h3>
+        </div>
+        <div
+          id="table_data"
+          class="table-resposive"
+          style="text-align:center;max-height:500px; overflow: auto;margin-bottom:10px;"
+        >
+          <table id="dtBasicExample" align="center" class="table">
+            <thead>
+              <tr>
+                <th class>فرمت</th>
+                <th class>نام</th>
+                <th class>#</th>
+              </tr>
+            </thead>
+            <tbody id="myTable2">
+              <tr v-for="(file,index) in files" :key="file._id">
+                <td>{{file.type}}</td>
+                <td>
+                  <a
+                    @click="setQuizTime(file)"
+                    :href="file.name"
+                    target="_blank"
+                  >{{file.name.split('.')[1]}}</a>
+                </td>
+                <td>{{index+1}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </b-modal>
+    </div>
   </div>
 </template>
 <script>
@@ -267,7 +305,8 @@ export default {
       sessions: null,
       reg_sessions: null,
       lock: true,
-      user: null
+      user: null,
+      files: null
     };
   },
   methods: {
@@ -279,9 +318,9 @@ export default {
       var now = new Date();
       var chance = new Date(reg_session.anotherChanceDate);
       // reg_session.passed
-      if (false) {
+      if (reg_session.passed) {
         return alert("شما در این آزمون پذیرفته شده اید");
-      } else if (now > chance) {
+      } else if (now < chance) {
         return alert("بعدا");
       } else if (true) {
         this.showQuestions(
@@ -291,22 +330,29 @@ export default {
       }
     },
     addToRegSession(e, session, index) {
-      if (e.target.nodeName == "BUTTON") {
+      var state = this.checkDownload(session);
+      if (e.target.nodeName == "I") {
         return;
       }
-      if (
-        localStorage.getItem(session._id+this.user.userId) &&
-        new Date() < new Date(localStorage.getItem(session._id+this.user.userId))
-      ) {
-        var now = new Date();
-        var date = new Date(localStorage.getItem(session._id+this.user.userId));
-        var diffMs = date - now;
-        var minutes = Math.floor(diffMs / 1000 / 60);
-        var seconds = Math.floor((diffMs / 1000) % 60);
-        return alert(
-          `پس از ${minutes} دقیقه و ${seconds} ثانیه می توانید آزمون دهید`
-        );
-      } else if (localStorage.getItem(session._id+this.user.userId) == null) {
+      // if (
+      //   localStorage.getItem(
+      //     session.files[session.files.length - 1] + this.user.userId
+      //   ) &&
+      //   new Date() <
+      //     new Date(session.files[session.files.length - 1] + this.user.userId)
+      // ) {
+      //   var now = new Date();
+      //   var date = new Date(
+      //     session.files[session.files.length - 1] + this.user.userId
+      //   );
+      //   var diffMs = date - now;
+      //   var minutes = Math.floor(diffMs / 1000 / 60);
+      //   var seconds = Math.floor((diffMs / 1000) % 60);
+      //   return alert(
+      //     `پس از ${minutes} دقیقه و ${seconds} ثانیه می توانید آزمون دهید`
+      //   );
+      // } else
+      if (!state) {
         return alert("ابتدا فایل آموزشی را دریافت کنید");
       }
       if (index != 0 || !this.check) {
@@ -502,21 +548,51 @@ export default {
       // return this.reg_sessions[index].passed
       return true;
     },
-    setQuizTime(index, session) {
-      if (index != 0) {
-        return alert("ابتدا باید جلسات قبلی را کامل کنید");
-      }
-      if (localStorage.getItem(session._id+this.user.userId)) {
+    checkDownload(session) {
+      session.files.forEach(file => {
+        if (localStorage.getItem(file._id + this.user.userId) == null) {
+          return false;
+        }
+      });
+      return true;
+    },
+    setQuizTime(file) {
+      if (localStorage.getItem(file._id + this.user.userId)) {
         return;
       }
       var dt = new Date();
       dt.setMinutes(dt.getMinutes() + 1);
-      localStorage.setItem(session._id+this.user.userId, dt);
+      localStorage.setItem(file._id + this.user.userId, dt);
+    },
+    showModal(session, index) {
+      if (index != 0) {
+        return "ابتدا باید جلسات قبلی را کامل کنید";
+      }
+      this.axios
+        .post(`http://localhost:3000/api/session/showfiles`, {
+          sessionId: session._id,
+          lessonId: this.lessonId,
+          courseId: this.courseId
+        })
+        .then(res => {
+          console.log(res.data);
+          this.$refs["my-modal"].show();
+          // this.selectedSession = session;
+          this.files = res.data;
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    hideModal() {
+      this.$refs["my-modal"].hide();
     }
   },
   mounted() {},
   created() {
     this.user = JSON.parse(this.$cookie.get("authorization"));
+    console.log(this.user);
+
     //TODO: if not cookie redirect login
     if (global == undefined) {
       this.$router.push("/teacher");

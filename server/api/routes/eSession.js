@@ -50,5 +50,7 @@ router.patch("/deleteall", sessionController.deleteAllSessons);
 router.post("/checkquiz", sessionController.checkQuiz);
 
 router.post("/addFile", upload.single("file"), sessionController.addFile);
+router.post("/showfiles", sessionController.showFiles);
+router.patch("/deletefile", sessionController.deleteFile);
 
 module.exports = router;

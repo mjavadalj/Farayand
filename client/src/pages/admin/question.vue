@@ -8,18 +8,6 @@
       <b-breadcrumb-item active>سوالات</b-breadcrumb-item>
     </b-breadcrumb>
     <h1 class="display-3 text-right">{{session.title}}</h1>
-    <div class="custom-file">
-      <input
-        type="file"
-        class="custom-file-input"
-        id="inputGroupFile01"
-        ref="inputGroupFile01"
-        @change="save_name"
-        aria-describedby="inputGroupFileAddon01"
-      />
-      <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
-      <button @click="upload">upload</button>
-    </div>
     <div
       v-for="(question,index) in questions"
       :key="question._id"
@@ -434,7 +422,9 @@ export default {
       var formatData = new FormData();
       //TODO: key value
       formatData.append("sessionId", this.session._id);
-      formatData.append("file", this.file.files[0]);
+      formatData.append("lessonId", this.lesson._id);
+      formatData.append("courseId", this.course._id);
+      formatData.append("file", this.file.files[0]);      
       for (var key of formatData.entries()) {
         console.log(key[0] + ", " + key[1]);
       }
@@ -468,7 +458,7 @@ export default {
       this.course = global.course;
       this.lesson = global.lesson;
       this.session = global.session;
-
+      
       await this.axios
         .post(`http://localhost:3000/api/session/showallquestions`, {
           courseId: this.course._id,
