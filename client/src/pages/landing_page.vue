@@ -1,18 +1,56 @@
 <template>
   <div>
-    <div class="container">
+    <!-- <div class="container">
       <nav class="fixed-nav-bar">
         <a class="brand">
-          <img
-            src="../assets/image/basij-logo.png"
-          />
+          <img src="../assets/image/basij-logo.png" />
         </a>
-        <a class="link" href="#"><span class="lalezar">ورود</span></a>
-        <a class="link" href="#"><span class="lalezar">ثبت نام</span></a>
+        <a class="link" href="#">
+          <span class="lalezar" style="font-size:1.5em">ورود</span>
+        </a>
+        <a class="link" href="#">
+          <span class="lalezar" style="font-size:1.5em">ثبت نام</span>
+        </a>
       </nav>
-    </div>
-    <div class="container" style="margin-bottom:20px;">
-      <img src="../assets/image/home-img.jpg" class="img-fluid" alt="Responsive image" />
+    </div>-->
+    <div>
+      <div class="image">
+        <img src="../assets/image/home-img.jpg" class="img-fluid" alt="Responsive image" />
+      </div>
+      <div class="login-box">
+        <div class="text-center">
+          <span class="lalezar" style="font-size:1.5em">وارد شوید</span>
+        </div>
+        <form class="mt" @submit.prevent="login">
+          <b-alert class="alert-sm" variant="danger" :show="!!errorMessage">{{errorMessage}}</b-alert>
+          <div class="form-group">
+            <input
+              class="form-control no-border"
+              ref="username"
+              required
+              type="text"
+              name="username"
+              placeholder="Username"
+            />
+          </div>
+          <div class="form-group">
+            <input
+              class="form-control no-border"
+              ref="password"
+              required
+              type="password"
+              name="password"
+              placeholder="Password"
+            />
+          </div>
+          <div class="clearfix">
+            <div class="btn-toolbar float-right">
+              <b-button type="reset" size="sm" variant="default">Create an Account</b-button>
+              <b-button type="submit" size="sm" variant="inverse">Login</b-button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 </template>
@@ -78,6 +116,9 @@ export default {
 </script>
 
 <style>
+input{
+  width: 240px !important;
+}
 a {
   text-decoration: none;
   color: gray;
@@ -144,5 +185,14 @@ nav .link {
 
 a:hover {
   color: black;
+}
+.login-box {
+  position: absolute;
+  top: 50px;
+  right: 4%;
+  /* border: solid #0033ff; */
+  border-bottom  : 1px solid black;
+  border-top  : 1px solid black;
+   padding-bottom : 1.5em;
 }
 </style>

@@ -51,9 +51,9 @@ export default {
     //TODO: check role
     //TODO: jome, inja cookie ro get kon, age rolesh ok nabood edame nade
     const decoded = JSON.parse(this.$cookie.get("authorization"));
-    // if (!decoded) {
-    //   return this.$router.push("/landing");
-    // }
+    if (!decoded) {
+      return this.$router.push("/landing");
+    }
     switch (decoded.role) {
       case "student":
         this.$router.push("/");

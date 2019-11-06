@@ -136,7 +136,7 @@ function initializationMessengerCode() {
 //teacher
 //5d983723f0fd300f6068a9ee
 import jsPDF from "jspdf";
-import html2canvas from "html2canvas"
+import html2canvas from "html2canvas";
 export default {
   data() {
     return {
@@ -208,17 +208,6 @@ export default {
         });
     },
     downloadCertificate(reg_lesson) {
-      console.log(reg_lesson);
-      const doc = new jsPDF();
-      /** WITH CSS */
-      var canvasElement = document.createElement("canvas");
-      html2canvas(this.$refs.content, { canvas: canvasElement }).then(function(
-        canvas
-      ) {
-        const img = canvas.toDataURL("image/jpeg", 0.8);
-        doc.addImage(img, "JPEG", 20, 20);
-        doc.save("sample.pdf");
-      });
     }
   },
   mounted() {
