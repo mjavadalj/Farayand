@@ -8,6 +8,18 @@
       <b-breadcrumb-item active>سوالات</b-breadcrumb-item>
     </b-breadcrumb>
     <h1 class="display-3 text-right">{{session.title}}</h1>
+    <div class="custom-file">
+      <input
+        type="file"
+        class="custom-file-input"
+        id="inputGroupFile01"
+        ref="inputGroupFile01"
+        @change="save_name"
+        aria-describedby="inputGroupFileAddon01"
+      />
+      <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+      <button @click="upload">upload</button>
+    </div>
     <div
       v-for="(question,index) in questions"
       :key="question._id"
@@ -118,14 +130,15 @@ export default {
       course: null,
       lesson: null,
       session: null,
-      questions: null
+      questions: null,
+      file:""
     };
   },
 
   methods: {
     deleteQuestion(question, index) {
-      if (question._id==undefined){
-        return alert('برای حذف  صفحه را ریفرش ! کنید')
+      if (question._id == undefined) {
+        return alert("برای حذف  صفحه را ریفرش ! کنید");
       }
       this.$swal
         .fire({
@@ -161,8 +174,8 @@ export default {
         });
     },
     editQuestion(question, index) {
-      if (question._id==undefined){
-        return alert('برای تغییر  صفحه را ریفرش ! کنید')
+      if (question._id == undefined) {
+        return alert("برای تغییر  صفحه را ریفرش ! کنید");
       }
       var body = {};
       var text = document.getElementById(question._id + "text").value;
@@ -226,8 +239,8 @@ export default {
       if (e.target.nodeName == "INPUT") {
         return;
       }
-      if (question._id==undefined){
-        return alert('برای تغییر پاسخ صحیح صفحه را ریفرش ! کنید')
+      if (question._id == undefined) {
+        return alert("برای تغییر پاسخ صحیح صفحه را ریفرش ! کنید");
       }
       this.$swal
         .fire({
@@ -416,6 +429,19 @@ export default {
         .catch(err => {
           console.log(err);
         });
+    },
+    upload(){
+      const formatData= new FormData()
+      //TODO: key value
+      
+    },
+    save_name(){
+      // console.log(this.$refs["inputGroupFile01"]);
+      
+      this.file=this.$refs["inputGroupFile01"]
+
+      console.log(this.file);
+      
     }
   },
   async mounted() {
