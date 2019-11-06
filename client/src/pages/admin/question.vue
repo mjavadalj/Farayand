@@ -131,7 +131,7 @@ export default {
       lesson: null,
       session: null,
       questions: null,
-      file:""
+      file: ""
     };
   },
 
@@ -430,26 +430,34 @@ export default {
           console.log(err);
         });
     },
-    upload(){
-      const formatData= new FormData()
+    upload() {
+      var formatData = new FormData();
       //TODO: key value
-      formatData.append('file', this.file);
-      formatData.append('sessionId', this.sessionId);
-      this.axios.post("http://localhost:3000/api/session/addfile",
-      formatData,
-      {
-        headers:{
-          'content-type': 'multipart/form-data'
+      formatData.append("sessionId", this.session._id);
+      formatData.append("file", this.file.files[0]);
+      for (var key of formatData.entries()) {
+        console.log(key[0] + ", " + key[1]);
+      }
+
+      this.axios.post("http://localhost:3000/api/session/addfile", formatData, {
+        headers: {
+          "Content-Type": "multipart/form-data"
         }
+      }).then(result=>{
+        console.log(result);
+        
+      })
+      .catch(err=>{
+        console.log(err);
+        
       })
     },
-    save_name(){
+    save_name() {
       // console.log(this.$refs["inputGroupFile01"]);
-      
-      this.file=this.$refs["inputGroupFile01"]
+
+      this.file = this.$refs["inputGroupFile01"];
 
       console.log(this.file);
-      
     }
   },
   async mounted() {
@@ -460,6 +468,7 @@ export default {
       this.course = global.course;
       this.lesson = global.lesson;
       this.session = global.session;
+
       await this.axios
         .post(`http://localhost:3000/api/session/showallquestions`, {
           courseId: this.course._id,

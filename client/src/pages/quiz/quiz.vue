@@ -56,6 +56,7 @@
               </td>
               <td>
                 <button>x</button>
+                <a href="http://localhost:3000/files/5da180afe473fc04346ddc52.Doc1.pdf">file</a>
               </td>
               <td id="numeric-td">{{reg_session.score}}</td>
               <td

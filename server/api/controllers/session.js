@@ -180,25 +180,25 @@ module.exports.showRandomQuestions = (req, res) => {
   ])
     .exec()
     .then(result => {
-      var limitedQuestions=[]
-      result[0].questions.forEach(question=>{
+      var limitedQuestions = [];
+      result[0].questions.forEach(question => {
         limitedQuestions.push({
-          option_1:{
-            text:question.option_1.text
+          option_1: {
+            text: question.option_1.text
           },
-          option_2:{
-            text:question.option_2.text
+          option_2: {
+            text: question.option_2.text
           },
-          option_3:{
-            text:question.option_3.text
+          option_3: {
+            text: question.option_3.text
           },
-          option_4:{
-            text:question.option_4.text
+          option_4: {
+            text: question.option_4.text
           },
-          text:question.text,
-          _id:question._id
-        })
-      })
+          text: question.text,
+          _id: question._id
+        });
+      });
       const userQCount = result[0].userQCount;
       const length = result[0].questions.length;
       var number;
@@ -278,7 +278,37 @@ module.exports.editASession = (req, res) => {
 };
 
 module.exports.addFile = (req, res) => {
-  console.log(req.file.mimetype, "\n", req.file);
+  filename =
+    "http://localhost:3000/files/" +
+    req.body.sessionId +
+    "." +
+    req.file.originalname;
+  find = {
+    $and: [
+      { _id: req.body.courseId },
+      { "lessons._id": req.body.lessonId },
+      { "lessons.sessions._id": mong(req.body.sessionId) }
+    ]
+  };
+  Embed.updateOne(
+    find,
+    {
+      $addToSet: {
+        "lessons.$[].sessions.$[elem].files": filename
+      }
+    },
+    {
+      new: true,
+      arrayFilters: [{ "elem._id": mong(req.body.sessionId) }]
+    }
+  )
+    .exec()
+    .then(result => {
+      handler(result, res, 200);
+    })
+    .catch(err => {
+      handler(err, res, 500);
+    });
 };
 module.exports.checkQuiz = (req, res) => {
   find = {
@@ -316,9 +346,9 @@ module.exports.checkQuiz = (req, res) => {
   ])
     .exec()
     .then(result => {
-      Qlength=result[0].userQCount
-      if (result[0].userQCount>result[0].questions.length){
-        Qlength=result[0].questions.length
+      Qlength = result[0].userQCount;
+      if (result[0].userQCount > result[0].questions.length) {
+        Qlength = result[0].questions.length;
       }
       correctAnswer = 0;
       answerBody = req.body.answerBody;
@@ -329,11 +359,7 @@ module.exports.checkQuiz = (req, res) => {
           }
         });
       });
-      handler(
-        { score: Math.ceil((correctAnswer / Qlength) * 100) },
-        res,
-        200
-      );
+      handler({ score: Math.ceil((correctAnswer / Qlength) * 100) }, res, 200);
     })
     .catch(err => {
       handler(err, res, 200);
