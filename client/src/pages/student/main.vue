@@ -1,5 +1,11 @@
 <template lang="">
-
+<div class="text-center">
+        <div class="text-center">
+    </div>
+        <div style="margin-top:-40px;">
+          <img src="../../assets/image/rahbar.jpg" width="1000px"  class="img-fluid" alt="Responsive image">
+        </div>
+    </div>
 </template>
 <script>
 import "imports-loader?$=jquery,this=>window!messenger/build/js/messenger"; // eslint-disable-line

@@ -1,17 +1,16 @@
-<template lang="">
-    <div class="text-center">
-        <div class="text-center">
-          
-    </div>
-        <img src="../../assets/image/home-img.jpg" width="1000px"  class="img-fluid" alt="Responsive image">
-    </div>
+<template>
+  <div>
+    <div class="bg" >
+    <img
+      src="../../assets/image/rahbar.jpg"
+      width="1000px"
+      class="img-fluid"
+      alt="Responsive image"
+    />
+  </div>
+  </div>
 </template>
 <script>
-import "imports-loader?$=jquery,this=>window!messenger/build/js/messenger"; // eslint-disable-line
-import Widget from "@/components/Widget/Widget";
-
-const { Messenger } = window;
-
 /* eslint-disable */
 function initializationMessengerCode() {
   (function() {
@@ -62,83 +61,25 @@ function initializationMessengerCode() {
   }.call(window));
 }
 /* eslint-enable */
-
+import Widget from "@/components/Widget/Widget";
+import VueJWT from "vuejs-jwt";
 export default {
-  name: "Notifications",
-  components: { Widget },
   data() {
-    return {
-      locationClasses: "messenger-fixed messenger-on-bottom messenger-on-right"
-    };
+    return {};
   },
-  methods: {
-    addSuccessNotification() {
-      Messenger().post({
-        extraClasses: this.locationClasses,
-        message: "شما با موفقیت وارد پنل مدیریت شدید",
-        type: "success",
-        showCloseButton: true
-      });
-      return false;
-    },
-    addInfoNotification() {
-      const msg = Messenger().post({
-        extraClasses: this.locationClasses,
-        message: "Launching thermonuclear war...",
-        actions: {
-          cancel: {
-            label: "cancel launch",
-            action: () =>
-              msg.update({
-                message: "Thermonuclear war averted",
-                type: "success",
-                actions: false
-              })
-          }
-        }
-      });
-
-      return false;
-    },
-    addErrorNotification() {
-      let i = 0;
-      Messenger().run({
-        errorMessage: "Error destroying alien planet",
-        successMessage: "Alien planet destroyed!",
-        extraClasses: this.locationClasses,
-        action(opts) {
-          /* eslint-disable */
-          if (++i < 3) {
-            return opts.error({
-              status: 500,
-              readyState: 0,
-              responseText: 0
-            });
-          }
-          /* eslint-enable */
-          return opts.success();
-        }
-      });
-    },
-    toggleLocation(vertical = "top", horizontal = "") {
-      let className = `messenger-fixed messenger-on-${vertical}`;
-      className += horizontal === "" ? "" : ` messenger-on-${horizontal}`;
-      this.locationClasses = className;
-      Messenger.options = {
-        extraClasses: className,
-        theme: "air"
-      };
-      Messenger();
-    }
-  },
-  created() {
-    initializationMessengerCode();
-    Messenger.options = {
-      extraClasses: this.locationClasses,
-      theme: "air"
-    };
-    this.addSuccessNotification();
-  }
+  methods: {},
+  mounted() {},
+  created() {}
 };
 </script>
-<style src="./Notifications.scss" lang="scss" scoped />
+
+<style>
+.bg {
+  margin-top:-40px;
+  margin-left:130px;
+  background:cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+</style>
