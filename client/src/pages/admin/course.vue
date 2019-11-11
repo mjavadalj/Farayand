@@ -261,12 +261,12 @@ export default {
         <div class="col-X-6">
           <div class="card">
           <div class="card-header">
-            <strong>دوره جدید</strong>
+            <strong class="lalezar">دوره جدید</strong>
           </div>
           </br>
           <div class="form-group">
           <div class="">
-            <label for="title">عنوان دوره</label>
+            <label class="iranyekan-bold" for="title">عنوان دوره</label>
                   <input
                     value="${title}"
                     type="text"
@@ -278,24 +278,26 @@ export default {
           </div>
           </br></br>
           <div>
-            <label for="content">توضیحات راجع به دوره</label>
-            <textarea class="form-control text-center" rows="3" id="content"> ${content}</textarea>
+            <label class="iranyekan-bold" for="content">توضیحات راجع به دوره</label>
+            <textarea  class="form-control text-center" rows="3" id="content"> ${content}</textarea>
                <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
-                    <label class="form-check-label" for="inlineRadio1">فقط برای دانشجویان</label>
+                    <label class="form-check-label lalezar" for="inlineRadio1">فقط برای دانشجویان</label>
                   </div>
                   <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
-                    <label class="form-check-label" for="inlineRadio2">فقط برای اساتید</label>
+                    <label class="form-check-label lalezar" for="inlineRadio2">فقط برای اساتید</label>
                   </div>
                   <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                    <label class="form-check-label" for="inlineRadio3">بدون محدودیت</label>
+                    <label class="form-check-label lalezar" for="inlineRadio3">بدون محدودیت</label>
                   </div>
           </div>   
           </div>   
           </div>`,
         focusConfirm: false,
+        confirmButtonText: "ثبت",
+        confirmButtonColor: "#3abf94",
         preConfirm: () => {
           var title = document.getElementById("title").value;
           var content = document.getElementById("content").value;
@@ -348,13 +350,14 @@ export default {
     deleteCourse(course) {
       this.$swal
         .fire({
-          title: "Are you sure?",
-          text: "دوره به همراه تمامی درس ها حذف می شوند",
+          title: `حذف دوره ${course.title}`,
+          text: "دوره به همراه تمامی درس ها حذف می شود",
           type: "warning",
           showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "Yes, delete it!"
+          cancelButtonText: "بازگشت",
+          cancelButtonColor: "#3085d6",
+          confirmButtonColor: "#d33",
+          confirmButtonText: "حذف"
         })
         .then(result => {
           if (result.value) {
@@ -381,12 +384,12 @@ export default {
       const { value: formValues } = await this.$swal.fire({
         html: `<div class="card">
           <div class="card-header">
-            <strong>دوره جدید</strong>
+            <strong class="lalezar">ویرایش دوره</strong>
           </div>
           </br>
           <div class="form-group">
           <div class="">
-            <label for="title">عنوان دوره</label>
+            <label class="iranyekan-bold" for="title">عنوان دوره</label>
                   <input
                     value="${course.title}"
                     type="text"
@@ -398,24 +401,26 @@ export default {
           </div>
           </br></br>
           <div>
-            <label for="content">توضیحات راجع به دوره</label>
+            <label class="iranyekan-bold" for="content">توضیحات راجع به دوره</label>
             <textarea class="form-control text-center" rows="3" id="content"> ${course.content}</textarea>
             <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
-                    <label class="form-check-label" for="inlineRadio1">فقط برای دانشجویان</label>
+                    <label class="form-check-label lalezar" for="inlineRadio1">فقط برای دانشجویان</label>
                   </div>
                   <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
-                    <label class="form-check-label" for="inlineRadio2">فقط برای اساتید</label>
+                    <label class="form-check-label lalezar" for="inlineRadio2">فقط برای اساتید</label>
                   </div>
                   <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                    <label class="form-check-label" for="inlineRadio3">بدون محدودیت</label>
+                    <label class="form-check-label lalezar" for="inlineRadio3">بدون محدودیت</label>
                   </div>
           </div>      
           </div>`,
         // '<input id="swal-input6" class="swal2-input" placeholder = "جنسیت>',
         focusConfirm: false,
+        confirmButtonText: "ویرایش",
+        confirmButtonColor: "#3abf94",
         preConfirm: () => {
           var title = document.getElementById("title").value;
           var content = document.getElementById("content").value;
@@ -485,7 +490,8 @@ export default {
           this.$swal.fire({
             type: "success",
             title: "موفق",
-            text: "دوره با موفقیت ویرایش شد"
+            text: "دوره با موفقیت ویرایش شد",
+            confirmButtonText: "قبول"
           });
         })
         .catch(err => {

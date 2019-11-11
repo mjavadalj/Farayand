@@ -116,13 +116,14 @@ export default {
     deleteLesson(lesson) {
       this.$swal
         .fire({
-          title: "Are you sure?",
+          title: `حذف درس ${lesson.title}`,
           text: "درس به همراه تمامی جلسه ها حذف می شود",
           type: "warning",
           showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "Yes, delete it!"
+          cancelButtonText: "بازگشت",
+          cancelButtonColor: "#3085d6",
+          confirmButtonColor: "#d33",
+          confirmButtonText: "حذف"
         })
         .then(result => {
           if (result.value) {
@@ -137,7 +138,8 @@ export default {
                 this.$swal.fire({
                   type: "success",
                   title: "موفق",
-                  text: "درس با موفقیت حذف شد"
+                  text: "درس با موفقیت حذف شد",
+                  confirmButtonText: "قبول"
                 });
               })
               .catch(err => {
@@ -151,12 +153,12 @@ export default {
         html: `
           <div class="card">
           <div class="card-header">
-            <strong>درس جدید</strong>
+            <strong class="lalezar">درس جدید</strong>
           </div>
           </br>
           <div class="form-group">
           <div class="">
-            <label for="title">عنوان درس</label>
+            <label class="iranyekan-bold" for="title">عنوان درس</label>
                   <input
                     value="${title}"
                     type="text"
@@ -168,11 +170,13 @@ export default {
           </div>
           </br></br>
           <div>
-            <label for="content">توضیحات راجع به درس</label>
+            <label class="iranyekan-bold" for="content">توضیحات راجع به درس</label>
             <textarea class="form-control text-center" rows="3" id="content"> ${content}</textarea>
           </div>      
           </div>`,
         focusConfirm: false,
+        confirmButtonText: "ثبت",
+        confirmButtonColor: "#3abf94",
         preConfirm: () => {
           var title = document.getElementById("title").value;
           var content = document.getElementById("content").value;
@@ -207,7 +211,8 @@ export default {
           this.$swal.fire({
             type: "success",
             title: "موفق",
-            text: "درس با موفقیت ثبت شد"
+            text: "درس با موفقیت ثبت شد",
+            confirmButtonText: "قبول"
           });
           console.log(res.data);
           this.lessons = res.data.lessons;
@@ -221,12 +226,12 @@ export default {
         html: `
           <div class="card">
           <div class="card-header">
-            <strong>درس جدید</strong>
+            <strong class="lalezar">ویرایش درس</strong>
           </div>
           </br>
           <div class="form-group">
           <div class="">
-            <label for="title">عنوان درس</label>
+            <label class="iranyekan-bold" for="title">عنوان درس</label>
                   <input
                     value="${lesson.title}"
                     type="text"
@@ -238,11 +243,13 @@ export default {
           </div>
           </br></br>
           <div>
-            <label for="content">توضیحات راجع به درس</label>
+            <label class="iranyekan-bold" for="content">توضیحات راجع به درس</label>
             <textarea class="form-control text-center" rows="3" id="content"> ${lesson.content}</textarea>
           </div>      
           </div>`,
         focusConfirm: false,
+        confirmButtonText: "ویرایش",
+        confirmButtonColor: "#3abf94",
         preConfirm: () => {
           var title = document.getElementById("title").value;
           var content = document.getElementById("content").value;
@@ -275,7 +282,9 @@ export default {
           this.$swal.fire({
             type: "success",
             title: "موفق",
-            text: "درس با موفقیت ویرایش شد"
+            text: "درس با موفقیت ویرایش شد",
+            confirmButtonText: "قبول",
+            // confirmButtonColor: "#3abf94",
           });
 
           Object.keys(res.data.lessons[index]).forEach(item => {

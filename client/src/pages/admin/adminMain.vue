@@ -2,7 +2,7 @@
   <div>
     <div class="bg" >
     <img
-      src="../../assets/image/rahbar.jpg"
+      src="../../assets/image/rahbar-logo.jpg"
       width="1000px"
       class="img-fluid"
       alt="Responsive image"

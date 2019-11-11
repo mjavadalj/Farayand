@@ -64,13 +64,12 @@ module.exports.showAllUsers = (req, res) => {
 module.exports.signup = (req, res) => {
   if (validationResult(req).errors.length > 0) {
     console.log(validationResult(req).errors);
-
     return res.status(401).json(validationResult(req));
   }
   User.find({
     $or: [{ email: req.body.email }, { username: req.body.username }]
   }).then(user => {
-    if (user.length > 0) {
+    if (user.length > 0) {      
       return res.status(401).json({
         message: "email already exist"
       });

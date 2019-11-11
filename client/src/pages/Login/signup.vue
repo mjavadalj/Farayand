@@ -256,7 +256,7 @@ export default {
         email,
         gender,
         role
-      };
+      };      
       this.axios
         .post("http://localhost:3000/api/user/signup", body)
         .then(res => {console.log(res);
