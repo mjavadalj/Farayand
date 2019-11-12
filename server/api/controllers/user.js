@@ -474,11 +474,15 @@ module.exports.showAllC = (req, res) => {
     });
 };
 module.exports.addTeacherUni = (req, res) => {
+  //TODO: check role, only teachers
   User.findByIdAndUpdate(
     req.body.userId,
     {
       $addToSet: {
-        university: req.body.uniId
+        university:{
+          $each:req.body.uniId
+        }
+        // university: req.body.uniId
       }
     },
     { new: true }

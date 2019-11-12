@@ -112,7 +112,7 @@
                   </td>
                   <td>{{file.type}}</td>
                   <td>
-                    <a :href="file.name" target="_blank">{{file.name.split('.')[1]}}</a>
+                    <a :href="file.name+'#page=3'" target="_blank">{{file.name.split('.')[1]}}</a>
                   </td>
                   <td>{{index+1}}</td>
                 </tr>

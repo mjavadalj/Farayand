@@ -235,6 +235,26 @@ export default {
   },
   methods: {
     signup() {
+      console.log(this.selectedUniversities);
+      console.log(this.university);
+      var uniId = [];
+      if (this.role == "teacher") {
+        if (this.selectedUniversities.length == 0) {
+          return alert("دانشگاه خود را انتخاب کنید");
+        }
+        this.selectedUniversities.forEach(uni => {
+          uniId.push(uni._id);
+        });
+      } else if (this.role == "student") {
+        console.log("!!!!!!!!");
+        if (this.university == null) {
+          return alert("دانشگاه خود را انتخاب کنید");
+        }
+        uniId.push(this.university._id);
+      } else {
+        return;
+      }
+      //TODO: add university
       const username = this.$refs.username.value;
       const password = this.$refs.password.value;
       const name = this.$refs.name.value;
@@ -256,14 +276,52 @@ export default {
         email,
         gender,
         role
-      };      
+      };
       this.axios
         .post("http://localhost:3000/api/user/signup", body)
-        .then(res => {console.log(res);
+        .then(result => {
+          // console.log(result.data.user);
+          this.axios
+            .patch(
+              `http://localhost:3000/api/user/${
+                role == "student" ? "user" : role
+              }/adduni`,
+              {
+                userId: result.data.user._id,
+                uniId
+              }
+            )
+            .then(res => {
+              // console.log(res);
+              this.axios
+                .post("http://localhost:3000/api/user/signin", {
+                  username,
+                  password
+                })
+                .then(loginResponse => {
+                  const jwt = loginResponse.data.jwt;
+                  const decoded = this.$jwt.decode(jwt);
+                  this.$cookie.set("authorization", JSON.stringify(decoded));
+                  switch (decoded.role) {
+                    case "student":
+                      this.$router.push("/");
+                      break;
+                    case "teacher":
+                      this.$router.push("/teacher");
+                      break;
+                    case "admin":
+                      this.$router.push("/app/main");
+                      break;
+                  }
+                })
+                .catch(loginError => {});
+            })
+            .catch(err => {
+              console.log(err.message);
+            });
         })
         .catch(err => {
           console.log(err.message);
-          
         });
       // if (username.length !== 0 && password.length !== 0) {
       //   window.localStorage.setItem('authenticated', true);
@@ -272,7 +330,7 @@ export default {
     },
     setRole(role) {
       this.role = role;
-      console.log(role);
+      // console.log(role);
     },
     getRole() {
       if (this.role == "teacher") {
