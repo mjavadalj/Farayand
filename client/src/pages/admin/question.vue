@@ -30,9 +30,9 @@
               />
             </td>
           </span>
-          {{index+1}} سوال شماره
+          {{index+1}} شماره
         </li>
-        <li class="list-group-item">
+        <li class="list-group-item xtx">
           <input
             class="question-input"
             type="text"
@@ -40,7 +40,7 @@
             v-bind:value="question.text"
           />
         </li>
-        <li @click="changeAnswer($event,question,'option_1')" class="list-group-item">
+        <li @click="changeAnswer($event,question,'option_1')" class="list-group-item xtx-b">
           <td
             class="widgetControls widget-controls"
             v-if="question.option_1.correct"
@@ -55,7 +55,7 @@
             v-bind:value="question.option_1.text"
           />
         </li>
-        <li @click="changeAnswer($event,question,'option_2')" class="list-group-item">
+        <li @click="changeAnswer($event,question,'option_2')" class="list-group-item xtx-b">
           <td
             class="widgetControls widget-controls"
             v-if="question.option_2.correct"
@@ -70,7 +70,7 @@
             v-bind:value="question.option_2.text"
           />
         </li>
-        <li @click="changeAnswer($event,question,'option_3')" class="list-group-item">
+        <li @click="changeAnswer($event,question,'option_3')" class="list-group-item xtx-b">
           <td
             class="widgetControls widget-controls"
             v-if="question.option_3.correct"
@@ -85,7 +85,7 @@
             v-bind:value="question.option_3.text"
           />
         </li>
-        <li @click="changeAnswer($event,question,'option_4')" class="list-group-item">
+        <li @click="changeAnswer($event,question,'option_4')" class="list-group-item xtx-b">
           <td
             class="widgetControls widget-controls"
             v-if="question.option_4.correct"

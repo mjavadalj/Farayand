@@ -1,6 +1,6 @@
 
 module.exports.isAdmin = (req, res, next) => {
-
+    //TODO: check valid ID
     if (req.user.role === "admin") {
         next();
     }

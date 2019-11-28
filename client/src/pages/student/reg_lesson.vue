@@ -208,6 +208,7 @@ export default {
         });
     },
     downloadCertificate(reg_lesson) {
+      
     }
   },
   mounted() {

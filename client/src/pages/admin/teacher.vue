@@ -34,7 +34,7 @@
         <thead>
           <tr>
             <th class>عملیات</th>
-            <th class>id</th>
+            <!-- <th class>id</th> -->
             <th class>وضعیت استاد</th>
             <th class>ایمیل</th>
             <th class>تاریخ عضویت</th>
@@ -79,7 +79,7 @@
                 style="font-size: 1.5em;"
               />
             </td>
-            <td>{{teacher._id}}</td>
+            <!-- <td>{{teacher._id}}</td> -->
             <td>
               <button
                 v-if="!teacher.confirmed"
@@ -788,17 +788,7 @@ export default {
   mounted() {
     // this.initCharts();
 
-    this.axios
-      .get(`http://localhost:3000/api/user/teacher/showall`)
-      .then(res => {
-        console.log("res.data");
-        console.log(res.data);
-        this.teachers = res.data;
-        // this.addSuccessNotification();
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    
   },
   created() {
     // $("body").mouseup(function(e) {
@@ -810,6 +800,17 @@ export default {
     //   });
     // $("#password").password("toggle");
     // this.initializationMessengerCode();
+    this.axios
+      .get(`http://localhost:3000/api/user/teacher/showall`)
+      .then(res => {
+        console.log("res.data");
+        this.teachers = res.data;
+        console.log(this.teachers);
+        // this.addSuccessNotification();
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }
 };
 </script>

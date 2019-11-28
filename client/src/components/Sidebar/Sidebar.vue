@@ -43,13 +43,13 @@
         index="uni"
         isHeader
       />
-      <NavLink
+      <!-- <NavLink
         header="مدیریت استان ها"
         link="/app/geo"
         iconName="fa fa-globe"
         index="geo"
         isHeader
-      />
+      /> -->
       <br><br>
       <button
         id="logout"

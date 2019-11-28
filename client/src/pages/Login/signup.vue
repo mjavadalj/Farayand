@@ -192,7 +192,7 @@
         <div
           id="table_data"
           class="table-resposive"
-          style="text-align:center;max-height:500px; overflow: auto;margin-bottom:10px;"
+          style="text-align:center;max-height:400px; overflow: auto;margin-bottom:10px;"
         >
           <table id="dtBasicExample" align="center" class="table">
             <thead>
@@ -234,9 +234,10 @@ export default {
     };
   },
   methods: {
+    //TODO: query uni
     signup() {
-      console.log(this.selectedUniversities);
-      console.log(this.university);
+      // console.log(this.selectedUniversities);
+      // console.log(this.university);
       var uniId = [];
       if (this.role == "teacher") {
         if (this.selectedUniversities.length == 0) {
@@ -340,7 +341,8 @@ export default {
       }
     },
     showModal() {
-      this.axios
+      if (!this.universities){
+        this.axios
         .get(`http://localhost:3000/api/university/showall`)
         .then(res => {
           this.$refs["my-modal"].show();
@@ -349,6 +351,10 @@ export default {
         .catch(err => {
           console.log(err);
         });
+      }
+      else{        
+        this.$refs["my-modal"].show();
+      }
     },
     hideModal() {
       this.$refs["my-modal"].hide();
@@ -361,7 +367,7 @@ export default {
     setUni(uni) {
       if (this.role == "teacher") {
         find = this.selectedUniversities.find(obj => {
-          return obj.name == uni.name;
+          return obj._id == uni._id;
         });
         if (!find) {
           let index = this.universities.indexOf(uni);

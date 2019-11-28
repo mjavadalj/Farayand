@@ -140,11 +140,12 @@
         style="border:1px solid;margin:2px 2px 2px 2px;"
       >
         <ul class="list-group list-group-flush">
-          <li class="list-group-item">{{index+1}} سوال شماره</li>
-          <li class="list-group-item">
-            <span>{{question.text}}</span>
+          <!-- <li class="list-group-item">{{index+1}} سوال شماره</li> -->
+          <li class="list-group-item xtx">
+            <!-- <span>{{index+1}}</span> -->
+            <span> {{'سوال '+String(index+1) +': '+question.text}}  </span>
           </li>
-          <li class="list-group-item">
+          <li class="list-group-item xtx-b">
             <input
               type="radio"
               class="form-check-input"
@@ -153,7 +154,7 @@
             />
             <span>{{question.option_1.text}}</span>
           </li>
-          <li class="list-group-item">
+          <li class="list-group-item xtx-b">
             <input
               type="radio"
               class="form-check-input"
@@ -162,7 +163,7 @@
             />
             <span>{{question.option_2.text}}</span>
           </li>
-          <li class="list-group-item">
+          <li class="list-group-item xtx-b">
             <input
               type="radio"
               class="form-check-input"
@@ -171,7 +172,7 @@
             />
             <span>{{question.option_3.text}}</span>
           </li>
-          <li class="list-group-item">
+          <li class="list-group-item xtx-b">
             <input
               type="radio"
               class="form-check-input"
@@ -320,7 +321,7 @@ export default {
       // reg_session.passed
       if (reg_session.passed) {
         return alert("شما در این آزمون پذیرفته شده اید");
-      } else if (now < chance) {
+      } else if (now > chance) {
         return alert("بعدا");
       } else if (true) {
         this.showQuestions(
@@ -586,12 +587,16 @@ export default {
     },
     hideModal() {
       this.$refs["my-modal"].hide();
+    },
+    merge(text,index){
+      index=String(index)
+      
+      return index+' - '+text
     }
   },
   mounted() {},
   created() {
     this.user = JSON.parse(this.$cookie.get("authorization"));
-    console.log(this.user);
 
     //TODO: if not cookie redirect login
     if (global == undefined) {

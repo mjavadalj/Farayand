@@ -87,7 +87,7 @@ module.exports.signup = (req, res) => {
             _id: mongoose.Types.ObjectId(),
             name: req.body.name,
             role: req.body.role,
-            confirmed: false,
+            confirmed: true,
             username: req.body.username,
             password: hash,
             phoneNumber: req.body.phoneNumber,
@@ -117,7 +117,6 @@ module.exports.signup = (req, res) => {
     }
   });
 };
-
 module.exports.signin = (req, res) => {
   //
   User.findOne({
@@ -479,8 +478,10 @@ module.exports.addTeacherUni = (req, res) => {
     req.body.userId,
     {
       $addToSet: {
-        university:{
+        university:
+        {
           $each:req.body.uniId
+          
         }
         // university: req.body.uniId
       }

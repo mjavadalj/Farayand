@@ -12,13 +12,13 @@
     </header>
     <ul class="nav">
       <NavLink header="خانه" link="/home" iconName="fa fa-home" index="course" isHeader />
-      <NavLink
+      <!-- <NavLink
         header="صفحه اصلی"
         link="/main"
         iconName="fa fa-home"
         index="main"
         isHeader
-      />
+      /> -->
       <NavLink
         header="درس های ثبت نام شده"
         link="/mylesson"
