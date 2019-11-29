@@ -143,7 +143,7 @@
           <!-- <li class="list-group-item">{{index+1}} سوال شماره</li> -->
           <li class="list-group-item xtx">
             <!-- <span>{{index+1}}</span> -->
-            <span> {{'سوال '+String(index+1) +': '+question.text}}  </span>
+            <span>{{'سوال '+String(index+1) +': '+question.text}}</span>
           </li>
           <li class="list-group-item xtx-b">
             <input
@@ -322,7 +322,7 @@ export default {
       if (reg_session.passed) {
         return alert("شما در این آزمون پذیرفته شده اید");
       } else if (now > chance) {
-        return alert("بعدا");
+        return alert('باید تا تاریخ ذکر شده منتظر بمانید');
       } else if (true) {
         this.showQuestions(
           reg_session,
@@ -331,33 +331,25 @@ export default {
       }
     },
     addToRegSession(e, session, index) {
-      var state = this.checkDownload(session);
+      var passedAll=this.reg_sessions.find(reg_session=>{
+        return reg_session.passed==false
+      })
+      if (index != 0 || passedAll) {
+        return alert('باید در آزمون های قبلی پذیرفته شوید')
+      }
+      var find = session.files.find(file => {
+        return (
+          localStorage.getItem(file._id + this.user.userId) == null ||
+          new Date() <
+            new Date(localStorage.getItem(file._id + this.user.userId))
+        );
+      });
+
       if (e.target.nodeName == "I") {
         return;
       }
-      // if (
-      //   localStorage.getItem(
-      //     session.files[session.files.length - 1] + this.user.userId
-      //   ) &&
-      //   new Date() <
-      //     new Date(session.files[session.files.length - 1] + this.user.userId)
-      // ) {
-      //   var now = new Date();
-      //   var date = new Date(
-      //     session.files[session.files.length - 1] + this.user.userId
-      //   );
-      //   var diffMs = date - now;
-      //   var minutes = Math.floor(diffMs / 1000 / 60);
-      //   var seconds = Math.floor((diffMs / 1000) % 60);
-      //   return alert(
-      //     `پس از ${minutes} دقیقه و ${seconds} ثانیه می توانید آزمون دهید`
-      //   );
-      // } else
-      if (!state) {
-        return alert("ابتدا فایل آموزشی را دریافت کنید");
-      }
-      if (index != 0 || !this.check) {
-        return;
+      if (find) {
+        return alert("ابتدا تمامی فایل های آموزشی را دریافت کنید و به مدت 10 دقیقه منتظر بمانید");
       }
       Date.prototype.addDays = function(days) {
         var date = new Date(this.valueOf());
@@ -366,6 +358,7 @@ export default {
       };
       var date = new Date();
       var newDate = date.addDays(parseInt(session.secondChance));
+      //TODO: delete below
       if (session.questionLength == 0) {
         this.axios
           .patch(`http://localhost:3000/api/user/session/register`, {
@@ -455,6 +448,7 @@ export default {
           var a = 0;
           var duration = parseInt(session.duration) * 60;
           this.questions = res.data;
+          for (var i = 1; i < 1000; i++) window.clearInterval(i);
           this.intervalTimer = setInterval(() => {
             var time = duration - a;
             var minute = Math.floor(time / 60);
@@ -465,16 +459,25 @@ export default {
             if (second < 10) {
               second = "0" + second;
             }
-            document.getElementById("countdown").innerHTML =
-              minute + ":" + second;
-            a++;
-            if (time <= 0) {
+            if (document.getElementById("countdown") == null) {
+              clearInterval(this.intervalTimer);
+              this.endQuiz(reg_session, session, true);
+            } else {
               document.getElementById("countdown").innerHTML =
-                "زمان شما تمام شد";
+                minute + ":" + second;
+              a++;
+            }
+
+            if (time <= 0) {
+              if (document.getElementById("countdown")) {
+                document.getElementById("countdown").innerHTML =
+                  "زمان شما تمام شد";
+              }
               clearInterval(this.intervalTimer);
               this.endQuiz(reg_session, session, true);
             }
           }, 1000);
+          console.log(this.intervalTimer);
         })
         .catch(err => {
           console.log(err);
@@ -503,35 +506,22 @@ export default {
             answerBody,
             courseId: this.reg_lesson.courseId,
             lessonId: this.reg_lesson.lessonId,
-            sessionId: session._id
+            minScore: session.minScore,
+            userId: this.user.userId,
+            reg_lessonId: this.reg_lesson._id,
+            reg_sessionId: reg_session._id,
+            anotherChanceDate: reg_session.anotherChanceDate,
+            title: reg_session.title,
+            date: reg_session.date,
+            sessionId: reg_session.sessionId,
+            tryCount
           })
-          .then(res1 => {
-            var passed = res1.data.score >= session.minScore;
-            this.axios
-              .patch(`http://localhost:3000/api/user/session/complete`, {
-                userId: this.user.userId,
-                reg_lessonId: this.reg_lesson._id,
-                reg_sessionId: reg_session._id,
-                passed: passed,
-                score: res1.data.score,
-                anotherChanceDate: reg_session.anotherChanceDate,
-                title: reg_session.title,
-                date: reg_session.date,
-                sessionId: reg_session.sessionId,
-                tryCount
-              })
-              .then(res => {
-                reg_session.passed = passed;
-                reg_session.score = res1.data.score;
-                reg_session.tryCount = tryCount;
-                this.isQuiz = false;
-                clearInterval(this.intervalTimer);
-              })
-              .catch(err => {
-                this.isQuiz = false;
-                clearInterval(this.intervalTimer);
-                console.log(err);
-              });
+          .then(res => {
+            reg_session.passed = res.data.passed;
+            reg_session.score = res.data.score;
+            reg_session.tryCount = tryCount;
+            this.isQuiz = false;
+            clearInterval(this.intervalTimer);
           })
           .catch(err => {
             clearInterval(this.intervalTimer);
@@ -562,6 +552,7 @@ export default {
         return;
       }
       var dt = new Date();
+      //TODO: make it 10
       dt.setMinutes(dt.getMinutes() + 1);
       localStorage.setItem(file._id + this.user.userId, dt);
     },
@@ -576,7 +567,7 @@ export default {
           courseId: this.courseId
         })
         .then(res => {
-          console.log(res.data);
+          // console.log(res.data);
           this.$refs["my-modal"].show();
           // this.selectedSession = session;
           this.files = res.data;
@@ -588,10 +579,10 @@ export default {
     hideModal() {
       this.$refs["my-modal"].hide();
     },
-    merge(text,index){
-      index=String(index)
-      
-      return index+' - '+text
+    merge(text, index) {
+      index = String(index);
+
+      return index + " - " + text;
     }
   },
   mounted() {},

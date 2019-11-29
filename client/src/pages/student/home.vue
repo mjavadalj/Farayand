@@ -1,53 +1,104 @@
 <template>
   <div>
-    <div class="text-center lalezar">
-      <label for="teachers">اساتید</label>
-      <div id="teachers" class="lalezar">
-        <button
-          @click="showCourses(teacher)"
-          v-for="teacher in teachers"
-          :key="teacher._id"
-          style="margin-left:2px;"
-          type="button"
-          class="btn btn-outline-primary lalezar"
-        >
-          <i class="fa fa-user">
-            <span style="margin-left:5px;" class="lalezar">{{teacher.name}}</span>
-          </i>
-        </button>
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="basic-addon1">
+          <i class="fa fa-search" />
+        </span>
       </div>
-      <br />
-      <label v-if="courseOpen" for="courses">دوره ها</label>
-      <div id="courses" v-if="courseOpen">
-        <button
-          @click="showLesson(course)"
-          v-for="course in courses"
-          :key="course._id"
-          style="margin:2px 2px 2px 2px;"
-          type="button"
-          class="btn btn-outline-secondary lalezar"
+      <input
+        style="text-align:center;"
+        type="text"
+        id="myInput"
+        class="form-control"
+        placeholder="جستجو"
+        aria-label="Search"
+        aria-describedby="basic-addon1"
+        v-on:keyup="search"
+      />
+    </div>
+    <div
+      id="table_data"
+      class="table-resposive"
+      style="text-align:center;max-height:500px; overflow: auto;margin-bottom:10px;"
+    >
+      <table id="dtBasicExample" align="center" class="table">
+        <thead>
+          <tr>
+            <th class>نام</th>
+            <th class>#</th>
+          </tr>
+        </thead>
+        <tbody id="myTable">
+          <tr v-for="(teacher,index) in teachers" :key="teacher._id" @click="showCourses(teacher)">
+            <td>{{teacher.name}}</td>
+            <td id="numeric-td">{{index+1}}</td>
+          </tr>
+          
+        </tbody>
+      </table>
+    </div>
+    <div id="modaaal">
+      <b-modal id="my-modal" ref="my-modal" scrollable hide-footer title>
+        <div class="d-block text-center xtx-b">
+          <span>
+            <h3>دوره مورد نظر را انتخاب کنید</h3>
+          </span>
+        </div>
+        <div
+          id="table_data"
+          class="table-resposive"
+          style="text-align:center;max-height:500px; overflow: auto;margin-bottom:10px;"
         >
-          <i class="fa fa-tasks">
-            <span style="margin-left:5px;" class="lalezar">{{course.title}}</span>
-          </i>
-        </button>
-      </div>
-      <br />
-      <label v-if="lessonOpen" for="lessons">درس ها</label>
-      <div id="lessons" v-if="lessonOpen">
-        <button
-          @click="lessonRegister(lesson)"
-          v-for="lesson in lessons"
-          :key="lesson._id"
-          style="margin:2px 2px 2px 2px;"
-          type="button"
-          class="btn btn-outline-info lalezar"
+          <table id="dtBasicExample" align="center" class="table">
+            <thead>
+              <tr>
+                <th class>نام</th>
+                <th class>#</th>
+              </tr>
+            </thead>
+            <tbody id="myTable2">
+              <tr v-for="(course,index) in courses" :key="course._id" @click="showLessons(course)">
+                <td>{{course.title}}</td>
+                <td>{{index+1}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </b-modal>
+    </div>
+    <div id="modaaal2">
+      <b-modal id="my-modal2" ref="my-modal2" scrollable hide-footer title>
+        <div class="d-block text-center xtx-b">
+          <span>
+            <h3>درس مورد نظر را انتخاب کنید</h3>
+          </span>
+        </div>
+        <div
+          id="table_data"
+          class="table-resposive"
+          style="text-align:center;max-height:500px; overflow: auto;margin-bottom:10px;"
         >
-          <i class="fa fa-code-fork">
-            <span style="margin-left:5px;" class="lalezar">{{lesson.title}}</span>
-          </i>
-        </button>
-      </div>
+          <table id="dtBasicExample" align="center" class="table">
+            <thead>
+              <tr>
+                <th class>نام</th>
+                <th class>#</th>
+              </tr>
+            </thead>
+            <tbody id="myTable2">
+              <tr
+                v-for="(lesson,index) in lessons"
+                :key="lesson._id"
+                @click="lessonRegister(lesson)"
+              >
+                <td>{{lesson.title}}</td>
+                <td>{{index+1}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </b-modal>
     </div>
   </div>
 </template>
@@ -110,10 +161,6 @@ export default {
     return {
       teacherSelected: null,
       courseSelected: null,
-      courseOpen: false,
-      lessonOpen: false,
-      loadedCourses: {},
-      loadedLessons: {},
       courses: {},
       lessons: {},
       user: null,
@@ -125,70 +172,36 @@ export default {
   },
   methods: {
     showCourses(teacher) {
-      if (
-        this.teacherSelected != null &&
-        this.teacherSelected._id == teacher._id
-      ) {
-        this.lessonOpen = false;
-        return;
-      }
-      if (this.loadedCourses[teacher._id] != undefined) {
-        this.courses = this.loadedCourses[teacher._id];
-        this.teacherSelected = teacher;
-        this.courseOpen = true;
-        this.lessonOpen = false;
-        return;
-      }
       this.axios
         .post(`http://localhost:3000/api/user/course/showall`, {
           user: teacher._id
         })
         .then(res => {
-          console.log("course load");
           this.courses = res.data;
-          this.courseOpen = true;
-          this.lessonOpen = false;
-          this.loadedCourses[teacher._id] = res.data;
           this.teacherSelected = teacher;
+          this.$refs["my-modal"].show();
         })
         .catch(err => {
           console.log(err);
         });
     },
-    showLesson(course) {
-      if (
-        this.courseSelected != null &&
-        this.courseSelected._id == course._id
-      ) {
-        return;
-      }
-      if (this.loadedLessons[course._id] != undefined) {
-        this.lessons = this.loadedLessons[course._id];
-        this.courseSelected = course;
-        this.lessonOpen = true;
-        return;
-      }
+    showLessons(course) {
       this.axios
         .post(`http://localhost:3000/api/lesson/showall`, {
           courseId: course._id
         })
         .then(res => {
-          console.log("lesson load");
-          console.log(res.data);
+          this.$refs["my-modal"].hide();
           this.lessons = res.data;
-          this.loadedLessons[course._id] = res.data;
           this.courseSelected = course;
-          this.lessonOpen = true;
+          this.$refs["my-modal2"].show();
         })
         .catch(err => {
           console.log(err);
         });
     },
-    al(x) {
-      alert(x.target.nodeName);
-    },
-    push(lesson) {},
     lessonRegister(lesson) {
+      this.$refs["my-modal2"].hide();
       this.$swal
         .fire({
           title: "Are you sure?",
@@ -214,7 +227,6 @@ export default {
             this.axios
               .patch(`http://localhost:3000/api/user/lesson/register`, body)
               .then(res => {
-                console.log(res.data);
                 if (res.data == null) {
                   this.$swal.fire({
                     type: "warning",
@@ -234,6 +246,28 @@ export default {
               });
           }
         });
+    },
+    hideModal() {
+      this.$refs["my-modal"].hide();
+    },
+    toggleModal() {
+      // We pass the ID of the button that we want to return focus to
+      // when the modal has hidden
+      this.$refs["my-modal"].toggle("#toggle-btn");
+    },
+    search(e, temp = null) {
+      var value = $("#myInput")
+        .val()
+        .toLowerCase();
+      $("#myTable tr").filter(function() {
+        $(this).toggle(
+          $(this)
+            .text()
+            .toLowerCase()
+            .indexOf(value) > -1
+        );
+      });
+      console.log(value);
     }
   },
   mounted() {},
@@ -255,6 +289,8 @@ export default {
       await this.axios
         .get(`http://localhost:3000/api/user/teacher/showall`)
         .then(res => {
+          console.log(res.data);
+
           this.teachers = res.data;
           // var temp = {};
           // this.teachers.forEach(teacher => {

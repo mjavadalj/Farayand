@@ -213,6 +213,8 @@ export default {
     // this.initCharts();
   },
   created() {
+    for (var i = 1; i < 1000; i++)
+        window.clearInterval(i);
     this.user = JSON.parse(this.$cookie.get("authorization"));
     //TODO: if not cookie redirect login
     this.axios

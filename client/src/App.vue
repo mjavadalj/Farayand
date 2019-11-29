@@ -3,10 +3,13 @@
 </template>
 
 <script>
+import { global } from "@/main.js";
 export default {
   name: "App",
   created() {
     const currentPath = this.$router.history.current.path;
+    
+    // clearInterval(global.inteval)
     // console.log(currentPath.split('/')[1]);
     // const decoded = JSON.parse(this.$cookie.get("authorization"));
     // console.log(decoded);

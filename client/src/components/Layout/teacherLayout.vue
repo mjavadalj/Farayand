@@ -27,7 +27,7 @@ import Sidebar from "@/components/Sidebar/teacherSidebar";
 import Header from "@/components/Header/Header";
 import Chat from "@/components/Chat/Chat";
 import Helper from "@/components/Helper/Helper";
-
+import { global } from "@/main.js";
 import "./Layout.scss";
 
 export default {
@@ -48,6 +48,9 @@ export default {
     })
   },
   created() {
+    for (var i = 1; i < 1000; i++)
+        window.clearInterval(i);
+    // clearInterval(global.interval)
     //TODO: check role
     //TODO: jome, inja cookie ro get kon, age rolesh ok nabood edame nade
     const decoded = JSON.parse(this.$cookie.get("authorization"));

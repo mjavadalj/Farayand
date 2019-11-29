@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Embed = require("../models/embed");
+const User = require("../models/user");
 const moment = require("moment-jalaali");
 
 const handler = (json, res, code) => {
@@ -61,7 +62,6 @@ module.exports.addASession = (req, res) => {
       handler(err, res, 500);
     });
 };
-
 module.exports.showAllSessions = (req, res) => {
   find = {
     $and: [
@@ -111,7 +111,6 @@ module.exports.showAllSessions = (req, res) => {
       handler(err, res, 200);
     });
 };
-
 module.exports.showAllQuestions = (req, res) => {
   find = {
     _id: mongoose.Types.ObjectId(req.body.courseId),
@@ -228,7 +227,6 @@ module.exports.deleteAllSessons = (req, res) => {
       handler(err, res, 500);
     });
 };
-
 module.exports.deleteSingleSession = (req, res) => {
   find = {
     _id: req.body.courseId,
@@ -249,7 +247,6 @@ module.exports.deleteSingleSession = (req, res) => {
       handler(err, res, 500);
     });
 };
-
 module.exports.editASession = (req, res) => {
   newItems = editItems(req, "lessons.$[].sessions.$[elem].");
 
@@ -276,7 +273,6 @@ module.exports.editASession = (req, res) => {
       handler(err, res, 500);
     });
 };
-
 module.exports.addFile = (req, res) => {
   filename =
     "http://localhost:3000/files/" +
@@ -428,9 +424,47 @@ module.exports.checkQuiz = (req, res) => {
           }
         });
       });
-      handler({ score: Math.ceil((correctAnswer / Qlength) * 100) }, res, 200);
+      // handler({ score: Math.ceil((correctAnswer / Qlength) * 100) }, res, 200);
+      score = Math.ceil((correctAnswer / Qlength) * 100);
+      passed = score >= req.body.minScore;
+      find = {
+        _id: req.body.userId,
+        "reg_lessons._id": req.body.reg_lessonId,
+        "reg_lessons.reg_sessions._id": req.body.reg_sessionId
+      };
+      User.updateOne(
+        find,
+        {
+          $set: {
+            "reg_lessons.$[].reg_sessions.$[elem]": {
+              score,
+              tryCount: req.body.tryCount,
+              passed,
+              anotherChanceDate: req.body.anotherChanceDate,
+              title: req.body.title,
+              sessionId: req.body.sessionId,
+              _id: req.body.reg_sessionId,
+              date: req.body.date
+            }
+          }
+        },
+        {
+          new: true,
+          arrayFilters: [{ "elem._id": mong(req.body.reg_sessionId) }]
+        }
+      )
+        .exec()
+        .then(user => {
+          res.status(200).json({
+            score,
+            passed
+          });
+        })
+        .catch(err => {
+          handler(err, res, 500);
+        });
     })
     .catch(err => {
-      handler(err, res, 200);
+      handler(err, res, 500);
     });
 };

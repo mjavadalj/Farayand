@@ -14,6 +14,8 @@ import router from "./Routes";
 import App from "./App";
 import VueSweetalert2 from "vue-sweetalert2";
 import VueJWT from 'vuejs-jwt'
+import moment from 'moment-jalaali'
+Vue.use(moment)
 Vue.use(VueJWT)
 Vue.use(require('vue-cookie'));
 Vue.use(require('vue-moment-jalaali'));
@@ -49,6 +51,8 @@ export const global = new Vue({
     session: null,
     teacher: null,
     index: null,
+    interval:null
   }
 });
+
 //TODO: swal2 css edit

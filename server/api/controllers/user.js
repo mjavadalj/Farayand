@@ -199,6 +199,7 @@ module.exports.lessonRegister = (req, res) => {
       handler(err, res, 500);
     });
 };
+//TODO: score=0
 module.exports.sessionRegister = (req, res) => {
   find = {
     $and: [
