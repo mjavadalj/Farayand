@@ -10,7 +10,7 @@ module.exports.add = (req, res) => {
   const cer = new Certificate({
     _id: mongoose.Types.ObjectId(),
     userId: req.body.userId,
-    userName: req.body.userName,
+    nationalcode: req.body.nationalcode,
     lesson: req.body.reg_lessonId
   })
     .save()
@@ -69,7 +69,7 @@ module.exports.showAll = (req, res) => {
       $project:{
         _id:"$_id",
         teacherName:"$user.reg_lessons.teacherName",
-        userName:"$user.name",
+        nationalcode:"$user.name",
         courseTitle:"$user.reg_lessons.courseTitle",
         lessonTitle:"$user.reg_lessons.lessonTitle",
         finalScore:"$user.reg_lessons.finalScore",

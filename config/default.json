@@ -13,7 +13,7 @@
     },
     "noSql": {
         "name": "",
-        "userName": "",
+        "nationalcode": "",
         "password": "",
         "host": "localhost"
     }

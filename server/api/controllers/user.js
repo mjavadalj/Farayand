@@ -14,8 +14,8 @@ const mong = id => {
 };
 const editItems = (req, text = "") => {
   json = {};
-  if (req.body.username != undefined)
-    json[`${text}username`] = req.body.username;
+  if (req.body.nationalcode != undefined)
+    json[`${text}nationalcode`] = req.body.nationalcode;
   if (req.body.password != undefined)
     json[`${text}password`] = req.body.password;
   if (req.body.email != undefined) json[`${text}email`] = req.body.email;
@@ -33,7 +33,7 @@ module.exports.addAUser = (req, res) => {
     name: req.body.name,
     role: req.body.role,
     confirmed: req.body.confirmed,
-    username: req.body.username,
+    nationalcode: req.body.nationalcode,
     password: req.body.password,
     phoneNumber: req.body.phoneNumber,
     gender: req.body.gender,
@@ -67,7 +67,7 @@ module.exports.signup = (req, res) => {
     return res.status(401).json(validationResult(req));
   }
   User.find({
-    $or: [{ email: req.body.email }, { username: req.body.username }]
+    $or: [{ email: req.body.email }, { nationalcode: req.body.nationalcode }]
   }).then(user => {
     if (user.length > 0) {      
       return res.status(401).json({
@@ -88,7 +88,7 @@ module.exports.signup = (req, res) => {
             name: req.body.name,
             role: req.body.role,
             confirmed: true,
-            username: req.body.username,
+            nationalcode: req.body.nationalcode,
             password: hash,
             phoneNumber: req.body.phoneNumber,
             gender: req.body.gender,
@@ -120,13 +120,13 @@ module.exports.signup = (req, res) => {
 module.exports.signin = (req, res) => {
   //
   User.findOne({
-    username: req.body.username
+    nationalcode: req.body.nationalcode
   })
     .exec()
     .then(user => {
       if (!user) {
         return res.status(401).json({
-          message: "username not exist"
+          message: "nationalcode not exist"
         });
       } else {
         bcrypt.compare(req.body.password, user.password, (err, same) => {
@@ -140,7 +140,7 @@ module.exports.signin = (req, res) => {
               name: user.name,
               email: user.email,
               userId: user._id,
-              userName: user.username,
+              nationalcode: user.nationalcode,
               role: user.role
             };
 
@@ -456,7 +456,7 @@ module.exports.showAllC = (req, res) => {
     {
       $project: {
         teacherName: "$reg_lessons.teacherName",
-        userName: "$name",
+        nationalcode: "$name",
         university: "$university",
         courseTitle: "$reg_lessons.courseTitle",
         lessonTitle: "$reg_lessons.lessonTitle",

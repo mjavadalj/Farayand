@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const userSchema = mongoose.Schema({
   _id: { type: mongoose.Schema.Types.ObjectId, require: true },
-  username: { type: String, default: null },
+  nationalcode: { type: String, default: null },
   password: { type: String, default: null },
   email: { type: String, default: null },
   name: { type: String, require: true },
@@ -9,7 +9,6 @@ const userSchema = mongoose.Schema({
   gender: { type: String, enum: ["man", "woman"], default: "man" },
   role: { type: String,enum: ["teacher", "student","admin"], default: "teacher" },
   confirmed: { type: Boolean, default: true },
-  nationalCode: { type: String, default: null },
   date_jalali: { type: Object, default: null },
   date: { type: mongoose.Schema.Types.Date, default: Date.now },
   university: [{type: mongoose.Schema.Types.ObjectId, ref:'University' }],

@@ -37,12 +37,12 @@
             <div class="form-group">
               <input
                 class="form-control no-border"
-                ref="username"
+                ref="nationalcode"
                 required
                 type="text"
-                name="username"
-                placeholder="نام کاربری"
-                oninvalid="this.setCustomValidity('نام کاربری خود را وارد کنید')"
+                name="nationalcode"
+                placeholder="کد ملی"
+                oninvalid="this.setCustomValidity('کد ملی خود را وارد کنید')"
                 oninput="setCustomValidity('')"
               />
             </div>
@@ -256,7 +256,7 @@ export default {
         return;
       }
       //TODO: add university
-      const username = this.$refs.username.value;
+      const nationalcode = this.$refs.nationalcode.value;
       const password = this.$refs.password.value;
       const name = this.$refs.name.value;
       const phoneNumber = this.$refs.phoneNumber.value;
@@ -270,7 +270,7 @@ export default {
         gender = "woman";
       }
       var body = {
-        username,
+        nationalcode,
         password,
         name,
         phoneNumber,
@@ -296,7 +296,7 @@ export default {
               // console.log(res);
               this.axios
                 .post("http://localhost:3000/api/user/signin", {
-                  username,
+                  nationalcode,
                   password
                 })
                 .then(loginResponse => {
@@ -324,7 +324,7 @@ export default {
         .catch(err => {
           console.log(err.message);
         });
-      // if (username.length !== 0 && password.length !== 0) {
+      // if (nationalcode.length !== 0 && password.length !== 0) {
       //   window.localStorage.setItem('authenticated', true);
       //   this.$router.push('/app/main/analytics');
       // }

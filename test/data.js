@@ -2,6 +2,6 @@
 
 module.exports.correctSignUpRequest = {
     email: `test${Math.floor(Math.random() * 100)}@yahoo.com`,
-    username: "test",
+    nationalcode: "test",
     password: "123456"
 }

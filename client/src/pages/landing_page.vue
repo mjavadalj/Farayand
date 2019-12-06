@@ -37,11 +37,11 @@
               <div class="form-group">
                 <input
                   class="form-control no-border lalezar"
-                  ref="username"
+                  ref="nationalcode"
                   required
                   type="text"
-                  name="username"
-                  placeholder="نام کاربری"
+                  name="nationalcode"
+                  placeholder="کد ملی"
                 />
               </div>
               <div class="form-group">
@@ -126,10 +126,10 @@ export default {
   },
   methods: {
     login() {
-      const username = this.$refs.username.value;
+      const nationalcode = this.$refs.nationalcode.value;
       const password = this.$refs.password.value;
       var body = {
-        username,
+        nationalcode,
         password
       };
       console.log(body);

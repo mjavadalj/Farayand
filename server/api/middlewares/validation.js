@@ -24,13 +24,13 @@ exports.signUp = [
             });
         }),
 
-    // username validation
-    check('username')
+    // nationalcode validation
+    check('nationalcode')
         .isLength({
             min: 2,
             max: 32
         })
-        .withMessage('username must be  between 2 and 32 characters long'),
+        .withMessage('nationalcode must be  between 2 and 32 characters long'),
     // name validation
     // check('name')
     //     .isLength({

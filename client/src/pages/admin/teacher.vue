@@ -43,7 +43,7 @@
                 <span data-v-71d02ef0 class="badge badge-info">برای حذف روی نام دانشگاه کلیک کنید</span>
               </div>دانشگاه
             </th>
-            <th class>نام کاربری</th>
+            <th class>کد ملی</th>
             <th class>نام</th>
             <th class>#</th>
           </tr>
@@ -109,7 +109,7 @@
                 </p>
               </div>
             </td>
-            <td>{{teacher.username}}</td>
+            <td>{{teacher.nationalcode}}</td>
             <td>{{teacher.name}}</td>
             <td id="numeric-td">{{index+1}}</td>
           </tr>
@@ -356,17 +356,17 @@ export default {
               <div class="row form-group text-center">
                 <div class="col-12 col-md-9">
                   <input
-                  value="${user.username}"
+                  value="${user.nationalcode}"
                     type="text"
-                    id="username"
-                    name="username"
-                    placeholder="نام کاربری را وارد کنید"
+                    id="nationalcode"
+                    name="nationalcode"
+                    placeholder="کد ملی را وارد کنید"
                     class="form-control"
                     required
                   />
                 </div>
                 <div class="col col-md-3">
-                  <label for="username" class="form-control-label">نام کاربری</label>
+                  <label for="nationalcode" class="form-control-label">کد ملی</label>
                 </div>
               </div>
               <div class="row form-group text-center">
@@ -421,7 +421,7 @@ export default {
         focusConfirm: false,
         preConfirm: () => {
           var name = document.getElementById("name").value;
-          var username = document.getElementById("username").value;
+          var nationalcode = document.getElementById("nationalcode").value;
           var email = document.getElementById("email").value;
           var number = document.getElementById("number").value;
           var password = document.getElementById("password").value;
@@ -434,7 +434,7 @@ export default {
           }
           if (
             name == "" ||
-            username == "" ||
+            nationalcode == "" ||
             email == "" ||
             password == "" ||
             gender == ""
@@ -448,7 +448,7 @@ export default {
           return {
             ok,
             name,
-            username,
+            nationalcode,
             number,
             email,
             gender,
@@ -463,7 +463,7 @@ export default {
       this.axios
         .patch(`http://localhost:3000/api/user/edit`, {
           userId: user._id,
-          username: formValues.username,
+          nationalcode: formValues.nationalcode,
           name: formValues.name,
           phoneNumber: formValues.number,
           email: formValues.email,
@@ -529,7 +529,7 @@ export default {
         );
       });
     },
-    async s(name = "", username = "", number = "", email = "") {
+    async s(name = "", nationalcode = "", number = "", email = "") {
       const { value: formValues2 } = await this.$swal.fire({
         html: `<div class="col-X-6">
         <div class="card">
@@ -587,17 +587,17 @@ export default {
               <div class="row form-group text-center">
                 <div class="col-12 col-md-9">
                   <input
-                  value="${username}"
+                  value="${nationalcode}"
                     type="text"
-                    id="username"
-                    name="username"
-                    placeholder="نام کاربری را وارد کنید"
+                    id="nationalcode"
+                    name="nationalcode"
+                    placeholder="کد ملی را وارد کنید"
                     class="form-control"
                     required
                   />
                 </div>
                 <div class="col col-md-3">
-                  <label for="username" class="form-control-label">نام کاربری</label>
+                  <label for="nationalcode" class="form-control-label">کد ملی</label>
                 </div>
               </div>
               <div class="row form-group text-center">
@@ -651,7 +651,7 @@ export default {
         focusConfirm: false,
         preConfirm: () => {
           var name = document.getElementById("name").value;
-          var username = document.getElementById("username").value;
+          var nationalcode = document.getElementById("nationalcode").value;
           var email = document.getElementById("email").value;
           var number = document.getElementById("number").value;
           var password = document.getElementById("password").value;
@@ -664,13 +664,13 @@ export default {
           }
           if (
             name == "" ||
-            username == "" ||
+            nationalcode == "" ||
             email == "" ||
             password == "" ||
             gender == ""
           ) {
             setTimeout(() => {
-              this.s(name, username, number, email);
+              this.s(name, nationalcode, number, email);
             }, 0);
           } else {
             ok = true;
@@ -678,7 +678,7 @@ export default {
           return {
             ok,
             name,
-            username,
+            nationalcode,
             number,
             email,
             gender,
@@ -691,7 +691,7 @@ export default {
       }
       this.axios
         .post(`http://localhost:3000/api/user/add`, {
-          username: formValues2.username,
+          nationalcode: formValues2.nationalcode,
           phoneNumber: formValues2.number,
           email: formValues2.email,
           name: formValues2.name,
