@@ -1,37 +1,22 @@
 <template>
   <div>
-    <!-- <div class="container">
-      <nav class="fixed-nav-bar">
-        <a class="brand">
-          <img src="../assets/image/basij-logo.png" />
-        </a>
-        <a class="link" href="#">
-          <span class="lalezar" style="font-size:1.5em">ورود</span>
-        </a>
-        <a class="link" href="#">
-          <span class="lalezar" style="font-size:1.5em">ثبت نام</span>
-        </a>
-      </nav>
-    </div>-->
     <div>
-      <div class="image">
-        <img src="../assets/image/home-img.jpg" class="img-fluid" alt="Responsive image" />
+      <!-- <div class="image">
+        <img src="../assets/image/rahbar2.jpg" class="img-fluid" alt="Responsive image" />
+      </div>-->
+      <div id="content2">
+        <img src="../assets/image/basij-logo.png" width="200px" class="ribbon" />
       </div>
       <div class="login-box">
         <div class="text-center">
-          <!-- <span class="lalezar" style="font-size:1.5em">وارد شوید</span> -->
           <h5 class="logo">
             <i style="margin-right:5px;" class="fa fa-circle text-gray" />
-            <span class="lalezar" style="color:black;">بسیج اساتید</span>
+            <span class="lalezar" style="color:#F2F2F2;">بسیج اساتید</span>
             <i style="margin-left:5px;" class="fa fa-circle text-warning" />
           </h5>
         </div>
         <b-container>
-          <Widget
-            class="mx-auto"
-            title=""
-            customHeader
-          >
+          <Widget class="mx-auto" title customHeader>
             <form class="mt" @submit.prevent="login">
               <b-alert class="alert-sm" variant="danger" :show="!!errorMessage">{{errorMessage}}</b-alert>
               <div class="form-group">
@@ -56,13 +41,21 @@
               </div>
               <div class="clearfix">
                 <div class="btn-toolbar float-right">
-                  <b-button @click="signup" type="reset" size="sm" variant="default"><span class="lalezar">ثبت نام کنید</span></b-button>
-                  <b-button type="submit" size="sm" variant="inverse"><span class="lalezar">ورود</span></b-button>
+                  <b-button @click="signup" type="reset" size="sm" variant="default">
+                    <span class="lalezar">ثبت نام کنید</span>
+                  </b-button>
+                  <b-button type="submit" size="sm" variant="inverse">
+                    <span class="lalezar">ورود</span>
+                  </b-button>
                 </div>
               </div>
             </form>
           </Widget>
         </b-container>
+        <br />
+        <div class="image">
+          <img src="../assets/image/1.png" width="300px" class="img-fluid" alt="Responsive image" />
+        </div>
       </div>
     </div>
   </div>
@@ -122,7 +115,10 @@ import Widget from "@/components/Widget/Widget";
 import VueJWT from "vuejs-jwt";
 export default {
   data() {
-    return {};
+    return {
+      slide: 0,
+      sliding: null
+    };
   },
   methods: {
     login() {
@@ -138,7 +134,7 @@ export default {
         .then(loginResponse => {
           const jwt = loginResponse.data.jwt;
           const decoded = this.$jwt.decode(jwt);
-          this.$cookie.set('authorization',JSON.stringify(decoded))
+          this.$cookie.set("authorization", JSON.stringify(decoded));
           switch (decoded.role) {
             case "student":
               this.$router.push("/");
@@ -147,15 +143,20 @@ export default {
               this.$router.push("/teacher");
               break;
             case "admin":
-              this.$router.push("/app/main");
+              this.$router.push("/app/course");
               break;
           }
         })
         .catch(loginError => {});
-      
     },
-    signup(){
+    signup() {
       this.$router.push("/signup");
+    },
+    onSlideStart(slide) {
+      this.sliding = true;
+    },
+    onSlideEnd(slide) {
+      this.sliding = false;
     }
   },
   mounted() {},
@@ -164,7 +165,6 @@ export default {
 </script>
 
 <style>
-
 a {
   text-decoration: none;
   color: gray;
@@ -236,11 +236,28 @@ a:hover {
   position: absolute;
   top: 50px;
   right: 2%;
-  
+
   /* border: solid #0033ff; */
-  border-bottom: 1px solid black;
-  border-top: 1px solid black;
+  border-bottom: 1px solid #f2f2f2;
+  border-top: 1px solid #f2f2f2;
   padding-top: 1.5em;
   padding-bottom: 1.5em;
+}
+body {
+  background: url("../assets/image/rahbar2.jpg") no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  background-size: cover;
+  -o-background-size: cover;
+  /* filter: blur(8px);
+  -webkit-filter: blur(8px); */
+}
+#content2 {
+    position: relative;
+}
+#content2 img {
+    position: absolute;
+    top: 5px;
+    left: 5px;
 }
 </style>

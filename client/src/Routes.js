@@ -3,7 +3,6 @@ import Router from "vue-router";
 import TeacherLayout from "@/components/Layout/teacherLayout";
 import UserLayout from "@/components/Layout/userLayout";
 import Layout from "@/components/Layout/Layout";
-import Login from "@/pages/Login/Login";
 import ErrorPage from "@/pages/Error/Error";
 // Core
 import TypographyPage from "@/pages/Typography/Typography";
@@ -41,7 +40,6 @@ import Question from "./pages/admin/question.vue";
 import Home from "./pages/student/home.vue";
 import Quiz from "./pages/quiz/quiz.vue";
 import Uni from "./pages/admin/uni.vue";
-import AdminMain from "./pages/admin/adminMain.vue";
 import TPCourse from "./pages/teacher/teacherPublishableCourses.vue";
 import TeacherCourses from "./pages/teacher/teacherCourses.vue";
 import Geo from "./pages/admin/geo.vue";
@@ -66,11 +64,6 @@ export default new Router({
       component: SignUp
     },
     {
-      path: "/login",
-      name: "Login",
-      component: Login
-    },
-    {
       path: "/error",
       name: "Error",
       component: ErrorPage
@@ -84,11 +77,6 @@ export default new Router({
           path: "geo",
           name: "geo",
           component: Geo
-        },
-        {
-          path: "main",
-          name: "adminMain",
-          component: AdminMain
         },
         {
           path: "universities",
@@ -193,16 +181,6 @@ export default new Router({
           component: TPCourse
         },
         {
-          path: "main",
-          name: "teacherMain",
-          component: AdminMain
-        },
-        {
-          path: "question/:title",
-          name: "tquestion",
-          component: Question
-        },
-        {
           path: "mycourse",
           name: "mycourse",
           component: ChosenCourses
@@ -243,11 +221,6 @@ export default new Router({
           path: "edit",
           name: "studentEdit",
           component: Edit
-        },
-        {
-          path: "/main",
-          name: "studentMain",
-          component: AdminMain
         },
         {
           path: "/home",

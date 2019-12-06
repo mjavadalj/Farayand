@@ -60,7 +60,7 @@ export default {
     },
     logout() {
       window.localStorage.setItem('authenticated', false);
-      this.$router.push('/login');
+      this.$router.push('/landing');
     },
   },
   created() {

@@ -1,19 +1,16 @@
 <template>
   <div>
-    <div v-if="role!=null" class="login-page">
+    <div id="content2">
+        <img src="../../assets/image/basij-logo.png" width="200px" class="ribbon" />
+      </div>
+    <div class="login-page leftside">
+      
       <b-container>
-        <div class="fixed-top text-center">
-          <h5 class="logo">
-            <i class="fa fa-circle text-gray" />
-            <span class="lalezar" style="color:black;">بسیج اساتید</span>
-            <i class="fa fa-circle text-warning" />
-          </h5>
-        </div>
         <h5 class="logo">
           <span @click="role=null">
             <i class="fa fa-edit refresh"></i>
           </span>
-          <span class="lalezar" style="color:black;">به عنوان {{getRole()}} در حال ثبت نام هستید</span>
+          <span class="lalezar" style="color:#F2F2F2;">به عنوان {{getRole()}} در حال ثبت نام هستید</span>
         </h5>
         <Widget
           class="mx-auto"
@@ -83,16 +80,6 @@
                 oninput="setCustomValidity('')"
               />
             </div>
-            <div class="form-group text-center">
-              <label class="radio-inline" style="margin-right:10px;">
-                <input type="radio" name="optradio" checked id="man-radio" />
-                <span class="lalezar">آقا</span>
-              </label>
-              <label class="radio-inline">
-                <input type="radio" name="optradio" id="woman-radio" />
-                <span class="lalezar">خانم</span>
-              </label>
-            </div>
             <div class="form-group">
               <input
                 @click="showModal"
@@ -103,8 +90,22 @@
                 value="دانشگاه خود را انتخاب کنید"
               />
             </div>
+            <div class="form-group text-center">
+              <label class="radio-inline" style="margin-right:10px;">
+                <input type="radio" name="optradio" checked id="man-radio" />
+                <span class="lalezar" style="color:white;">آقا</span>
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="optradio" id="woman-radio" />
+                <span class="lalezar" style="color:white;">خانم</span>
+              </label>
+            </div>
+
             <div class="clearfix">
               <div class="btn-toolbar float-right">
+                <b-button @click="landing" type="reset" size="sm" variant="default">
+                  <span class="lalezar">قبلا ثبت نام کرده ام</span>
+                </b-button>
                 <b-button type="submit" size="sm" variant="inverse">
                   <i class="fa fa-sign-in">
                     <span style="margin-left:2px;" class="lalezar">ثبت نام</span>
@@ -115,40 +116,7 @@
           </form>
         </Widget>
       </b-container>
-      <footer class="footer">2017 &copy; Sing. Admin Dashboard Template.</footer>
-    </div>
-    <div v-else>
-      <b-container>
-        <div class="page-middle">
-          <div class="text-center">
-            <h3 class="lalezar">ثبت نام به عنوان</h3>
-          </div>
-          <div style="margin-top:20px;" class="text-center">
-            <figure @click="setRole('student')" style="margin-right:50px;" class="figure">
-              <img
-                src="../../assets/image/student.png"
-                width="200px"
-                height="200px"
-                alt="Responsive image"
-              />
-              <figcaption class="figure-caption">
-                <span style="font-size:1.2em;" class="lalezar">دانشجو</span>
-              </figcaption>
-            </figure>
-            <figure @click="setRole('teacher')" style="margin-left:50px;" class="figure">
-              <img
-                src="../../assets/image/teacher.png"
-                width="200px"
-                height="200px"
-                alt="Responsive image"
-              />
-              <figcaption class="figure-caption">
-                <span style="font-size:1.2em;" class="lalezar">استاد</span>
-              </figcaption>
-            </figure>
-          </div>
-        </div>
-      </b-container>
+      <!-- <footer class="footer">2017 &copy; Sing. Admin Dashboard Template.</footer> -->
     </div>
     <div id="modaaal">
       <b-modal id="my-modal" ref="my-modal" no-close-on-backdrop scrollable hide-footer title>
@@ -227,7 +195,7 @@ export default {
   data() {
     return {
       errorMessage: null,
-      role: null,
+      role: "studnet",
       university: null,
       universities: null,
       selectedUniversities: []
@@ -311,7 +279,7 @@ export default {
                       this.$router.push("/teacher");
                       break;
                     case "admin":
-                      this.$router.push("/app/main");
+                      this.$router.push("/app/course");
                       break;
                   }
                 })
@@ -341,18 +309,17 @@ export default {
       }
     },
     showModal() {
-      if (!this.universities){
+      if (!this.universities) {
         this.axios
-        .get(`http://localhost:3000/api/university/showall`)
-        .then(res => {
-          this.$refs["my-modal"].show();
-          this.universities = res.data;
-        })
-        .catch(err => {
-          console.log(err);
-        });
-      }
-      else{        
+          .get(`http://localhost:3000/api/university/showall`)
+          .then(res => {
+            this.$refs["my-modal"].show();
+            this.universities = res.data;
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      } else {
         this.$refs["my-modal"].show();
       }
     },
@@ -413,6 +380,9 @@ export default {
       let index = this.selectedUniversities.indexOf(uni);
       this.selectedUniversities.splice(index, 1);
       this.universities.push(uni);
+    },
+    landing(){
+      this.$router.push('/landing')
     }
   },
   created() {
@@ -422,5 +392,12 @@ export default {
   }
 };
 </script>
-
+<style>
+@media screen and (min-width: 1400px) {
+  .leftside {
+    margin-left: 1100px !important;
+    /* position: fixed; */
+  }
+}
+</style>
 <style src="./Login.scss" lang="scss" scoped />

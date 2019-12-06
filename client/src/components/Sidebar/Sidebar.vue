@@ -5,7 +5,7 @@
     @mouseleave="sidebarMouseLeave"
   >
     <header class="logo">
-      <router-link to="/app/main"><span class="text-warning">مدیریت</span></router-link>
+      <router-link to="/app/course"><span class="text-warning">مدیریت</span></router-link>
     </header>
     <ul class="nav">
       <NavLink
@@ -133,7 +133,7 @@ export default {
   },
   methods: {
     ...mapActions('layout', ['changeSidebarActive', 'switchSidebar']),
-    setActiveByRoute() {
+    setActiveByRoute() {      
       const paths = this.$route.fullPath.split('/');
       paths.pop();
       this.changeSidebarActive(paths.join('/'));
@@ -152,7 +152,7 @@ export default {
     },
     logout(){
       this.$cookie.delete("authorization")
-      this.$router.push('/login')
+      this.$router.push('/landing')
     }
   },
   created() {
