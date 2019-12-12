@@ -62,7 +62,7 @@ function initializationMessengerCode() {
     };
   }.call(window));
 }
-/* eslint-enable */
+/* eslint-enable *//* eslint-disable */
 
 export default {
   name: "Notifications",
@@ -116,7 +116,7 @@ export default {
               responseText: 0
             });
           }
-          /* eslint-enable */
+          /* eslint-enable *//* eslint-disable */
           return opts.success();
         }
       });

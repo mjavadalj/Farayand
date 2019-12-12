@@ -1,14 +1,13 @@
 <template>
-  <div>
+  <div id="landing-page">
     <div id="content2">
-        <img src="../../assets/image/basij-logo.png" width="200px" class="ribbon" />
-      </div>
+      <img src="../../assets/image/basij-logo.png" width="200px" class="ribbon" />
+    </div>
     <div class="login-page leftside">
-      
       <b-container>
-        <h5 class="logo">
-          <span @click="role=null">
-            <i class="fa fa-edit refresh"></i>
+        <h5 title="تغییر" class="logo">
+          <span @click="changeRole">
+            <i style="color:white;" class="fa fa-edit refresh"></i>
           </span>
           <span class="lalezar" style="color:#F2F2F2;">به عنوان {{getRole()}} در حال ثبت نام هستید</span>
         </h5>
@@ -195,7 +194,7 @@ export default {
   data() {
     return {
       errorMessage: null,
-      role: "studnet",
+      role: "teacher",
       university: null,
       universities: null,
       selectedUniversities: []
@@ -381,8 +380,16 @@ export default {
       this.selectedUniversities.splice(index, 1);
       this.universities.push(uni);
     },
-    landing(){
-      this.$router.push('/landing')
+    landing() {
+      this.$router.push("/landing");
+    },
+    changeRole() {
+      this.role = this.role == "teacher" ? "student" : "teacher";
+      this.selectedUniversities = [];
+      this.university = null;
+      this.universities = null;
+      document.getElementById("uni").value = "دانشگاه خود را انتخاب کنید";
+      console.log(this.role);
     }
   },
   created() {

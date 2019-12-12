@@ -2,7 +2,21 @@ const mongoose = require("mongoose");
 const Embed = require("../models/embed");
 const User = require("../models/user");
 const moment = require("moment-jalaali");
+const HummusRecipe = require("hummus-recipe");
+const fs = require("fs");
 
+const createFile=(files,cb)=>{
+  // sep=files[0].name.split('/')
+  // fileName=sep[sep.length-1]
+  fileName="5def7ce8f8dd8345bcae1038.1.pdf"
+  console.log(fileName);
+  console.log(__dirname);
+  
+  if (fs.existsSync("../../files/"+fileName)) {
+    console.log("ok");
+  }
+  cb()
+}
 const handler = (json, res, code) => {
   res.status(code).json(json);
 };
@@ -23,8 +37,10 @@ const editItems = (req, text = "") => {
     json[`${text}publishable`] = req.body.publishable;
   if (req.body.limitation != undefined)
     json[`${text}limitation`] = req.body.limitation;
-  if (req.body.userQCount != undefined)
-    json[`${text}userQCount`] = req.body.userQCount;
+  if (req.body.starting_page != undefined)
+    json[`${text}starting_page`] = req.body.starting_page;
+  if (req.body.ending_page != undefined)
+    json[`${text}ending_page`] = req.body.ending_page;
   return json;
 };
 const randomQuestions = (res, arr, n) => {
@@ -56,6 +72,7 @@ module.exports.addASession = (req, res) => {
   )
     .exec()
     .then(result => {
+      // createFile(result.lessons[0].files,()=>{})
       handler(result, res, 200);
     })
     .catch(err => {
@@ -90,7 +107,8 @@ module.exports.showAllSessions = (req, res) => {
     {
       $project: {
         _id: "$lessons.sessions._id",
-        files: "$lessons.sessions.files",
+        ending_page: "$lessons.sessions.ending_page",
+        starting_page: "$lessons.sessions.starting_page",
         content: "$lessons.sessions.content",
         duration: "$lessons.sessions.duration",
         minScore: "$lessons.sessions.minScore",
@@ -273,108 +291,108 @@ module.exports.editASession = (req, res) => {
       handler(err, res, 500);
     });
 };
-module.exports.addFile = (req, res) => {
-  filename =
-    "http://localhost:3000/files/" +
-    req.body.sessionId +
-    "." +
-    req.file.originalname;
+// module.exports.addFile = (req, res) => {
+//   filename =
+//     "http://localhost:3000/files/" +
+//     req.body.sessionId +
+//     "." +
+//     req.file.originalname;
 
-  find = {
-    $and: [
-      { _id: mong(req.body.courseId) },
-      { "lessons._id": mong(req.body.lessonId) },
-      { "lessons.sessions._id": mong(req.body.sessionId) }
-    ]
-  };
-  Embed.updateOne(
-    find,
-    {
-      $addToSet: {
-        "lessons.$[].sessions.$[elem].files": {
-          //TODO: type
-          name: filename,
-          type: "pdf"
-        }
-      }
-    },
-    {
-      new: true,
-      arrayFilters: [{ "elem._id": mong(req.body.sessionId) }]
-    }
-  )
-    .exec()
-    .then(result => {
-      handler(result, res, 200);
-    })
-    .catch(err => {
-      handler(err, res, 500);
-    });
-};
-module.exports.showFiles = (req, res) => {
-  find = {
-    _id: mongoose.Types.ObjectId(req.body.courseId),
-    "lessons._id": mongoose.Types.ObjectId(req.body.lessonId),
-    "lessons.sessions._id": mongoose.Types.ObjectId(req.body.sessionId)
-  };
-  Embed.aggregate([
-    {
-      $unwind: {
-        path: "$lessons",
-        includeArrayIndex: "index"
-        // "preserveNullAndEmptyArrays": true
-      }
-    },
-    {
-      $unwind: {
-        path: "$lessons.sessions",
-        includeArrayIndex: "index"
-        // "preserveNullAndEmptyArrays": true
-      }
-    },
-    {
-      $match: find
-    }
-  ])
-    .exec()
-    .then(result => {
-      handler(result[0].lessons.sessions.files, res, 200);
-    })
-    .catch(err => {
-      handler(err, res, 200);
-    });
-};
-module.exports.deleteFile = (req, res) => {
-  find = {
-    $and: [
-      { _id: req.body.courseId },
-      { "lessons._id": req.body.lessonId },
-      { "lessons.sessions._id": mong(req.body.sessionId) },
-      { "lessons.sessions.files._id": mong(req.body.fileId) }
-    ]
-  };
-  Embed.updateOne(
-    find,
-    {
-      $pull: {
-        "lessons.$[].sessions.$[elem].files": {
-          _id: req.body.fileId
-        }
-      }
-    },
-    {
-      new: true,
-      arrayFilters: [{ "elem._id": mong(req.body.sessionId) }]
-    }
-  )
-    .exec()
-    .then(result => {
-      handler(result, res, 200);
-    })
-    .catch(err => {
-      handler(err, res, 500);
-    });
-};
+//   find = {
+//     $and: [
+//       { _id: mong(req.body.courseId) },
+//       { "lessons._id": mong(req.body.lessonId) },
+//       { "lessons.sessions._id": mong(req.body.sessionId) }
+//     ]
+//   };
+//   Embed.updateOne(
+//     find,
+//     {
+//       $addToSet: {
+//         "lessons.$[].sessions.$[elem].files": {
+//           //TODO: type
+//           name: filename,
+//           type: "pdf"
+//         }
+//       }
+//     },
+//     {
+//       new: true,
+//       arrayFilters: [{ "elem._id": mong(req.body.sessionId) }]
+//     }
+//   )
+//     .exec()
+//     .then(result => {
+//       handler(result, res, 200);
+//     })
+//     .catch(err => {
+//       handler(err, res, 500);
+//     });
+// };
+// module.exports.showFiles = (req, res) => {
+//   find = {
+//     _id: mongoose.Types.ObjectId(req.body.courseId),
+//     "lessons._id": mongoose.Types.ObjectId(req.body.lessonId),
+//     "lessons.sessions._id": mongoose.Types.ObjectId(req.body.sessionId)
+//   };
+//   Embed.aggregate([
+//     {
+//       $unwind: {
+//         path: "$lessons",
+//         includeArrayIndex: "index"
+//         // "preserveNullAndEmptyArrays": true
+//       }
+//     },
+//     {
+//       $unwind: {
+//         path: "$lessons.sessions",
+//         includeArrayIndex: "index"
+//         // "preserveNullAndEmptyArrays": true
+//       }
+//     },
+//     {
+//       $match: find
+//     }
+//   ])
+//     .exec()
+//     .then(result => {
+//       handler(result[0].lessons.sessions.files, res, 200);
+//     })
+//     .catch(err => {
+//       handler(err, res, 200);
+//     });
+// };
+// module.exports.deleteFile = (req, res) => {
+//   find = {
+//     $and: [
+//       { _id: req.body.courseId },
+//       { "lessons._id": req.body.lessonId },
+//       { "lessons.sessions._id": mong(req.body.sessionId) },
+//       { "lessons.sessions.files._id": mong(req.body.fileId) }
+//     ]
+//   };
+//   Embed.updateOne(
+//     find,
+//     {
+//       $pull: {
+//         "lessons.$[].sessions.$[elem].files": {
+//           _id: req.body.fileId
+//         }
+//       }
+//     },
+//     {
+//       new: true,
+//       arrayFilters: [{ "elem._id": mong(req.body.sessionId) }]
+//     }
+//   )
+//     .exec()
+//     .then(result => {
+//       handler(result, res, 200);
+//     })
+//     .catch(err => {
+//       handler(err, res, 500);
+//     });
+// };
 module.exports.checkQuiz = (req, res) => {
   find = {
     $and: [

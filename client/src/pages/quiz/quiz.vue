@@ -289,7 +289,7 @@ function initializationMessengerCode() {
     };
   }.call(window));
 }
-/* eslint-enable */
+/* eslint-enable *//* eslint-disable */
 export default {
   data() {
     return {
@@ -337,20 +337,20 @@ export default {
       if (index != 0 || passedAll) {
         return alert('باید در آزمون های قبلی پذیرفته شوید')
       }
-      var find = session.files.find(file => {
-        return (
-          localStorage.getItem(file._id + this.user.userId) == null ||
-          new Date() <
-            new Date(localStorage.getItem(file._id + this.user.userId))
-        );
-      });
+      // var find = session.files.find(file => {
+      //   return (
+      //     localStorage.getItem(file._id + this.user.userId) == null ||
+      //     new Date() <
+      //       new Date(localStorage.getItem(file._id + this.user.userId))
+      //   );
+      // });
 
       if (e.target.nodeName == "I") {
         return;
       }
-      if (find) {
-        return alert("ابتدا تمامی فایل های آموزشی را دریافت کنید و به مدت 10 دقیقه منتظر بمانید");
-      }
+      // if (find) {
+      //   return alert("ابتدا تمامی فایل های آموزشی را دریافت کنید و به مدت 10 دقیقه منتظر بمانید");
+      // }
       Date.prototype.addDays = function(days) {
         var date = new Date(this.valueOf());
         date.setDate(date.getDate() + days);

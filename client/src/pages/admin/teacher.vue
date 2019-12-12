@@ -231,7 +231,7 @@ function initializationMessengerCode() {
     };
   }.call(window));
 }
-/* eslint-enable */
+/* eslint-enable *//* eslint-disable */
 //#FAFBFF
 //TODO: filter uni select same
 export default {

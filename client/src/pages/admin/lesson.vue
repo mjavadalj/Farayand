@@ -47,6 +47,11 @@
                 class="fa fa-edit action-icon"
                 style="font-size: 1.5em;"
               />
+              <i
+                @click="showModal(lesson)"
+                class="fa fa-file action-icon"
+                style="font-size: 1.5em;"
+              />
             </td>
             <td id="numeric-td">{{ new Date(lesson.date) | moment("jYYYY/jM/jD | HH:mm ")}}</td>
             <td id="numeric-td">{{lesson.sessionLength}}</td>
@@ -61,6 +66,54 @@
         <i class="fa fa-plus" />
       </button>
     </div>
+    <div id="modaaal">
+      <b-modal id="my-modal" ref="my-modal" scrollable hide-footer title>
+        <div class="d-block text-center lalezar">
+          <h3>فایل ها</h3>
+        </div>
+        <button @click="upload" type="button" class="btn btn-light">
+          <i class="fa fa-upload"></i>
+        </button>
+        <b-form-file
+          v-model="uploadedFile"
+          placeholder="Choose a file or drop it here..."
+          drop-placeholder="Drop file here..."
+        ></b-form-file>
+        <!-- <div class="mt-3">Selected file: {{ file ? file.name : '' }}</div> -->
+        <div
+          id="table_data"
+          class="table-resposive"
+          style="text-align:center;max-height:500px; overflow: auto;margin-bottom:10px;"
+        >
+          <table id="dtBasicExample" align="center" class="table">
+            <thead>
+              <tr>
+                <th class>عملیات</th>
+                <th class>فرمت</th>
+                <th class>نام</th>
+                <th class>#</th>
+              </tr>
+            </thead>
+            <tbody id="myTable2">
+                <tr v-for="(file,index) in files" :key="file._id">
+                  <td>
+                    <i
+                      @click="removeFile(file,index)"
+                      class="fa fa-remove action-icon"
+                      style="font-size: 1.5em;"
+                    />
+                  </td>
+                  <td>{{file.type}}</td>
+                  <td>
+                    <a :href="file.name+'#page=3'" target="_blank">{{file.name.split('.')[1]}}</a>
+                  </td>
+                  <td>{{index+1}}</td>
+                </tr>
+            </tbody>
+          </table>
+        </div>
+      </b-modal>
+    </div>
   </div>
 </template>
 <script>
@@ -70,7 +123,10 @@ export default {
     return {
       course: null,
       lessons: null,
-      courseId: null
+      courseId: null,
+      selectedLesson: null,
+      uploadedFile: null,
+      files:null
     };
   },
 
@@ -81,9 +137,9 @@ export default {
       }
       global.courseId = this.courseId;
       global.lessonId = data._id;
-      global.lesson=data
-      global.course=this.course
-      if (global.teacherId!=null) {
+      global.lesson = data;
+      global.course = this.course;
+      if (global.teacherId != null) {
         this.$router.push({
           name: "tsession",
           params: {
@@ -283,13 +339,79 @@ export default {
             type: "success",
             title: "موفق",
             text: "درس با موفقیت ویرایش شد",
-            confirmButtonText: "قبول",
+            confirmButtonText: "قبول"
             // confirmButtonColor: "#3abf94",
           });
 
           Object.keys(res.data.lessons[index]).forEach(item => {
             lesson[item] = res.data.lessons[index][item];
           });
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    showModal(lesson) {
+      this.axios
+        .post(`http://localhost:3000/api/lesson/showfiles`, {
+          lessonId: lesson._id,
+          courseId: this.courseId
+        })
+        .then(res => {
+          console.log(res.data);
+          this.$refs["my-modal"].show();
+          this.selectedLesson = lesson;
+          this.files = res.data;
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    hideModal() {
+      this.$refs["my-modal"].hide();
+    },
+    toggleModal() {
+      // We pass the ID of the button that we want to return focus to
+      // when the modal has hidden
+      this.$refs["my-modal"].toggle("#toggle-btn");
+    },
+    files(lesson, index) {
+      console.log("aaaaaaaaaaaaa");
+
+      // this.showModal(session);
+    },
+    removeFile(file, index) {
+      this.axios
+        .patch(`http://localhost:3000/api/lesson/deletefile/`, {
+          courseId: this.course._id,
+          lessonId: this.selectedLesson._id,
+          fileId: file._id
+        })
+        .then(res => {
+          this.files.splice(index, 1);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    upload() {
+      if (this.uploadedFile == null) {
+        return;
+      }
+      var formatData = new FormData();
+      //TODO: key value
+      formatData.append("lessonId", this.selectedLesson._id);
+      formatData.append("courseId", this.courseId);
+      formatData.append("file", this.uploadedFile);
+      this.axios
+        .post("http://localhost:3000/api/lesson/addfile", formatData, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        })
+        .then(result => {
+          console.log(result);
+          this.uploadedFile = null;
         })
         .catch(err => {
           console.log(err);
@@ -308,7 +430,7 @@ export default {
       })
       .then(res => {
         console.log(res.data);
-        
+
         this.lessons = res.data;
         this.course = global.course;
       })

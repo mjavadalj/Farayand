@@ -3,34 +3,34 @@ const router = express.Router();
 const sessionController = require("../controllers/session");
 const multer = require("multer");
 
-const storage = multer.diskStorage({
-  destination: (req, file, callBack) => {
-    callBack(null, __dirname + "../../../files");
-  },
-  filename: (req, file, callBack) => {      
-    callBack(null, `${req.body.sessionId}.${file.originalname}`);
-  }
-});
+// const storage = multer.diskStorage({
+//   destination: (req, file, callBack) => {
+//     callBack(null, __dirname + "../../../files");
+//   },
+//   filename: (req, file, callBack) => {      
+//     callBack(null, `${req.body.sessionId}.${file.originalname}`);
+//   }
+// });
 
-const fileFilter = (req, file, callBack) => {
-  if (
-    file.mimetype === "video/mp4" ||
-    file.mimetype === "application/zip" ||
-    file.mimetype === "application/pdf"
-  ) {
-    callBack(null, true);
-  } else {
-    callBack(new Error("not supported"), false);
-  }
-};
+// const fileFilter = (req, file, callBack) => {
+//   if (
+//     file.mimetype === "video/mp4" ||
+//     file.mimetype === "application/zip" ||
+//     file.mimetype === "application/pdf"
+//   ) {
+//     callBack(null, true);
+//   } else {
+//     callBack(new Error("not supported"), false);
+//   }
+// };
 
-const upload = multer({
-  storage: storage,
-  limits: {
-    fileSize: 1024 * 1024 * 50
-  },
-  fileFilter
-});
+// const upload = multer({
+//   storage: storage,
+//   limits: {
+//     fileSize: 1024 * 1024 * 50
+//   },
+//   fileFilter
+// });
 
 //show all sessions
 router.post("/showall", sessionController.showAllSessions);
@@ -49,8 +49,8 @@ router.patch("/delete", sessionController.deleteSingleSession);
 router.patch("/deleteall", sessionController.deleteAllSessons);
 router.post("/checkquiz", sessionController.checkQuiz);
 
-router.post("/addFile", upload.single("file"), sessionController.addFile);
-router.post("/showfiles", sessionController.showFiles);
-router.patch("/deletefile", sessionController.deleteFile);
+// router.post("/addFile", upload.single("file"), sessionController.addFile);
+// router.post("/showfiles", sessionController.showFiles);
+// router.patch("/deletefile", sessionController.deleteFile);
 
 module.exports = router;

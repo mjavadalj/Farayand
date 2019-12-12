@@ -1,14 +1,15 @@
 
 module.exports.isAdmin = (req, res, next) => {
+    next();
     //TODO: check valid ID
-    if (req.user.role === "admin") {
-        next();
-    }
-    else {
-        return res.status(400).json({
-            message: "not admin , you're not allowed"
-        })
-    }
+    // if (req.user.role === "admin") {
+    //     next();
+    // }
+    // else {
+    //     return res.status(400).json({
+    //         message: "not admin , you're not allowed"
+    //     })
+    // }
 }
 
 

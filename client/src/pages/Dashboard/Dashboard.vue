@@ -252,7 +252,7 @@ import $ from 'jquery';
 /* eslint-disable */
 import 'imports-loader?jQuery=jquery,this=>window!flot';
 import 'imports-loader?jQuery=jquery,this=>window!flot/jquery.flot.pie';
-/* eslint-enable */
+/* eslint-enable *//* eslint-disable */
 import Widget from '@/components/Widget/Widget';
 
 export default {

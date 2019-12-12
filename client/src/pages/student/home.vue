@@ -155,7 +155,7 @@ function initializationMessengerCode() {
     };
   }.call(window));
 }
-/* eslint-enable */
+/* eslint-enable *//* eslint-disable */
 export default {
   data() {
     return {

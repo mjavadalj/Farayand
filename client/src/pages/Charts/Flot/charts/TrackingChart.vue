@@ -120,7 +120,7 @@ export default {
         } else {
           /* eslint-disable */
           y = point1[1] + (point2[1] - point1[1]) * (pos.x - point1[0]) / (point2[0] - point1[0]);
-        /* eslint-enable */
+        /* eslint-enable *//* eslint-disable */
         }
 
         this.legend.eq(i).text(series.label.replace(/=.*/, `= ${y.toFixed(2)}`));

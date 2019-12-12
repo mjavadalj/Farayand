@@ -130,7 +130,7 @@ function initializationMessengerCode() {
     };
   }.call(window));
 }
-/* eslint-enable */
+/* eslint-enable *//* eslint-disable */
 //user
 //5d8b01ad21f2fd2db8f9b917
 //teacher

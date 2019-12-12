@@ -101,7 +101,7 @@ export default {
     },
     logout() {
       this.$cookie.delete("authorization");
-      this.$router.push("/login");
+      this.$router.push("/landing");
     }
   },
   created() {

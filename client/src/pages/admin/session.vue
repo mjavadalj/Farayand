@@ -53,8 +53,8 @@
                 style="font-size: 1.5em;"
               />
               <i
-                @click="showModal(session)"
-                class="fa fa-file action-icon"
+                @click="download(session)"
+                class="fa fa-download action-icon"
                 style="font-size: 1.5em;"
               />
             </td>
@@ -75,7 +75,7 @@
         <i class="fa fa-plus" />
       </button>
 
-      <div id="modaaal">
+      <!-- <div id="modaaal">
         <b-modal id="my-modal" ref="my-modal" scrollable hide-footer title>
           <div class="d-block text-center lalezar">
             <h3>فایل ها</h3>
@@ -86,7 +86,6 @@
             placeholder="Choose a file or drop it here..."
             drop-placeholder="Drop file here..."
           ></b-form-file>
-          <!-- <div class="mt-3">Selected file: {{ file ? file.name : '' }}</div> -->
           <div
             id="table_data"
             class="table-resposive"
@@ -120,7 +119,7 @@
             </table>
           </div>
         </b-modal>
-      </div>
+      </div>-->
     </div>
   </div>
 </template>
@@ -134,7 +133,7 @@ export default {
       sessions: null,
       courseId: null,
       files: null,
-      uploadedFile:null,
+      uploadedFile: null,
       selectedSession: null
     };
   },
@@ -184,80 +183,104 @@ export default {
       duration = "",
       secondChance = "",
       minScore = "",
-      userQCount = ""
+      userQCount = "",
+      starting_page = "",
+      ending_page = ""
     ) {
       const { value: formValues2 } = await this.$swal.fire({
         html: `
-                  <div class="card">
-                  <div class="card-header">
-                    <strong class="lalezar" >جلسه جدید</strong>
-                  </div>
-                  </br>
-                  <div class="form-group">
-                  <div class="">
-                    <label class="lalezar" for="title">عنوان جلسه</label>
-                          <input
-                            value="${title}"
-                            type="text"
-                            id="title"
-                            name="title"
-                            placeholder="عنوان جلسه را وارد کنید"
-                            class="form-control"
-                          />
-                  </div>
-                  </br>
-                  <div>
-                    <label class="lalezar"  for="content">توضیحات راجع به جلسه</label>
-                    <textarea class="form-control text-center" rows="3" id="content"> ${content}</textarea>
-                </div> 
-                </br>
-                <div class="">
-                  <label class="lalezar"  for="title">مدت زمان آزمون </label>
-                        <input
-                          value="${duration}"
-                          type="number"
-                          id="duration"
-                          name="duration"
-                          placeholder="مدت زمان آزمون را مشخص کنید"
-                          class="form-control"
-                        />
-                </div>
-                </br>
-                <div class="">
-                  <label class="lalezar"  for="title">حداقل نمره قبولی در آزمون</label>
-                        <input
-                          value="${minScore}"
-                          type="number"
-                          id="minScore"
-                          name="minScore"
-                          placeholder="حداقل نمره قبولی را به درصد وارد کنید"
-                          class="form-control"
-                        />
-                </div> 
-                </br>
-                <div class="">
-                  <label class="lalezar"  for="title">شانس مجدد</label>
-                        <input
-                          value="${secondChance}"
-                          type="number"
-                          id="secondChance"
-                          name="secondChance"
-                          placeholder="چند روز پس از آزمون"
-                          class="form-control"
-                        />
-                </div>
-                <div class="">
-                  <label class="lalezar"  for="title"> سوال دانشجو</label>
-                        <input
-                          value="${userQCount}"
-                          type="number"
-                          id="userQCount"
-                          name="userQCount"
-                          placeholder="تعداد سوالاتی که برای دانشجو نمایش داده می شود"
-                          class="form-control"
-                        />
-                </div>        
-                </div>`,
+                        <div class="card">
+                        <div class="card-header">
+                          <strong class="lalezar" >جلسه جدید</strong>
+                        </div>
+                        </br>
+                        <div class="form-group">
+                        <div class="">
+                          <label class="lalezar" for="title">عنوان جلسه</label>
+                                <input
+                                  value="${title}"
+                                  type="text"
+                                  id="title"
+                                  name="title"
+                                  placeholder="عنوان جلسه را وارد کنید"
+                                  class="form-control"
+                                />
+                        </div>
+                        </br>
+                        <div>
+                          <label class="lalezar"  for="content">توضیحات راجع به جلسه</label>
+                          <textarea class="form-control text-center" rows="3" id="content"> ${content}</textarea>
+                      </div> 
+                      </br>
+                      <div class="">
+                        <label class="lalezar"  for="title">مدت زمان آزمون </label>
+                              <input
+                                value="${duration}"
+                                type="number"
+                                id="duration"
+                                name="duration"
+                                placeholder="مدت زمان آزمون را مشخص کنید"
+                                class="form-control"
+                              />
+                      </div>
+                      </br>
+                      <div class="">
+                        <label class="lalezar"  for="title">حداقل نمره قبولی در آزمون</label>
+                              <input
+                                value="${minScore}"
+                                type="number"
+                                id="minScore"
+                                name="minScore"
+                                placeholder="حداقل نمره قبولی را به درصد وارد کنید"
+                                class="form-control"
+                              />
+                      </div> 
+                      </br>
+                      <div class="">
+                        <label class="lalezar"  for="title">شانس مجدد</label>
+                              <input
+                                value="${secondChance}"
+                                type="number"
+                                id="secondChance"
+                                name="secondChance"
+                                placeholder="چند روز پس از آزمون"
+                                class="form-control"
+                              />
+                      </div>
+                      <div class="">
+                        <label class="lalezar"  for="title"> سوال دانشجو</label>
+                              <input
+                                value="${userQCount}"
+                                type="number"
+                                id="userQCount"
+                                name="userQCount"
+                                placeholder="تعداد سوالاتی که برای دانشجو نمایش داده می شود"
+                                class="form-control"
+                              />
+                      </div>
+                      <div class="">
+                        <label class="lalezar"  for="title"> صفحه شروع</label>
+                              <input
+                                value="${starting_page}"
+                                type="number"
+                                id="starting_page"
+                                name="starting_page"
+                                placeholder="صفحه شروع"
+                                class="form-control"
+                              />
+                      </div> 
+                      <div class="">
+                        <label class="lalezar"  for="title"> صفحه پایان</label>
+                              <input
+                                value="${ending_page}"
+                                type="number"
+                                id="ending_page"
+                                name="ending_page"
+                                placeholder="صفحه پایان"
+                                class="form-control"
+                              />
+                      </div>        
+                      </div>`,
         focusConfirm: false,
         preConfirm: () => {
           var title = document.getElementById("title").value;
@@ -266,6 +289,8 @@ export default {
           var minScore = document.getElementById("minScore").value;
           var secondChance = document.getElementById("secondChance").value;
           var userQCount = document.getElementById("userQCount").value;
+          var starting_page = document.getElementById("starting_page").value;
+          var ending_page = document.getElementById("ending_page").value;
           var ok = false;
           if (
             title == "" ||
@@ -273,7 +298,10 @@ export default {
             duration == "" ||
             minScore == "" ||
             secondChance == "" ||
-            userQCount == ""
+            userQCount == "" ||
+            starting_page == "" ||
+            ending_page == "" ||
+            parseInt(starting_page)>parseInt(ending_page)
           ) {
             setTimeout(() => {
               this.addSession(
@@ -282,7 +310,9 @@ export default {
                 duration,
                 secondChance,
                 minScore,
-                userQCount
+                userQCount,
+                starting_page,
+                ending_page
               );
             }, 0);
           } else {
@@ -295,7 +325,9 @@ export default {
             secondChance,
             duration,
             minScore,
-            userQCount
+            userQCount,
+            starting_page,
+            ending_page
           };
         }
       });
@@ -313,7 +345,9 @@ export default {
             secondChance: formValues2.secondChance,
             duration: parseInt(formValues2.duration),
             minScore: parseInt(formValues2.minScore),
-            userQCount: parseInt(formValues2.userQCount)
+            userQCount: parseInt(formValues2.userQCount),
+            starting_page: parseInt(formValues2.starting_page),
+            ending_page: parseInt(formValues2.ending_page)
           }
         })
         .then(res => {
@@ -426,13 +460,35 @@ export default {
                   />
           </div>
           <div class="">
-            <label class="lalezar"  for="title">سوال دانشجو </label>
+            <label class="lalezar"  for="title"> دانشجو </label>
                   <input
                     value="${session.userQCount}"
                     type="number"
                     id="userQCount"
                     name="userQCount"
                     placeholder="تعداد سوالاتی که برای دانشجو نمایش داده می شود"
+                    class="form-control"
+                  />
+          </div> 
+          <div class="">
+            <label class="lalezar"  for="title">صفحه شروع</label>
+                  <input
+                    value="${session.starting_page}"
+                    type="number"
+                    id="starting_page"
+                    name="starting_page"
+                    placeholder="صفحه شروع"
+                    class="form-control"
+                  />
+          </div> 
+          <div class="">
+            <label class="lalezar"  for="title">صفحه پایان </label>
+                  <input
+                    value="${session.ending_page}"
+                    type="number"
+                    id="ending_page"
+                    name="ending_page"
+                    placeholder="صفحه پایان"
                     class="form-control"
                   />
           </div>       
@@ -445,6 +501,8 @@ export default {
           var minScore = document.getElementById("minScore").value;
           var secondChance = document.getElementById("secondChance").value;
           var userQCount = document.getElementById("userQCount").value;
+          var starting_page = document.getElementById("starting_page").value;
+          var ending_page = document.getElementById("ending_page").value;
           var ok = false;
           if (
             title == "" ||
@@ -452,7 +510,10 @@ export default {
             duration == "" ||
             minScore == "" ||
             secondChance == "" ||
-            userQCount == ""
+            userQCount == "" ||
+            starting_page == "" ||
+            ending_page == "" ||
+            parseInt(starting_page)>parseInt(ending_page)
           ) {
             setTimeout(() => {
               this.editSession(session);
@@ -467,7 +528,9 @@ export default {
             secondChance,
             duration,
             minScore,
-            userQCount
+            userQCount,
+            starting_page,
+            ending_page
           };
         }
       });
@@ -484,7 +547,9 @@ export default {
           duration: formValues2.duration,
           minScore: formValues2.minScore,
           userQCount: formValues2.userQCount,
-          secondChance: formValues2.secondChance
+          secondChance: formValues2.secondChance,
+          starting_page: formValues2.starting_page,
+          ending_page: formValues2.ending_page
         })
         .then(res => {
           this.$swal.fire({
@@ -509,75 +574,7 @@ export default {
           console.log(err);
         });
     },
-    showModal(session) {
-      this.axios
-        .post(`http://localhost:3000/api/session/showfiles`, {
-          sessionId: session._id,
-          lessonId: this.lessonId,
-          courseId: this.courseId
-        })
-        .then(res => {
-          console.log(res.data);
-          this.$refs["my-modal"].show();
-          this.selectedSession = session;
-          this.files = res.data;
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-    hideModal() {
-      this.$refs["my-modal"].hide();
-    },
-    toggleModal() {
-      // We pass the ID of the button that we want to return focus to
-      // when the modal has hidden
-      this.$refs["my-modal"].toggle("#toggle-btn");
-    },
-    files(session, index) {
-      console.log("aaaaaaaaaaaaa");
-
-      // this.showModal(session);
-    },
-    removeFile(file, index) {
-      this.axios
-        .patch(`http://localhost:3000/api/session/deletefile/`, {
-          courseId: this.course._id,
-          lessonId: this.lesson._id,
-          sessionId: this.selectedSession._id,
-          fileId: file._id
-        })
-        .then(res => {
-          this.files.splice(index, 1);
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-    upload(){
-      if (this.uploadedFile==null){
-        return
-      }
-      var formatData = new FormData();
-      //TODO: key value
-      formatData.append("sessionId", this.selectedSession._id);
-      formatData.append("lessonId", this.lessonId);
-      formatData.append("courseId", this.courseId);
-      formatData.append("file", this.uploadedFile);      
-      this.axios.post("http://localhost:3000/api/session/addfile", formatData, {
-        headers: {
-          "Content-Type": "multipart/form-data"
-        }
-      }).then(result=>{
-        console.log(result);
-        this.uploadedFile=null
-        
-      })
-      .catch(err=>{
-        console.log(err);
-        
-      })
-    }
+    download(session) {}
   },
   mounted() {
     if (global == undefined) {
@@ -593,7 +590,6 @@ export default {
       .then(res => {
         this.sessions = res.data;
         console.log(res.data);
-
         this.course = global.course;
         this.lesson = global.lesson;
       })

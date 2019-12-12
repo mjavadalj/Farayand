@@ -48,12 +48,14 @@ const embedSchema = mongoose.Schema({
               },
             }
           ],
-          files: [
-            {
-              name: { type: String, default: null },
-              type: { type: String, default: null },
-            }
-          ]
+          starting_page: { type: Number, require: true  },
+          ending_page: { type: Number, require: true },
+        }
+      ],
+      files: [
+        {
+          name: { type: String, default: null },
+          type: { type: String, default: null },
         }
       ]
     }

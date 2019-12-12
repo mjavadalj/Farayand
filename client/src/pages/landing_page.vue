@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="landing-page">
     <div>
       <!-- <div class="image">
         <img src="../assets/image/rahbar2.jpg" class="img-fluid" alt="Responsive image" />
@@ -110,7 +110,7 @@ function initializationMessengerCode() {
     };
   }.call(window));
 }
-/* eslint-enable */
+/* eslint-enable *//* eslint-disable */
 import Widget from "@/components/Widget/Widget";
 import VueJWT from "vuejs-jwt";
 export default {
@@ -128,7 +128,6 @@ export default {
         nationalcode,
         password
       };
-      console.log(body);
       this.axios
         .post("http://localhost:3000/api/user/signin", body)
         .then(loginResponse => {
@@ -243,12 +242,14 @@ a:hover {
   padding-top: 1.5em;
   padding-bottom: 1.5em;
 }
-body {
+#landing-page,.generate {
   background: url("../assets/image/rahbar2.jpg") no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   background-size: cover;
   -o-background-size: cover;
+  width: 100%;
+  height: 100vh;
   /* filter: blur(8px);
   -webkit-filter: blur(8px); */
 }

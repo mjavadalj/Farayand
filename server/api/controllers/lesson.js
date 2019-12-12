@@ -161,3 +161,93 @@ module.exports.editLesson = (req, res) => {
       handler(err, res, 500);
     });
 };
+module.exports.addFile = (req, res) => {
+  filename =
+    "http://localhost:3000/files/" +
+    req.body.lessonId +
+    "." +
+    req.file.originalname;
+
+  find = {
+    $and: [
+      { _id: mong(req.body.courseId) },
+      { "lessons._id": mong(req.body.lessonId) },
+    ]
+  };
+  Embed.updateOne(
+    find,
+    {
+      $addToSet: {
+        "lessons.$.files": {
+          //TODO: type
+          name: filename,
+          type: "pdf"
+        }
+      }
+    },
+    {
+      new: true
+    }
+  )
+    .exec()
+    .then(result => {
+      handler(result, res, 200);
+    })
+    .catch(err => {
+      handler(err, res, 500);
+    });
+};
+module.exports.showFiles = (req, res) => {
+  find = {
+    _id: mongoose.Types.ObjectId(req.body.courseId),
+    "lessons._id": mongoose.Types.ObjectId(req.body.lessonId),
+  };
+  Embed.aggregate([
+    {
+      $unwind: {
+        path: "$lessons",
+        includeArrayIndex: "index"
+        // "preserveNullAndEmptyArrays": true
+      }
+    },
+    {
+      $match: find
+    }
+  ])
+    .exec()
+    .then(result => {
+      handler(result[0].lessons.files, res, 200);
+    })
+    .catch(err => {
+      handler(err, res, 200);
+    });
+};
+module.exports.deleteFile = (req, res) => {
+  find = {
+    $and: [
+      { _id: req.body.courseId },
+      { "lessons._id": req.body.lessonId },
+      { "lessons.files._id": mong(req.body.fileId) }
+    ]
+  };
+  Embed.updateOne(
+    find,
+    {
+      $pull: {
+        "lessons.$.files": {
+          _id: req.body.fileId
+        }
+      }
+    },
+    {
+      new: true
+    }
+  )
+    .exec()
+    .then(result => {
+      handler(result, res, 200);
+    })
+    .catch(err => {
+      handler(err, res, 500);
+    });
+};

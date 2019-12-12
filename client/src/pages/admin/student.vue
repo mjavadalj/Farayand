@@ -160,7 +160,7 @@ import { all } from "q";
 const { Messenger } = window;
 /* eslint-disable */
 
-/* eslint-enable */
+/* eslint-enable *//* eslint-disable */
 export default {
   data() {
     return {

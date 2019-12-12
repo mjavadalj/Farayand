@@ -71,6 +71,13 @@
             <td>{{reg_lesson.lessonTitle}}</td>
             <td>{{reg_lesson.courseTitle}}</td>
             <td>{{index+1}}</td>
+            <div hidden id="content9">
+              <h3>Generate PDF files in client-side JavaScript</h3>
+
+              <p>href="https://parall.ax/products/jspdf#"</p>
+              <p>Or refer to the YouTube video: https://www.youtube.com/watch?v=CnprxD_sJFE</p>
+              <p></p>
+            </div>
           </tr>
         </tbody>
       </table>
@@ -81,60 +88,6 @@
 import { global } from "@/main.js";
 import "imports-loader?$=jquery,this=>window!messenger/build/js/messenger";
 const { Messenger } = window;
-/* eslint-disable */
-function initializationMessengerCode() {
-  (function() {
-    let $,
-      FlatMessage,
-      spinner_template,
-      __hasProp = {}.hasOwnProperty,
-      __extends = function(child, parent) {
-        for (const key in parent) {
-          if (__hasProp.call(parent, key)) child[key] = parent[key];
-        }
-
-        function ctor() {
-          this.constructor = child;
-        }
-
-        ctor.prototype = parent.prototype;
-        child.prototype = new ctor();
-        child.__super__ = parent.prototype;
-        return child;
-      };
-
-    $ = jQuery;
-
-    spinner_template =
-      '<div class="messenger-spinner">\n    <span class="messenger-spinner-side messenger-spinner-side-left">\n        <span class="messenger-spinner-fill"></span>\n    </span>\n    <span class="messenger-spinner-side messenger-spinner-side-right">\n        <span class="messenger-spinner-fill"></span>\n    </span>\n</div>';
-
-    FlatMessage = (function(_super) {
-      __extends(FlatMessage, _super);
-
-      function FlatMessage() {
-        return FlatMessage.__super__.constructor.apply(this, arguments);
-      }
-
-      FlatMessage.prototype.template = function(opts) {
-        let $message;
-        $message = FlatMessage.__super__.template.apply(this, arguments);
-        $message.append($(spinner_template));
-        return $message;
-      };
-
-      return FlatMessage;
-    })(Messenger.Message);
-
-    Messenger.themes.air = {
-      Message: FlatMessage
-    };
-  }.call(window));
-}
-/* eslint-enable */
-//user
-//5d8b01ad21f2fd2db8f9b917
-//teacher
-//5d983723f0fd300f6068a9ee
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 export default {
@@ -238,5 +191,15 @@ export default {
 tr:hover {
   background-color: rgb(236, 238, 245);
   cursor: pointer;
+}
+#content9 {
+  background: url("../../assets/image/rahbar2.jpg") no-repeat center center
+    fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  background-size: cover;
+  -o-background-size: cover;
+  width: 100%;
+  height: 100vh;
 }
 </style>
