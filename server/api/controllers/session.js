@@ -72,7 +72,7 @@ module.exports.addASession = (req, res) => {
   )
     .exec()
     .then(result => {
-      // createFile(result.lessons[0].files,()=>{})
+      createFile(result.lessons[0].files,()=>{})
       handler(result, res, 200);
     })
     .catch(err => {
@@ -116,7 +116,8 @@ module.exports.showAllSessions = (req, res) => {
         userQCount: "$lessons.sessions.userQCount",
         title: "$lessons.sessions.title",
         quizDate: "$lessons.sessions.quizDate",
-        questionLength: { $size: "$lessons.sessions.questions" }
+        questionLength: { $size: "$lessons.sessions.questions" },
+        files:"$lessons.files"
       }
     }
   ])

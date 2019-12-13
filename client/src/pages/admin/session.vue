@@ -75,56 +75,19 @@
         <i class="fa fa-plus" />
       </button>
 
-      <!-- <div id="modaaal">
+      <div id="modaaal">
         <b-modal id="my-modal" ref="my-modal" scrollable hide-footer title>
-          <div class="d-block text-center lalezar">
-            <h3>فایل ها</h3>
-          </div>
-          <button @click="upload" type="button" class="btn btn-light"><i class="fa fa-upload"></i></button>
-          <b-form-file
-            v-model="uploadedFile"
-            placeholder="Choose a file or drop it here..."
-            drop-placeholder="Drop file here..."
-          ></b-form-file>
-          <div
-            id="table_data"
-            class="table-resposive"
-            style="text-align:center;max-height:500px; overflow: auto;margin-bottom:10px;"
-          >
-            <table id="dtBasicExample" align="center" class="table">
-              <thead>
-                <tr>
-                  <th class>عملیات</th>
-                  <th class>فرمت</th>
-                  <th class>نام</th>
-                  <th class>#</th>
-                </tr>
-              </thead>
-              <tbody id="myTable2">
-                <tr v-for="(file,index) in files" :key="file._id">
-                  <td>
-                    <i
-                      @click="removeFile(file,index)"
-                      class="fa fa-remove action-icon"
-                      style="font-size: 1.5em;"
-                    />
-                  </td>
-                  <td>{{file.type}}</td>
-                  <td>
-                    <a :href="file.name+'#page=3'" target="_blank">{{file.name.split('.')[1]}}</a>
-                  </td>
-                  <td>{{index+1}}</td>
-                </tr>
-              </tbody>
-            </table>
+          <div>
+            <pdf v-for="i in numPages" :key="i" :src="src" :page="i"></pdf>
           </div>
         </b-modal>
-      </div>-->
+      </div>
     </div>
   </div>
 </template>
 <script>
 import { global } from "@/main.js";
+import pdf from "vue-pdf";
 export default {
   data() {
     return {
@@ -134,7 +97,9 @@ export default {
       courseId: null,
       files: null,
       uploadedFile: null,
-      selectedSession: null
+      selectedSession: null,
+      src: "",
+      numPages: []
     };
   },
 
@@ -301,7 +266,7 @@ export default {
             userQCount == "" ||
             starting_page == "" ||
             ending_page == "" ||
-            parseInt(starting_page)>parseInt(ending_page)
+            parseInt(starting_page) > parseInt(ending_page)
           ) {
             setTimeout(() => {
               this.addSession(
@@ -513,7 +478,7 @@ export default {
             userQCount == "" ||
             starting_page == "" ||
             ending_page == "" ||
-            parseInt(starting_page)>parseInt(ending_page)
+            parseInt(starting_page) > parseInt(ending_page)
           ) {
             setTimeout(() => {
               this.editSession(session);
@@ -574,7 +539,21 @@ export default {
           console.log(err);
         });
     },
-    download(session) {}
+    download(session) {
+      // console.log(session.files[0].name);
+      this.src = session.files[0].name;
+      this.numPages = [];
+      for (
+        let index = session.starting_page;
+        index <= session.ending_page;
+        index++
+      ) {
+        this.numPages.push(index);
+      }
+      // console.log(this.numPages);
+
+      this.$refs["my-modal"].show();
+    }
   },
   mounted() {
     if (global == undefined) {
@@ -597,7 +576,10 @@ export default {
         console.log(err);
       });
   },
-  created() {}
+  created() {},
+  components: {
+    pdf
+  }
 };
 </script>
 <style>

@@ -48,6 +48,7 @@ import SignUp from "./pages/Login/signup.vue";
 import Edit from "./pages/edit/edit.vue";
 import StudentMain from "./pages/student/main.vue";
 import landing_page from "./pages/landing_page.vue";
+import Test2 from "./pages/test.vue";
 
 Vue.use(Router);
 
@@ -55,6 +56,10 @@ export default new Router({
   mode: "history",
   routes: [
     {
+      path: "/test",
+      name: "test",
+      component: Test2
+    },{
       path: "/landing",
       name: "landing",
       component: landing_page
