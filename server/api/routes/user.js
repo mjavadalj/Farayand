@@ -3,15 +3,11 @@ const router = express.Router();
 const userController = require("../controllers/user");
 const passport = require("passport");
 const validation = require("../middlewares/validation");
-
-
 //new user
 router.post("/add", userController.addAUser);
-
 router.get("/showall", userController.showAllUsers);
 router.post("/signup", validation.signUp, userController.signup);
 router.post("/signin", userController.signin);
-
 router.get(
   "/testJWT",
   passport.authenticate("jwt", {
@@ -52,6 +48,7 @@ router.post('/reg/show',userController.showAUserRegLessons)
 router.patch('/reg/delete',userController.deleteAUserRegLesson)
 //show all certificates
 router.get('/reg/showall',userController.showAllC)
+router.post('/reg/show/certificates',userController.showUserCertificates)
 //add uni to teacher
 router.patch('/teacher/adduni',userController.addTeacherUni)
 //add uni to user

@@ -40,6 +40,7 @@ import Question from "./pages/admin/question.vue";
 import Home from "./pages/student/home.vue";
 import Quiz from "./pages/quiz/quiz.vue";
 import Uni from "./pages/admin/uni.vue";
+import CheckCertificates from "./pages/admin/checkCertificate.vue";
 import TPCourse from "./pages/teacher/teacherPublishableCourses.vue";
 import TeacherCourses from "./pages/teacher/teacherCourses.vue";
 import Geo from "./pages/admin/geo.vue";
@@ -73,6 +74,11 @@ export default new Router({
       name: "Layout",
       component: Layout,
       children: [
+        {
+          path: "check",
+          name: "check",
+          component: CheckCertificates
+        },
         {
           path: "geo",
           name: "geo",
@@ -117,11 +123,6 @@ export default new Router({
           path: "teacher",
           name: "teacher",
           component: Teacher
-        },
-        {
-          path: "certificate",
-          name: "certificate",
-          component: Certificate
         },
         {
           path: "components/icons",

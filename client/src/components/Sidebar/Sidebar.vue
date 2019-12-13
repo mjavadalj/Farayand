@@ -30,9 +30,9 @@
         isHeader
       />
       <NavLink
-        header="گواهی ها"
-        link="/app/certificate"
-        iconName="flaticon-list"
+        header="استعلام گواهی"
+        link="/app/check"
+        iconName="fa fa-check"
         index="certificate"
         isHeader
       />
@@ -43,6 +43,7 @@
         index="uni"
         isHeader
       />
+      
       <!-- <NavLink
         header="مدیریت استان ها"
         link="/app/geo"

@@ -473,6 +473,36 @@ module.exports.showAllC = (req, res) => {
       handler(err, res, 500);
     });
 };
+module.exports.showUserCertificates = (req, res) => {
+  User.aggregate([
+    {
+      $unwind: "$reg_lessons"
+    },
+    {
+      $match: {
+        "reg_lessons.passed": true,
+        nationalcode:req.body.nationalcode
+      }
+    },
+    {
+      $project: {
+        teacherName: "$reg_lessons.teacherName",
+        name: "$name",
+        courseTitle: "$reg_lessons.courseTitle",
+        lessonTitle: "$reg_lessons.lessonTitle",
+        finalScore: "$reg_lessons.finalScore",
+        date: "$date"
+      }
+    }
+  ])
+    .exec()
+    .then(result => {
+      res.status(200).json(result);
+    })
+    .catch(err => {
+      handler(err, res, 500);
+    });
+};
 module.exports.addTeacherUni = (req, res) => {
   //TODO: check role, only teachers
   User.findByIdAndUpdate(
