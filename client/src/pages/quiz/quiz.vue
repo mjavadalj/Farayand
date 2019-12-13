@@ -55,7 +55,7 @@
                 >قبول</button>
               </td>
               <td>
-                <span @click="showModal(deletedSessions[reg_session.sessionId],0)">
+                <span @click="download(deletedSessions[reg_session.sessionId])">
                   <i class="fa fa-download" style="font-size: 1.5em;"></i>
                 </span>
               </td>
@@ -106,7 +106,7 @@
                 <i v-else @click="aa()" class="fa fa-lock action-icon" style="font-size: 1.5em;" />
               </td>
               <td>
-                <span @click="showModal(session, index)">
+                <span @click="download(session)">
                   <i class="fa fa-download" style="font-size: 1.5em;"></i>
                 </span>
               </td>
@@ -200,36 +200,8 @@
     </div>
     <div id="modaaal">
       <b-modal id="my-modal" ref="my-modal" scrollable hide-footer title>
-        <div class="d-block text-center lalezar">
-          <h3>فایل ها</h3>
-        </div>
-        <div
-          id="table_data"
-          class="table-resposive"
-          style="text-align:center;max-height:500px; overflow: auto;margin-bottom:10px;"
-        >
-          <table id="dtBasicExample" align="center" class="table">
-            <thead>
-              <tr>
-                <th class>فرمت</th>
-                <th class>نام</th>
-                <th class>#</th>
-              </tr>
-            </thead>
-            <tbody id="myTable2">
-              <tr v-for="(file,index) in files" :key="file._id">
-                <td>{{file.type}}</td>
-                <td>
-                  <a
-                    @click="setQuizTime(file)"
-                    :href="file.name"
-                    target="_blank"
-                  >{{file.name.split('.')[1]}}</a>
-                </td>
-                <td>{{index+1}}</td>
-              </tr>
-            </tbody>
-          </table>
+        <div>
+          <pdf v-for="i in numPages" :key="i" :src="src" :page="i"></pdf>
         </div>
       </b-modal>
     </div>
@@ -238,6 +210,7 @@
 <script>
 import { global } from "@/main.js";
 import "imports-loader?$=jquery,this=>window!messenger/build/js/messenger";
+import pdf from "vue-pdf";
 // import reg_lessonVue from "../lesson/reg_lesson.vue";
 const { Messenger } = window;
 /* eslint-disable */
@@ -288,9 +261,8 @@ function initializationMessengerCode() {
       Message: FlatMessage
     };
   }.call(window));
-}
-/* eslint-enable *//* eslint-disable */
-export default {
+} /* eslint-disable */
+/* eslint-enable */ export default {
   data() {
     return {
       intervalTimer: null,
@@ -307,7 +279,9 @@ export default {
       reg_sessions: null,
       lock: true,
       user: null,
-      files: null
+      files: null,
+      src: "",
+      numPages: []
     };
   },
   methods: {
@@ -322,7 +296,7 @@ export default {
       if (reg_session.passed) {
         return alert("شما در این آزمون پذیرفته شده اید");
       } else if (now > chance) {
-        return alert('باید تا تاریخ ذکر شده منتظر بمانید');
+        return alert("باید تا تاریخ ذکر شده منتظر بمانید");
       } else if (true) {
         this.showQuestions(
           reg_session,
@@ -331,11 +305,11 @@ export default {
       }
     },
     addToRegSession(e, session, index) {
-      var passedAll=this.reg_sessions.find(reg_session=>{
-        return reg_session.passed==false
-      })
+      var passedAll = this.reg_sessions.find(reg_session => {
+        return reg_session.passed == false;
+      });
       if (index != 0 || passedAll) {
-        return alert('باید در آزمون های قبلی پذیرفته شوید')
+        return alert("باید در آزمون های قبلی پذیرفته شوید");
       }
       // var find = session.files.find(file => {
       //   return (
@@ -583,6 +557,23 @@ export default {
       index = String(index);
 
       return index + " - " + text;
+    },
+    download(session) {
+      if (session.files.length == 0) {
+        return;
+      }
+      this.src = session.files[0].name;
+      this.numPages = [];
+      for (
+        let index = session.starting_page;
+        index <= session.ending_page;
+        index++
+      ) {
+        this.numPages.push(index);
+      }
+      // console.log(this.numPages);
+
+      this.$refs["my-modal"].show();
     }
   },
   mounted() {},
@@ -629,6 +620,9 @@ export default {
       .catch(err => {
         console.log(err);
       });
+  },
+  components: {
+    pdf
   }
 };
 </script>

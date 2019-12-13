@@ -540,7 +540,9 @@ export default {
         });
     },
     download(session) {
-      // console.log(session.files[0].name);
+      if (session.files.length==0){
+        return
+      }
       this.src = session.files[0].name;
       this.numPages = [];
       for (
