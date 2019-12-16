@@ -49,6 +49,7 @@ import Edit from "./pages/edit/edit.vue";
 import StudentMain from "./pages/student/main.vue";
 import landing_page from "./pages/landing_page.vue";
 import Test2 from "./pages/test.vue";
+import cert from "./pages/certificate.vue";
 
 Vue.use(Router);
 
@@ -59,7 +60,12 @@ export default new Router({
       path: "/test",
       name: "test",
       component: Test2
-    },{
+    }, {
+      path: "/cert",
+      name: "cert",
+      component: cert
+    },
+    {
       path: "/landing",
       name: "landing",
       component: landing_page
