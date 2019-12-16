@@ -15,6 +15,9 @@ import App from "./App";
 import VueSweetalert2 from "vue-sweetalert2";
 import VueJWT from 'vuejs-jwt'
 import moment from 'moment-jalaali'
+import VueHtml2Canvas from 'vue-html2canvas';
+
+Vue.use(VueHtml2Canvas);
 Vue.use(moment)
 Vue.use(VueJWT)
 Vue.use(require('vue-cookie'));
@@ -51,7 +54,7 @@ export const global = new Vue({
     session: null,
     teacher: null,
     index: null,
-    interval:null
+    interval: null
   }
 });
 
