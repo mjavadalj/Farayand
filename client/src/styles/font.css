@@ -54,6 +54,10 @@
   font-family: "xtx-b";
   src: url("../fonts/XTX-FNT-XEROSANS-BOLD.woff");
 }
+@font-face {
+  font-family: "iranyekan-fn";
+  src: url("../fonts/IRANYekanLightFaNum.ttf");
+}
 .samim {
   font-family: samim;
 }

@@ -27,7 +27,7 @@
           <tr>
             <th class>عملیات</th>
             <th class>وضعیت گواهی</th>
-            <th class>تاریخ ثبت نام</th>
+            <th class>تاریخ</th>
             <th class>جلسات انجام شده</th>
             <th class>جلسات این درس</th>
             <th class>استاد</th>
@@ -129,9 +129,8 @@ function initializationMessengerCode() {
       Message: FlatMessage
     };
   }.call(window));
-}
-/* eslint-enable *//* eslint-disable */
-//user
+} /* eslint-disable */
+/* eslint-enable */ //user
 //5d8b01ad21f2fd2db8f9b917
 //teacher
 //5d983723f0fd300f6068a9ee
@@ -206,15 +205,22 @@ export default {
         });
     },
     downloadCertificate(reg_lesson) {
-      console.log(reg_lesson);
+      if (reg_lesson.passed) {
+        global.reg_lesson = reg_lesson;
+        this.$router.push({
+          name: "cert"
+        });
+      }
+      else{
+        alert('111')
+      }
     }
   },
   mounted() {
     // this.initCharts();
   },
   created() {
-    for (var i = 1; i < 1000; i++)
-        window.clearInterval(i);
+    for (var i = 1; i < 1000; i++) window.clearInterval(i);
     this.user = JSON.parse(this.$cookie.get("authorization"));
     //TODO: if not cookie redirect login
     this.axios

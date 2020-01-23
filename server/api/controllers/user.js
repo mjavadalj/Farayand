@@ -609,7 +609,8 @@ module.exports.setCertificate = (req, res) => {
           {
             $set: {
               "reg_lessons.$.passed": true,
-              "reg_lessons.$.finalScore": finalScore
+              "reg_lessons.$.finalScore": finalScore,
+              "reg_lessons.$.date":Date.now()
             }
           },
           {

@@ -27,7 +27,7 @@
           <tr>
             <th class>عملیات</th>
             <th class>وضعیت گواهی</th>
-            <th class>تاریخ ثبت نام</th>
+            <th class>تاریخ</th>
             <th class>جلسات انجام شده</th>
             <th class>جلسات این درس</th>
             <th class>استاد</th>
@@ -77,14 +77,7 @@
     </div>
     <div id="modaaal">
       <b-modal id="my-modal" ref="my-modal" scrollable hide-footer title>
-        <div>
-          <pdf
-            v-for="i in numPages"
-            :key="i"
-            :src="src"
-            :page="i"
-          ></pdf>
-        </div>
+        <div></div>
       </b-modal>
     </div>
   </div>
@@ -170,13 +163,13 @@ export default {
         });
     },
     downloadCertificate(reg_lesson) {
-      this.$refs["my-modal"].show();
-      //   html2canvas(document.querySelector('#canvas')).then(canvas => {
-      // 	let pdf = new jsPDF('p','mm','a4');
-      // 	pdf.addImage(canvas.toDataURL('image/png'), 'PNG');
-      // 	pdf.save('filename.pdf');
-      // });
-      // doc.addImage(imgData, "JPEG", 15, 40, 180, 160);
+      if (reg_lesson.passed) {
+        global.reg_lesson = reg_lesson;
+        this.$router.push({
+          name: "cert"
+        });
+      }
+
     }
   },
   mounted() {
@@ -184,6 +177,8 @@ export default {
   },
   created() {
     this.user = JSON.parse(this.$cookie.get("authorization"));
+    console.log(this.user);
+
     //TODO: if not cookie redirect login
     this.axios
       .post(`http://localhost:3000/api/user/reg/show`, {
@@ -206,7 +201,7 @@ export default {
 </script>
 
 <style>
-.modal-dialog{
-  max-width: 500px!important;
+.modal-dialog {
+  max-width: 500px !important;
 }
 </style>

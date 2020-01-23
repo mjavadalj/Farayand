@@ -54,7 +54,9 @@ export const global = new Vue({
     session: null,
     teacher: null,
     index: null,
-    interval: null
+    interval: null,
+    reg_lesson:null,
+    user:null
   }
 });
 

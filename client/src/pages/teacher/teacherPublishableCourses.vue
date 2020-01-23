@@ -38,17 +38,19 @@
           <tr v-for="(course,index) in courses" :key="course._id" @click="push($event,course)">
             <td>
               <button
-                v-if="checkRegistration(course)!=undefined"
+                v-if="checkRegistration(course)!=undefined || flag"
                 data-v-17b74d76
                 type="button"
                 class="btn p-1 px-3 btn-xs btn-success lalezar"
+                :id="course._id"
               >ثبت نام شده</button>
               <button
-                v-else-if="course['ok']==undefined"
-                @click="courseRegister(course)"
+                v-else-if="course['ok']==undefined && !flag"
+                @click="courseRegister(course,index)"
                 data-v-17b74d76
                 type="button"
                 class="btn p-1 px-3 btn-xs btn-warning lalezar"
+                :id="course._id"
               >برای ثبت نام کلیک کنید</button>
             </td>
             <td id="numeric-td">{{ new Date(course.date) | moment("jYYYY/jM/jD | HH:mm ")}}</td>
@@ -153,7 +155,8 @@ export default {
       searchInput: "",
       searchMode: false,
       temp: null,
-      user: null
+      user: null,
+      flag:false
     };
   },
   methods: {
@@ -244,7 +247,6 @@ export default {
         });
     },
     checkRegistration(course) {
-      //5d983723f0fd300f6068a9ee
       var find = course.user.find(obj => {
         return obj._id == this.user.userId;
       });
@@ -253,16 +255,15 @@ export default {
       }
       return find;
     },
-    courseRegister(course) {
+    courseRegister(course,index) {
       this.axios
         .patch(`http://localhost:3000/api/course/user/add`, {
           courseId: course._id,
           teacherId: this.user.userId
         })
         .then(res => {
-          console.log("res.data");
-          console.log(res.data);
-          console.log(course);
+          this.flag=true
+          
           course["ok"] = true;
           Object.keys(course).forEach(item => {
             if (item != "user" && item != "creator") {
