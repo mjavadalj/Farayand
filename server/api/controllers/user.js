@@ -69,7 +69,7 @@ module.exports.signup = (req, res) => {
   User.find({
     $or: [{ email: req.body.email }, { nationalcode: req.body.nationalcode }]
   }).then(user => {
-    if (user.length > 0) {      
+    if (user.length > 0) {
       return res.status(401).json({
         message: "email already exist"
       });
@@ -96,10 +96,52 @@ module.exports.signup = (req, res) => {
           })
             .save()
             .then(user => {
-              return res.status(200).json({
-                message: "sign up compelete",
-                user
-              });
+              console.log(req.body);
+
+              if (user.role == "teacher") {
+                console.log(req.body.uniId);
+
+                User.findByIdAndUpdate(
+                  user._id,
+                  {
+                    $addToSet: {
+                      university: {
+                        $each: req.body.uniId
+                      }
+                      // university: req.body.uniId
+                    }
+                  },
+                  { new: true }
+                )
+                  .exec()
+                  .then(result => {
+                    res.status(200).json(result);
+                  })
+                  .catch(err => {
+                    handler(err, res, 500);
+                  });
+              } else if (user.role == "student") {
+                User.findByIdAndUpdate(
+                  user._id,
+                  {
+                    $set: {
+                      university: req.body.uniId
+                    }
+                  },
+                  { new: true }
+                )
+                  .exec()
+                  .then(result => {
+                    res.status(200).json(result);
+                  })
+                  .catch(err => {
+                    handler(err, res, 500);
+                  });
+              }
+              // return res.status(200).json({
+              //   message: "sign up compelete",
+              //   user
+              // });
             })
             .catch(err => {
               return res.status(500).json({
@@ -141,7 +183,9 @@ module.exports.signin = (req, res) => {
               email: user.email,
               userId: user._id,
               nationalcode: user.nationalcode,
-              role: user.role
+              role: user.role,
+              gender: user.gender,
+              university: user.university
             };
 
             jwt.sign(
@@ -169,7 +213,7 @@ module.exports.signin = (req, res) => {
 module.exports.lessonRegister = (req, res) => {
   find = {
     $and: [
-      { _id: req.body.userId },
+      { _id: req.user.userId },
       { "reg_lessons.lessonId": { $ne: mong(req.body.lessonId) } }
     ]
   };
@@ -203,7 +247,7 @@ module.exports.lessonRegister = (req, res) => {
 module.exports.sessionRegister = (req, res) => {
   find = {
     $and: [
-      { _id: req.body.userId },
+      { _id: req.user.userId },
       { "reg_lessons._id": req.body.reg_lessonId },
       {
         "reg_lessons.reg_sessions.sessionId": { $ne: mong(req.body.sessionId) }
@@ -402,8 +446,9 @@ module.exports.showAllCoursesOfTeacher = (req, res) => {
     });
 };
 module.exports.showAUser = (req, res) => {
-  User.findById(req.body.userId)
+  User.findById(req.user.userId)
     .select("-reg_lessons")
+    .select("-password")
     .exec()
     .then(result => {
       res.status(200).json(result);
@@ -413,7 +458,7 @@ module.exports.showAUser = (req, res) => {
     });
 };
 module.exports.showAUserRegLessons = (req, res) => {
-  User.findById(req.body.userId)
+  User.findById(req.user.userId)
     .select("reg_lessons")
     .exec()
     .then(result => {
@@ -425,7 +470,7 @@ module.exports.showAUserRegLessons = (req, res) => {
 };
 module.exports.deleteAUserRegLesson = (req, res) => {
   User.findByIdAndUpdate(
-    req.body.userId,
+    req.user.userId,
     {
       $pull: {
         reg_lessons: {
@@ -481,7 +526,38 @@ module.exports.showUserCertificates = (req, res) => {
     {
       $match: {
         "reg_lessons.passed": true,
-        nationalcode:req.body.nationalcode
+        nationalcode: req.body.nationalcode
+      }
+    },
+    {
+      $project: {
+        teacherName: "$reg_lessons.teacherName",
+        name: "$name",
+        courseTitle: "$reg_lessons.courseTitle",
+        lessonTitle: "$reg_lessons.lessonTitle",
+        finalScore: "$reg_lessons.finalScore",
+        date: "$date"
+      }
+    }
+  ])
+    .exec()
+    .then(result => {
+      res.status(200).json(result);
+    })
+    .catch(err => {
+      handler(err, res, 500);
+    });
+};
+module.exports.teacherCheckCertificate = (req, res) => {
+  User.aggregate([
+    {
+      $unwind: "$reg_lessons"
+    },
+    {
+      $match: {
+        "reg_lessons.passed": true,
+        nationalcode: req.body.nationalcode,
+        "reg_lessons.teacherId": mong(req.user.userId)
       }
     },
     {
@@ -506,13 +582,11 @@ module.exports.showUserCertificates = (req, res) => {
 module.exports.addTeacherUni = (req, res) => {
   //TODO: check role, only teachers
   User.findByIdAndUpdate(
-    req.body.userId,
+    req.user.userId,
     {
       $addToSet: {
-        university:
-        {
-          $each:req.body.uniId
-          
+        university: {
+          $each: req.body.uniId
         }
         // university: req.body.uniId
       }
@@ -529,7 +603,7 @@ module.exports.addTeacherUni = (req, res) => {
 };
 module.exports.addUserUni = (req, res) => {
   User.findByIdAndUpdate(
-    req.body.userId,
+    req.user.userId,
     {
       $set: {
         university: req.body.uniId
@@ -547,7 +621,7 @@ module.exports.addUserUni = (req, res) => {
 };
 module.exports.removeUserrUni = (req, res) => {
   User.findByIdAndUpdate(
-    req.body.userId,
+    req.user.userId,
     {
       $pull: {
         university: req.body.uniId
@@ -566,7 +640,7 @@ module.exports.removeUserrUni = (req, res) => {
 module.exports.setCertificate = (req, res) => {
   find = {
     $and: [
-      { _id: mong(req.body.userId) },
+      { _id: mong(req.user.userId) },
       { "reg_lessons._id": mong(req.body.reg_lessonId) }
     ]
   };
@@ -610,7 +684,7 @@ module.exports.setCertificate = (req, res) => {
             $set: {
               "reg_lessons.$.passed": true,
               "reg_lessons.$.finalScore": finalScore,
-              "reg_lessons.$.date":Date.now()
+              "reg_lessons.$.date": Date.now()
             }
           },
           {
@@ -631,5 +705,39 @@ module.exports.setCertificate = (req, res) => {
       handler(err, res, 500);
     });
 };
-
+module.exports.showUniTeachers = (req, res) => {
+  User.find({ role: "teacher", university: mong(req.body.university) })
+    .select("-reg_lessons")
+    .populate("university")
+    .sort("-date")
+    .exec()
+    .then(result => {
+      res.status(200).json(result);
+    })
+    .catch(err => {
+      handler(err, res, 500);
+    });
+};
+module.exports.changeUNI = (req, res) => {
+  User.findById(req.user.userId)
+    .exec()
+    .then(user => {
+      if (req.body.uniId.length > 1 && user.role == "student") {
+        user.university = [req.body.uniId[0]];
+        user.save();
+        return res.status(200).json({
+          status: "ok"
+        });
+      } else {
+        user.university = req.body.uniId;
+        user.save();
+        return res.status(200).json({
+          status: "ok"
+        });
+      }
+    })
+    .catch(err => {
+      return res.status(404).json(err);
+    });
+};
 //TODO: select -password

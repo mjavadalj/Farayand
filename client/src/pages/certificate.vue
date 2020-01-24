@@ -7,27 +7,27 @@
       <span class="lalezar">دانلود</span>
     </b-button>
     <div class="print" style="height:500px;width:800px; margin:0 auto;" id="print">
-      <div style="margin:5px;">
-        <img src="../assets/image/basij-logo.png" width="100" alt />
-      </div>
       <div style="margin-top:-40px;">
         <h1 class="xtx-b text-center">بسمه تعالی</h1>
       </div>
       <div style="margin-top:60px;">
-        <p class="text-center just-text" style="font-family:iranyekan-fn;font-size:1.8em;">
-          گواهی می شود {{getRole(user.role)}} گرامی
-          <span class="high-light">علی رحیمی</span>
+        <p class="text-center just-text" style="font-family:iranyekan-fn-lgt;font-size:1.3em;">
+          گواهی می شود {{getRole(user.role)}}
+        </p>
+        <p class="text-center just-text" style="font-family:iranyekan-fn-lgt;font-size:1.3em;">
+          {{getGender(user.gender)}}
+          {{user.name}}
           با کد ملی
           {{user.nationalcode}}
         </p>
-        <p class="text-center just-text" style="font-family:iranyekan-fn;font-size:1.8em;">
+        <p class="text-center just-text" style="font-family:iranyekan-fn-lgt;font-size:1.3em;">
           درس
           {{reg_lesson.lessonTitle}} را از دوره
           {{reg_lesson.courseTitle}}
           در
           {{reg_lesson.reg_sessions.length}} جلسه
         </p>
-        <p class="text-center just-text" style="font-family:iranyekan-fn;font-size:1.8em;">
+        <p class="text-center just-text" style="font-family:iranyekan-fn-lgt;font-size:1.3em;">
           با نمره
           {{reg_lesson.finalScore}}
           با موفقیت پشت سر گذاشت
@@ -38,10 +38,16 @@
       <br />
       <br />
       <br />
+
       
-      <h6 class="text-center just-text">www.basijgofteman.ir</h6>
+      <div style="margin:5px;">
+        <img src="../assets/image/basij-logo.png" width="100" alt />
+        <h6 style="font-family:iranyekan-fn-lgt;" class="text-center just-text">{{ Date.now() | moment("jYYYY/jM/jD")}}</h6>
+        <h6 class="text-center just-text">www.basijgofteman.ir</h6>
+        
+      </div>
     </div>
-    
+
     <a ref="a"></a>
   </div>
 </template>
@@ -52,6 +58,7 @@ import { global } from "@/main.js";
 export default {
   data() {
     return {
+      jwt:null,headers:null,
       output: null,
       ok: false,
       reg_lesson: null,
@@ -72,15 +79,23 @@ export default {
       this.$refs.a.download = "somefilename.png";
       this.$refs.a.click();
     },
-    getRole(role) {
-      if (role == "student") {
-        return "دانشجوی";
-      } else if (role == "teacher") {
-        return "استاد";
+    getGender(gender) {
+      if (gender == "woman") {
+        return "سرکار خانم";
+      } else if (gender == "man") {
+        return "جناب آقای";
       }
     },
-    back(){
+    back() {
       this.$router.push("/");
+    },
+    getRole(role){
+      if (role=="student"){
+        return 'دانشجوی گرامی'
+      }
+      else if (role=='teacher'){
+        return 'استاد گرامی'
+      }
     }
   },
   async mounted() {
@@ -111,7 +126,7 @@ export default {
   direction: rtl;
 }
 .high-light {
-  font-family: iranyekan-fn !important;
+  font-family: iranyekan-fn-lgt !important;
 }
 .idk {
   background: url("../assets/image/3.png");

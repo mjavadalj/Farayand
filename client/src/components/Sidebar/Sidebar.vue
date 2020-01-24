@@ -6,6 +6,7 @@
   >
     <header class="logo">
       <router-link to="/app/course"><span class="text-warning">مدیریت</span></router-link>
+      <h6 class="samim">{{user.name}}</h6>
     </header>
     <ul class="nav">
       <NavLink
@@ -114,6 +115,7 @@ export default {
   components: { NavLink },
   data() {
     return {
+      user:null,
       alerts: [
         {
           id: 0,
@@ -157,6 +159,7 @@ export default {
     }
   },
   created() {
+    this.user = JSON.parse(this.$cookie.get("authorization"));
     this.setActiveByRoute();
   },
   computed: {

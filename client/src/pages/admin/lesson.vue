@@ -72,7 +72,9 @@
           <h3>فایل ها</h3>
         </div>
         <button @click="upload" type="button" class="btn btn-light">
-          <i class="fa fa-upload"></i>
+          <i class="fa fa-upload">
+            <span style="font-family:iranyekan-fn-lgt">بارگذاری فایل</span>
+          </i>
         </button>
         <b-form-file
           v-model="uploadedFile"
@@ -95,20 +97,20 @@
               </tr>
             </thead>
             <tbody id="myTable2">
-                <tr v-for="(file,index) in files" :key="file._id">
-                  <td>
-                    <i
-                      @click="removeFile(file,index)"
-                      class="fa fa-remove action-icon"
-                      style="font-size: 1.5em;"
-                    />
-                  </td>
-                  <td>{{file.type}}</td>
-                  <td>
-                    <a :href="file.name+'#page=3'" target="_blank">{{file.name.split('.')[1]}}</a>
-                  </td>
-                  <td>{{index+1}}</td>
-                </tr>
+              <tr v-for="(file,index) in files" :key="file._id">
+                <td>
+                  <i
+                    @click="removeFile(file,index)"
+                    class="fa fa-remove action-icon"
+                    style="font-size: 1.5em;"
+                  />
+                </td>
+                <td>{{file.type}}</td>
+                <td>
+                  <a :href="file.name+'#page=3'" target="_blank">{{file.name.split('.')[1]}}</a>
+                </td>
+                <td>{{index+1}}</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -121,6 +123,7 @@ import { global } from "@/main.js";
 export default {
   data() {
     return {
+      jwt:null,headers:null,
       course: null,
       lessons: null,
       courseId: null,
@@ -187,7 +190,7 @@ export default {
               .patch(`http://localhost:3000/api/lesson/delete/`, {
                 courseId: this.course._id,
                 lessonId: lesson._id
-              })
+              },this.headers)
               .then(res => {
                 let userIndex = this.lessons.indexOf(lesson);
                 this.lessons.splice(userIndex, 1);
@@ -262,7 +265,7 @@ export default {
             title: formValues2.title,
             content: formValues2.content
           }
-        })
+        },this.headers)
         .then(res => {
           this.$swal.fire({
             type: "success",
@@ -333,7 +336,7 @@ export default {
           lessonId: lesson._id,
           title: formValues2.title,
           content: formValues2.content
-        })
+        },this.headers)
         .then(res => {
           this.$swal.fire({
             type: "success",
@@ -356,7 +359,7 @@ export default {
         .post(`http://localhost:3000/api/lesson/showfiles`, {
           lessonId: lesson._id,
           courseId: this.courseId
-        })
+        },this.headers)
         .then(res => {
           console.log(res.data);
           this.$refs["my-modal"].show();
@@ -386,7 +389,7 @@ export default {
           courseId: this.course._id,
           lessonId: this.selectedLesson._id,
           fileId: file._id
-        })
+        },this.headers)
         .then(res => {
           this.files.splice(index, 1);
         })
@@ -406,7 +409,9 @@ export default {
       this.axios
         .post("http://localhost:3000/api/lesson/addfile", formatData, {
           headers: {
-            "Content-Type": "multipart/form-data"
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${this.$cookie.get("jwt")}`
+            
           }
         })
         .then(result => {
@@ -427,7 +432,7 @@ export default {
     this.axios
       .post(`http://localhost:3000/api/lesson/showall`, {
         courseId: this.courseId
-      })
+      },this.headers)
       .then(res => {
         console.log(res.data);
 
@@ -438,7 +443,13 @@ export default {
         console.log(err);
       });
   },
-  created() {}
+  created() {
+    this.headers = {
+      headers: {
+        Authorization: `Bearer ${this.$cookie.get("jwt")}`
+      }
+    };
+  }
 };
 //TODO: router push role
 </script>

@@ -106,11 +106,12 @@ function initializationMessengerCode() {
       Message: FlatMessage
     };
   }.call(window));
-}
-/* eslint-enable *//* eslint-disable */
-export default {
+} /* eslint-disable */
+/* eslint-enable */ export default {
   data() {
     return {
+      jwt: null,
+      headers: null,
       teacher: null,
       locationClasses: "messenger-fixed messenger-on-bottom messenger-on-right",
       courses: null,
@@ -158,13 +159,14 @@ export default {
     deleteCourse(course, index) {
       this.$swal
         .fire({
-          title: "Are you sure?",
+          title: `دوره ${course.title}`,
           text: "از این دوره خارج می شوید",
           type: "warning",
           showCancelButton: true,
           confirmButtonColor: "#3085d6",
           cancelButtonColor: "#d33",
-          confirmButtonText: "Yes, delete it!"
+          confirmButtonText: "تایید",
+          cancelButtonText: "لغو"
         })
         .then(result => {
           if (result.value) {
@@ -172,7 +174,7 @@ export default {
               .patch(`http://localhost:3000/api/course/user/delete`, {
                 courseId: course._id,
                 teacherId: this.user.userId
-              })
+              },this.headers)
               .then(res => {
                 this.courses.splice(index, 1);
               })
@@ -185,14 +187,18 @@ export default {
   },
   mounted() {},
   created() {
-    for (var i = 1; i < 1000; i++)
-        window.clearInterval(i);
+    this.headers = {
+      headers: {
+        Authorization: `Bearer ${this.$cookie.get("jwt")}`
+      }
+    };
+    for (var i = 1; i < 1000; i++) window.clearInterval(i);
     this.user = JSON.parse(this.$cookie.get("authorization"));
     //TODO: if not cookie redirect login
     this.axios
       .post(`http://localhost:3000/api/user/course/showall`, {
         user: this.user.userId
-      })
+      },this.headers)
       .then(res => {
         console.log("res.data");
         console.log(res.data);
@@ -205,7 +211,7 @@ export default {
     this.axios
       .post(`http://localhost:3000/api/user/show`, {
         userId: this.adminUser.userId
-      })
+      },this.headers)
       .then(res => {
         this.teacher = res.data;
       })

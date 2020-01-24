@@ -25,7 +25,7 @@ import NotificationsPage from "@/pages/Notifications/Notifications";
 //teacher
 import Teacher from "@/pages/admin/teacher";
 //certificate
-import Certificate from "@/pages/admin/certificate";
+// import Certificate from "@/pages/admin/certificate";
 //Admin course
 import Course from "@/pages/admin/course";
 import ChosenCourses from "@/pages/teacher/chosenCourses";
@@ -41,14 +41,12 @@ import Home from "./pages/student/home.vue";
 import Quiz from "./pages/quiz/quiz.vue";
 import Uni from "./pages/admin/uni.vue";
 import CheckCertificates from "./pages/admin/checkCertificate.vue";
+import teacherCheckCertificates from "./pages/teacher/checkCertificate.vue";
 import TPCourse from "./pages/teacher/teacherPublishableCourses.vue";
 import TeacherCourses from "./pages/teacher/teacherCourses.vue";
-import Geo from "./pages/admin/geo.vue";
 import SignUp from "./pages/Login/signup.vue";
 import Edit from "./pages/edit/edit.vue";
-import StudentMain from "./pages/student/main.vue";
 import landing_page from "./pages/landing_page.vue";
-import Test2 from "./pages/test.vue";
 import cert from "./pages/certificate.vue";
 
 Vue.use(Router);
@@ -57,10 +55,6 @@ export default new Router({
   mode: "history",
   routes: [
     {
-      path: "/test",
-      name: "test",
-      component: Test2
-    }, {
       path: "/cert",
       name: "cert",
       component: cert
@@ -89,11 +83,6 @@ export default new Router({
           path: "check",
           name: "check",
           component: CheckCertificates
-        },
-        {
-          path: "geo",
-          name: "geo",
-          component: Geo
         },
         {
           path: "universities",
@@ -198,24 +187,14 @@ export default new Router({
           component: ChosenCourses
         },
         {
-          path: "lesson/:title",
-          name: "tlesson",
-          component: Lesson
-        },
-        {
-          path: "session/:title",
-          name: "tsession",
-          component: Session
-        },
-        {
-          path: "/certificate",
-          name: "certificate",
-          component: Certificate
-        },
-        {
-          path: "/quiz",
+          path: "quiz",
           name: "teacherQuiz",
           component: Quiz
+        },
+        {
+          path: "check",
+          name: "tcert",
+          component: teacherCheckCertificates
         }
       ]
     },
@@ -224,11 +203,6 @@ export default new Router({
       name: "userLayout",
       component: UserLayout,
       children: [
-        {
-          path: "main",
-          name: "studentMain",
-          component: StudentMain
-        },
         {
           path: "edit",
           name: "studentEdit",

@@ -114,6 +114,8 @@ import { global } from "@/main.js";
 export default {
   data() {
     return {
+      jwt: null,
+      headers: null,
       newAnswer: 0,
       course: null,
       lesson: null,
@@ -130,13 +132,14 @@ export default {
       }
       this.$swal
         .fire({
-          title: "Are you sure?",
-          text: "آزمون ها حذف می شود",
+          title: `حذف سوال `,
+          text: "سوال برای همیشه حذف می شود",
           type: "warning",
           showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "Yes, delete it!"
+          cancelButtonText: "بازگشت",
+          cancelButtonColor: "#3085d6",
+          confirmButtonColor: "#d33",
+          confirmButtonText: "حذف"
         })
         .then(result => {
           if (result.value) {
@@ -210,7 +213,8 @@ export default {
       body["questionId"] = question._id;
 
       this.axios
-        .patch(`http://localhost:3000/api/question/edit`, body)
+        .patch(`http://localhost:3000/api/question/edit`, body,
+          this.headers)
         .then(res => {
           console.log(res.data);
           this.$swal.fire({
@@ -232,13 +236,14 @@ export default {
       }
       this.$swal
         .fire({
-          title: "Are you sure?",
+          title: "تغییر پاسخ صحیح",
           text: "آیا می خواهید پاسخ صحیح را تغییر دهید",
           type: "warning",
           showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "بله"
+          cancelButtonText: "بازگشت",
+          cancelButtonColor: "#3085d6",
+          confirmButtonColor: "#d33",
+          confirmButtonText: "تغییر"
         })
         .then(result => {
           if (result.value) {
@@ -266,7 +271,8 @@ export default {
             body[name] = { text: question[name].text, correct: true };
             body[last] = { text: lastT, correct: null };
             this.axios
-              .patch(`http://localhost:3000/api/question/edit`, body)
+              .patch(`http://localhost:3000/api/question/edit`, body,
+          this.headers)
               .then(res => {
                 this.$swal.fire({
                   type: "success",
@@ -405,7 +411,8 @@ export default {
           lessonId: this.lesson._id,
           sessionId: this.session._id,
           question: formValues2.question
-        })
+        },
+          this.headers)
         .then(res => {
           this.$swal.fire({
             type: "success",
@@ -424,23 +431,24 @@ export default {
       formatData.append("sessionId", this.session._id);
       formatData.append("lessonId", this.lesson._id);
       formatData.append("courseId", this.course._id);
-      formatData.append("file", this.file.files[0]);      
+      formatData.append("file", this.file.files[0]);
       for (var key of formatData.entries()) {
         console.log(key[0] + ", " + key[1]);
       }
 
-      this.axios.post("http://localhost:3000/api/session/addfile", formatData, {
-        headers: {
-          "Content-Type": "multipart/form-data"
-        }
-      }).then(result=>{
-        console.log(result);
-        
-      })
-      .catch(err=>{
-        console.log(err);
-        
-      })
+      this.axios
+        .post("http://localhost:3000/api/session/addfile", formatData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${this.$cookie.get("jwt")}`
+          }
+        })
+        .then(result => {
+          console.log(result);
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
     save_name() {
       // console.log(this.$refs["inputGroupFile01"]);
@@ -458,13 +466,17 @@ export default {
       this.course = global.course;
       this.lesson = global.lesson;
       this.session = global.session;
-      
+
       await this.axios
-        .post(`http://localhost:3000/api/session/showallquestions`, {
-          courseId: this.course._id,
-          lessonId: this.lesson._id,
-          sessionId: this.session._id
-        })
+        .post(
+          `http://localhost:3000/api/session/showallquestions`,
+          {
+            courseId: this.course._id,
+            lessonId: this.lesson._id,
+            sessionId: this.session._id
+          },
+          this.headers
+        )
         .then(res => {
           this.questions = res.data;
           console.log(this.questions);
@@ -474,7 +486,13 @@ export default {
         });
     } catch (error) {}
   },
-  created() {}
+  created() {
+    this.headers = {
+      headers: {
+        Authorization: `Bearer ${this.$cookie.get("jwt")}`
+      }
+    };
+  }
 };
 </script>
 <style>

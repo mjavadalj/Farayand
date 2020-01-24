@@ -141,11 +141,12 @@ function initializationMessengerCode() {
       Message: FlatMessage
     };
   }.call(window));
-}
-/* eslint-enable *//* eslint-disable */
-export default {
+} /* eslint-disable */
+/* eslint-enable */ export default {
   data() {
     return {
+      jwt: null,
+      headers: null,
       locationClasses: "messenger-fixed messenger-on-bottom messenger-on-right",
       courses: null,
       courseCount: 0,
@@ -156,7 +157,7 @@ export default {
       searchMode: false,
       temp: null,
       user: null,
-      flag:false
+      flag: false
     };
   },
   methods: {
@@ -206,7 +207,7 @@ export default {
       this.axios
         .post(
           `http://localhost:3000/api/course/showall?skip=${this.page *
-            this.maxInPage}&limit=${this.maxInPage}&r=!a&exception=teachers`
+            this.maxInPage}&limit=${this.maxInPage}&r=!a&exception=teachers`,{},this.headers
         )
         .then(res => {
           this.courses = res.data;
@@ -223,7 +224,7 @@ export default {
       this.axios
         .post(
           `http://localhost:3000/api/course/showall?skip=${this.page *
-            this.maxInPage}&limit=${this.maxInPage}&r=!a&exception=teachers`
+            this.maxInPage}&limit=${this.maxInPage}&r=!a&exception=teachers`,{},this.headers
         )
         .then(res => {
           this.courses = res.data;
@@ -237,7 +238,8 @@ export default {
       this.axios
         .post(
           `http://localhost:3000/api/course/showall?skip=${this.page *
-            this.maxInPage}&limit=${this.maxInPage}&r=!a&exception=teachers`
+            this.maxInPage}&limit=${this.maxInPage}&r=!a&exception=teachers`,{}
+            ,this.headers
         )
         .then(res => {
           this.courses = res.data;
@@ -255,15 +257,15 @@ export default {
       }
       return find;
     },
-    courseRegister(course,index) {
+    courseRegister(course, index) {
       this.axios
         .patch(`http://localhost:3000/api/course/user/add`, {
           courseId: course._id,
           teacherId: this.user.userId
-        })
+        },this.headers)
         .then(res => {
-          this.flag=true
-          
+          this.flag = true;
+
           course["ok"] = true;
           Object.keys(course).forEach(item => {
             if (item != "user" && item != "creator") {
@@ -281,7 +283,7 @@ export default {
       }
       this.axios
         .get(
-          `http://localhost:3000/api/course/find?title=${this.searchInput}&r=!a`
+          `http://localhost:3000/api/course/find?title=${this.searchInput}&r=!a`,this.headers
         )
         .then(res => {
           this.searchMode = true;
@@ -304,12 +306,16 @@ export default {
   },
   mounted() {},
   created() {
-    for (var i = 1; i < 1000; i++)
-        window.clearInterval(i);
+    this.headers = {
+      headers: {
+        Authorization: `Bearer ${this.$cookie.get("jwt")}`
+      }
+    };
+    for (var i = 1; i < 1000; i++) window.clearInterval(i);
     this.user = JSON.parse(this.$cookie.get("authorization"));
     //TODO: if not cookie redirect login
     this.axios
-      .get(`http://localhost:3000/api/course/count?r=!a`)
+      .get(`http://localhost:3000/api/course/count?r=!a`,this.headers)
       .then(res => {
         this.courseCount = res.data;
       })
@@ -319,7 +325,7 @@ export default {
     this.axios
       .post(
         `http://localhost:3000/api/course/showall?skip=${this.page *
-          this.maxInPage}&limit=${this.maxInPage}&r=!a&exception=teachers`
+          this.maxInPage}&limit=${this.maxInPage}&r=!a&exception=teachers`,{},this.headers
       )
       .then(res => {
         // console.log("res.data");

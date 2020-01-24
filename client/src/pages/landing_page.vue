@@ -109,9 +109,8 @@ function initializationMessengerCode() {
       Message: FlatMessage
     };
   }.call(window));
-}
-/* eslint-enable *//* eslint-disable */
-import Widget from "@/components/Widget/Widget";
+} /* eslint-disable */
+/* eslint-enable */ import Widget from "@/components/Widget/Widget";
 import VueJWT from "vuejs-jwt";
 export default {
   data() {
@@ -134,6 +133,8 @@ export default {
           const jwt = loginResponse.data.jwt;
           const decoded = this.$jwt.decode(jwt);
           this.$cookie.set("authorization", JSON.stringify(decoded));
+          this.$cookie.set("jwt", jwt);
+
           switch (decoded.role) {
             case "student":
               this.$router.push("/");
@@ -242,7 +243,8 @@ a:hover {
   padding-top: 1.5em;
   padding-bottom: 1.5em;
 }
-#landing-page,.generate {
+#landing-page,
+.generate {
   background: url("../assets/image/rahbar2.jpg") no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
@@ -254,11 +256,11 @@ a:hover {
   -webkit-filter: blur(8px); */
 }
 #content2 {
-    position: relative;
+  position: relative;
 }
 #content2 img {
-    position: absolute;
-    top: 5px;
-    left: 5px;
+  position: absolute;
+  top: 5px;
+  left: 5px;
 }
 </style>

@@ -32,12 +32,9 @@
             <th class>عملیات</th>
             <th class>وضعیت دانشجو</th>
             <th class>ایمیل</th>
+            <th class>شماره همراه</th>
             <th class>تاریخ عضویت</th>
-            <th class>
-              <div data-v-71d02ef0>
-                <span data-v-71d02ef0 class="badge badge-info">پس از ثبت دانشجو، دانشگاه را اضافه کنید</span>
-              </div>دانشگاه
-            </th>
+            <th class>دانشگاه</th>
             <th class>کد ملی</th>
             <th class>نام</th>
             <th class>#</th>
@@ -46,17 +43,6 @@
         <tbody id="myTable">
           <tr v-for="(user,index) in users" :key="user._id">
             <td>
-              <i
-                @click="showModal(user)"
-                class="fa fa-university action-icon"
-                style="font-size: 1.3em;"
-              />
-              <i
-                @click="deleteUser(user)"
-                class="fa fa-remove action-icon"
-                style="font-size: 1.5em;"
-              />
-              <i @click="editUser(user)" class="fa fa-edit action-icon" style="font-size: 1.5em;" />
               <i
                 v-if="user.confirmed"
                 @click="confirmUser(user)"
@@ -84,10 +70,11 @@
                 class="btn p-1 px-3 btn-xs btn-success lalezar"
               >فعال</button>
             </td>
-            <td>{{user.email}}</td>
+            <td id="numeric-td">{{user.email}}</td>
+            <td id="numeric-td">{{user.phoneNumber}}</td>
             <td id="numeric-td">{{ new Date(user.date) | moment("jYYYY/jM/jD | HH:mm ")}}</td>
             <td>{{retUni(user.university)}}</td>
-            <td>{{user.nationalcode}}</td>
+            <td id="numeric-td">{{user.nationalcode}}</td>
             <td>{{user.name}}</td>
             <td id="numeric-td">{{index+1}}</td>
           </tr>
@@ -96,9 +83,6 @@
     </div>
     <br />
     <br />
-    <button id="fixedbutton" class="btn btn-primary" type="button" @click="s()">
-      <i class="fa fa-plus" />
-    </button>
     <div id="modaaal">
       <b-modal id="my-modal" ref="my-modal" scrollable hide-footer title>
         <div class="d-block text-center lalezar">
@@ -157,22 +141,32 @@
 import { global } from "@/main.js";
 import "imports-loader?$=jquery,this=>window!messenger/build/js/messenger";
 import { all } from "q";
-const { Messenger } = window;
+const { Messenger } = window; /* eslint-disable */
 /* eslint-disable */
 
-/* eslint-enable *//* eslint-disable */
-export default {
+/* eslint-enable */ export default {
   data() {
     return {
+      jwt: null,
+      headers: null,
       users: [],
       selectedUser: null,
       universities: null
     };
   },
 
-  mounted() {
+  created() {
+    this.headers = {
+      'headers': {
+        Authorization: `Bearer ${this.$cookie.get("jwt")}`
+      }
+    };
     this.axios
-      .get(`http://localhost:3000/api/user/student/showall`)
+      .get(`http://localhost:3000/api/user/student/showall`, {
+        'headers': {
+          Authorization: `Bearer ${this.$cookie.get("jwt")}`
+        }
+      })
       .then(res => {
         console.log(res.data);
 
@@ -183,7 +177,9 @@ export default {
         console.log(err);
       });
   },
-
+  mounted() {
+  },
+  //TODO: delete add edit delete methods
   methods: {
     async confirmUser(user) {
       var flag = false;
@@ -191,10 +187,14 @@ export default {
         flag = true;
       }
       this.axios
-        .patch(`http://localhost:3000/api/user/edit`, {
-          userId: user._id,
-          confirmed: flag
-        })
+        .patch(
+          `http://localhost:3000/api/user/edit`,
+          {
+            userId: user._id,
+            confirmed: flag
+          },
+          this.headers
+        )
         .then(res => {
           user.confirmed = flag;
           this.$swal.fire({
@@ -207,414 +207,6 @@ export default {
           console.log(err);
         });
     },
-    deleteUser(user) {
-      this.$swal
-        .fire({
-          title: "Are you sure?",
-          text: "You won't be able to revert this!",
-          type: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "Yes, delete it!"
-        })
-        .then(result => {
-          if (result.value) {
-            this.axios
-              .post(`http://localhost:3000/api/user/delete/`, {
-                userId: user._id
-              })
-              .then(res => {
-                let userIndex = this.users.indexOf(user);
-                this.users.splice(userIndex, 1);
-                this.$swal.fire({
-                  type: "success",
-                  title: "موفق",
-                  text: "کاربر با موفقیت حذف شد"
-                });
-              })
-              .catch(err => {
-                console.log(err);
-              });
-          }
-        });
-    },
-    async editUser(user) {
-      const { value: formValues } = await this.$swal.fire({
-        html: `<div class="col-X-6">
-        <div class="card">
-          <div class="card-header">
-            <strong>ویرایش دانشجو </strong>
-          </div>
-          <div class="card-body card-block">
-            <form class="form-horizontal needs-validation">
-              <div class="row form-group text-center">
-                <div class="col-12 col-md-9">
-                  <input
-                    value="${user.name}"
-                    type="text"
-                    id="name"
-                    name="name"
-                    placeholder="نام دانشجو را وارد کنید"
-                    class="form-control"
-                  />
-                </div>
-                <div class="col col-md-3">
-                  <label for="name" class="form-control-label">نام دانشجو</label>
-                </div>
-              </div>
-              <div class="row form-group text-center">
-                <div class="col-12 col-md-9">
-                  <input
-                  value="${user.phoneNumber}"
-                    type="number"
-                    id="number"
-                    name="number"
-                    placeholder="شماره همراه را وارد کنید"
-                    class="form-control"
-                    required
-                  />
-                </div>
-                <div class="col col-md-3">
-                  <label for="number" class="form-control-label">شماره همراه</label>
-                </div>
-              </div>
-              <div class="row form-group text-center">
-                <div class="col-12 col-md-9">
-                  <input
-                  value="${user.email}"
-                    type="email"
-                    id="email"
-                    name="email"
-                    placeholder="ایمیل دانشجو را وارد کنید"
-                    class="form-control"
-                  />
-                </div>
-                <div class="col col-md-3">
-                  <label for="email" class="form-control-label">ایمیل</label>
-                </div>
-              </div>
-              <div class="row form-group text-center">
-                <div class="col-12 col-md-9">
-                  <input
-                  value="${user.nationalcode}"
-                    type="text"
-                    id="nationalcode"
-                    name="nationalcode"
-                    placeholder="کد ملی را وارد کنید"
-                    class="form-control"
-                    required
-                  />
-                </div>
-                <div class="col col-md-3">
-                  <label for="nationalcode" class="form-control-label">کد ملی</label>
-                </div>
-              </div>
-              <div class="row form-group text-center">
-                <div class="col-12 col-md-9">
-                  <input
-                  value="${user.password}"
-                    type="password"
-                    id="password"
-                    name="password"
-                    placeholder="رمز"
-                    class="form-control"
-                  />
-                </div>
-                <div class="col col-md-3">
-                  <label for="password" class="form-control-label">رمز</label>
-                </div>
-              </div>
-              <div class="row form-group text-center">
-                <div class="col col-md-9">
-                  <div class="form-check-inline form-check">
-                    <label for="inline-radio2" class="form-check-label">
-                      <input
-                        
-                        type="radio"
-                        id="inline-radio2"
-                        name="inline-radios"
-                        value="option2"
-                        class="form-check-input"
-                      />خانم
-                    </label>
-                    <label for="inline-radio3" class="form-check-label">
-                      <input
-                      
-                        type="radio"
-                        id="inline-radio3"
-                        name="inline-radios"
-                        value="option3"
-                        class="form-check-input"
-                      />آقا
-                    </label>
-                  </div>
-                </div>
-                <div class="col col-md-3">
-                  <label class="form-control-label">جنسیت</label>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>`,
-        // '<input id="swal-input6" class="swal2-input" placeholder = "جنسیت>',
-        focusConfirm: false,
-        preConfirm: () => {
-          var name = document.getElementById("name").value;
-          var nationalcode = document.getElementById("nationalcode").value;
-          var email = document.getElementById("email").value;
-          var number = document.getElementById("number").value;
-          var password = document.getElementById("password").value;
-          var ok = false;
-          var gender = "";
-          if ($("#inline-radio3").is(":checked")) {
-            gender = "man";
-          } else if ($("#inline-radio2").is(":checked")) {
-            gender = "woman";
-          }
-          if (
-            name == "" ||
-            nationalcode == "" ||
-            email == "" ||
-            password == "" ||
-            gender == ""
-          ) {
-            setTimeout(() => {
-              this.editUser(user);
-            }, 0);
-          } else {
-            ok = true;
-          }
-          return {
-            ok,
-            name,
-            nationalcode,
-            number,
-            email,
-            gender,
-            password
-          };
-        }
-      });
-      if (formValues == undefined || formValues.ok == false) {
-        return;
-      }
-      // TODO: university ezafe she
-      this.axios
-        .patch(`http://localhost:3000/api/user/edit`, {
-          userId: user._id,
-          nationalcode: formValues.nationalcode,
-          name: formValues.name,
-          phoneNumber: formValues.number,
-          email: formValues.email,
-          gender: formValues.gender,
-          password: formValues.password
-        })
-        .then(res => {
-          Object.keys(formValues).forEach(item => {
-            if (user[item]) {
-              user[item] = formValues[item];
-            }
-          });
-          this.$swal.fire({
-            type: "success",
-            title: "موفق",
-            text: "کاربر با موفقیت ویرایش شد"
-          });
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-
-    //TODO: university ezafe she
-
-    async s(name = "", nationalcode = "", number = "", email = "") {
-      const { value: formValues2 } = await this.$swal.fire({
-        html: `<div class="col-X-6">
-        <div class="card">
-          <div class="card-header">
-            <strong>دانشجوی جدید</strong>
-          </div>
-          <div class="card-body card-block">
-            <form class="form-horizontal needs-validation">
-              <div class="row form-group text-center">
-                <div class="col-12 col-md-9">
-                  <input
-                    value="${name}"
-                    type="text"
-                    id="name"
-                    name="name"
-                    placeholder="نام دانشجو را وارد کنید"
-                    class="form-control"
-                  />
-                </div>
-                <div class="col col-md-3">
-                  <label for="name" class="form-control-label">نام دانشجو</label>
-                </div>
-              </div>
-              <div class="row form-group text-center">
-                <div class="col-12 col-md-9">
-                  <input
-                  value="${number}"
-                    type="number"
-                    id="number"
-                    name="number"
-                    placeholder="شماره همراه را وارد کنید"
-                    class="form-control"
-                    required
-                  />
-                </div>
-                <div class="col col-md-3">
-                  <label for="number" class="form-control-label">شماره همراه</label>
-                </div>
-              </div>
-              <div class="row form-group text-center">
-                <div class="col-12 col-md-9">
-                  <input
-                  value="${email}"
-                    type="email"
-                    id="email"
-                    name="email"
-                    placeholder="ایمیل دانشجو را وارد کنید"
-                    class="form-control"
-                  />
-                </div>
-                <div class="col col-md-3">
-                  <label for="email" class="form-control-label">ایمیل</label>
-                </div>
-              </div>
-              <div class="row form-group text-center">
-                <div class="col-12 col-md-9">
-                  <input
-                  value="${nationalcode}"
-                    type="text"
-                    id="nationalcode"
-                    name="nationalcode"
-                    placeholder="کد ملی را وارد کنید"
-                    class="form-control"
-                    required
-                  />
-                </div>
-                <div class="col col-md-3">
-                  <label for="nationalcode" class="form-control-label">کد ملی</label>
-                </div>
-              </div>
-              <div class="row form-group text-center">
-                <div class="col-12 col-md-9">
-                  <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    placeholder="رمز"
-                    class="form-control"
-                  />
-                </div>
-                <div class="col col-md-3">
-                  <label for="password" class="form-control-label">رمز</label>
-                </div>
-              </div>
-              <div class="row form-group text-center">
-                <div class="col col-md-9">
-                  <div class="form-check-inline form-check">
-                    <label for="inline-radio2" class="form-check-label">
-                      <input
-                        
-                        type="radio"
-                        id="inline-radio2"
-                        name="inline-radios"
-                        value="option2"
-                        class="form-check-input"
-                      />خانم
-                    </label>
-                    <label for="inline-radio3" class="form-check-label">
-                      <input
-                      
-                        type="radio"
-                        id="inline-radio3"
-                        name="inline-radios"
-                        value="option3"
-                        class="form-check-input"
-                      />آقا
-                    </label>
-                  </div>
-                </div>
-                <div class="col col-md-3">
-                  <label class="form-control-label">جنسیت</label>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>`,
-        // '<input id="swal-input6" class="swal2-input" placeholder = "جنسیت>',
-        focusConfirm: false,
-        preConfirm: () => {
-          var name = document.getElementById("name").value;
-          var nationalcode = document.getElementById("nationalcode").value;
-          var email = document.getElementById("email").value;
-          var number = document.getElementById("number").value;
-          var password = document.getElementById("password").value;
-          var ok = false;
-          var gender = "";
-          if ($("#inline-radio3").is(":checked")) {
-            gender = "man";
-          } else if ($("#inline-radio2").is(":checked")) {
-            gender = "woman";
-          }
-          if (
-            name == "" ||
-            nationalcode == "" ||
-            email == "" ||
-            password == "" ||
-            gender == ""
-          ) {
-            setTimeout(() => {
-              this.s(name, nationalcode, number, email);
-            }, 0);
-          } else {
-            ok = true;
-          }
-          return {
-            ok,
-            name,
-            nationalcode,
-            number,
-            email,
-            gender,
-            password
-          };
-        }
-      });
-      if (formValues2 == undefined || formValues2.ok == false) {
-        return;
-      }
-      this.axios
-        .post(`http://localhost:3000/api/user/add`, {
-          nationalcode: formValues2.nationalcode,
-          phoneNumber: formValues2.number,
-          email: formValues2.email,
-          name: formValues2.name,
-          role: "student",
-          gender: formValues2.gender,
-          password: formValues2.password,
-          confirmed: true
-        })
-        .then(res => {
-          this.$swal.fire({
-            type: "success",
-            title: "موفق",
-            text: "کاربر با موفقیت ثبت شد"
-          });
-          this.users.push(res.data);
-          console.log(res.data);
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-
     formData(teacher, index) {
       return teacher[index];
     },
@@ -645,42 +237,6 @@ export default {
             .indexOf(value) > -1
         );
       });
-    },
-    showModal(user) {
-      this.axios
-        .get(`http://localhost:3000/api/university/showall`)
-        .then(res => {
-          this.$refs["my-modal"].show();
-          this.selectedUser = user;
-          this.universities = res.data;
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-    hideModal() {
-      this.$refs["my-modal"].hide();
-    },
-    toggleModal() {
-      // We pass the ID of the button that we want to return focus to
-      // when the modal has hidden
-      this.$refs["my-modal"].toggle("#toggle-btn");
-    },
-    addUserUni(uni, index) {
-      this.axios
-        .patch(`http://localhost:3000/api/user/user/adduni`, {
-          userId: this.selectedUser._id,
-          uniId: uni._id
-        })
-        .then(res => {
-          console.log(res.data);
-          this.selectedUser.university = [];
-          this.selectedUser.university.push(uni);
-          this.hideModal();
-        })
-        .catch(err => {
-          console.log(err);
-        });
     },
     retUni(uni) {
       if (uni.length == 0) {

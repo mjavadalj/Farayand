@@ -113,11 +113,12 @@ function initializationMessengerCode() {
       Message: FlatMessage
     };
   }.call(window));
-}
-/* eslint-enable *//* eslint-disable */
-export default {
+} /* eslint-disable */
+/* eslint-enable */ export default {
   data() {
     return {
+      jwt: null,
+      headers: null,
       locationClasses: "messenger-fixed messenger-on-bottom messenger-on-right",
       universities: null
     };
@@ -140,20 +141,25 @@ export default {
     deleteUni(uni, index) {
       this.$swal
         .fire({
-          title: "Are you sure?",
+          title: `${uni.name}`,
           text: "دانشگاه حذف می شود",
           type: "warning",
           showCancelButton: true,
           confirmButtonColor: "#3085d6",
           cancelButtonColor: "#d33",
-          confirmButtonText: "Yes, delete it!"
+          cancelButtonText: "لغو",
+          confirmButtonText: "حذف"
         })
         .then(result => {
           if (result.value) {
             this.axios
-              .post(`http://localhost:3000/api/university/delete`, {
-                id: uni._id
-              })
+              .post(
+                `http://localhost:3000/api/university/delete`,
+                {
+                  id: uni._id
+                },
+                this.headers
+              )
               .then(res => {
                 this.universities.splice(index, 1);
                 this.$swal.fire({
@@ -238,12 +244,16 @@ export default {
         return;
       }
       this.axios
-        .patch(`http://localhost:3000/api/university/edit`, {
-          id: uni._id,
-          name: formValues2.name,
-          state: formValues2.state,
-          city: formValues2.city
-        })
+        .patch(
+          `http://localhost:3000/api/university/edit`,
+          {
+            id: uni._id,
+            name: formValues2.name,
+            state: formValues2.state,
+            city: formValues2.city
+          },
+          this.headers
+        )
         .then(res => {
           this.$swal.fire({
             type: "success",
@@ -260,7 +270,7 @@ export default {
           console.log(err);
         });
     },
-    async addUni(name='', state='',city='') {
+    async addUni(name = "", state = "", city = "") {
       const { value: formValues2 } = await this.$swal.fire({
         html: `
                     <div class="card">
@@ -313,7 +323,7 @@ export default {
           var ok = false;
           if (name == "" || state == "" || city == "") {
             setTimeout(() => {
-              this.addUni(name, state,city);
+              this.addUni(name, state, city);
             }, 0);
           } else {
             ok = true;
@@ -330,11 +340,15 @@ export default {
         return;
       }
       this.axios
-        .post(`http://localhost:3000/api/university/add`, {
-          name: formValues2.name,
-          state: formValues2.state,
-          city: formValues2.city
-        })
+        .post(
+          `http://localhost:3000/api/university/add`,
+          {
+            name: formValues2.name,
+            state: formValues2.state,
+            city: formValues2.city
+          },
+          this.headers
+        )
         .then(res => {
           this.$swal.fire({
             type: "success",
@@ -342,8 +356,8 @@ export default {
             text: "دانشگاه با موفقیت اضافه شد"
           });
           console.log(res.data);
-          
-          this.universities.push(res.data)
+
+          this.universities.push(res.data);
         })
         .catch(err => {
           console.log(err);
@@ -352,7 +366,7 @@ export default {
   },
   mounted() {
     this.axios
-      .get(`http://localhost:3000/api/university/showall`)
+      .get(`http://localhost:3000/api/university/showall`, this.headers)
       .then(res => {
         console.log("res.data");
         console.log(res.data);
@@ -362,7 +376,13 @@ export default {
         console.log(err);
       });
   },
-  created() {}
+  created() {
+    this.headers = {
+      headers: {
+        Authorization: `Bearer ${this.$cookie.get("jwt")}`
+      }
+    };
+  }
 };
 </script>
 

@@ -15,7 +15,7 @@ module.exports.addCourse = (req, res) => {
     content: req.body.content,
     limitation: req.body.limitation,
     publishable: req.body.publishable,
-    creator: req.body.creator
+    creator: req.user.userId
   })
     .save()
     .then(result => {
@@ -25,19 +25,18 @@ module.exports.addCourse = (req, res) => {
       handler(err, res, 500);
     });
 };
-
 module.exports.showAllCourses = (req, res) => {
   find = {
     $and: []
   };
-  if (req.query.r == "!a") {
+  if (req.user.role != "admin") {
     find.$and.push({ publishable: true });
   }
   if (req.query.select) {
     find.$and.push({ limitation: req.query.select });
   }
   if (req.query.exception) {
-    find.$and.push({ limitation: { $ne:  req.query.exception } });
+    find.$and.push({ limitation: { $ne: req.query.exception } });
   }
   if (find.$and.length == 0) {
     find = {};
@@ -62,7 +61,7 @@ module.exports.courseConut = (req, res) => {
   find = {
     $and: []
   };
-  if (req.query.r == "!a") {
+  if (req.user.role != "admin") {
     find.$and.push({ publishable: true });
   }
   if (req.query.select) {
@@ -145,7 +144,7 @@ module.exports.addTeacherToCourse = (req, res) => {
     req.body.courseId,
     {
       $addToSet: {
-        user: req.body.teacherId
+        user: req.user.userId
       }
     },
     { new: true }
@@ -163,7 +162,7 @@ module.exports.deleteTeacherFromCourse = (req, res) => {
     req.body.courseId,
     {
       $pull: {
-        user: req.body.teacherId
+        user: req.user.userId
       }
     },
     { new: true }
@@ -178,7 +177,7 @@ module.exports.deleteTeacherFromCourse = (req, res) => {
 };
 module.exports.searchCourse = (req, res) => {
   var find = { $and: [{ title: { $regex: req.query.title, $options: "i" } }] };
-  if (req.query.r == "!a") {
+  if (req.user.role != "admin") {
     find.$and.push({ publishable: true });
   }
   if (req.query.select) {

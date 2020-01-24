@@ -265,6 +265,8 @@ function initializationMessengerCode() {
 /* eslint-enable */ export default {
   data() {
     return {
+      jwt: null,
+      headers: null,
       intervalTimer: null,
       deletedSessions: {},
       selectedRegSession: null,
@@ -343,7 +345,7 @@ function initializationMessengerCode() {
             passed: true,
             anotherChanceDate: newDate,
             score: 100
-          })
+          },this.headers)
           .then(res => {
             // var length=res.data.lessons[global.index].session.length-1
             var newRegSession = res.data.reg_lessons[
@@ -365,7 +367,7 @@ function initializationMessengerCode() {
             passed: false,
             anotherChanceDate: newDate,
             score: 0
-          })
+          },this.headers)
           .then(res => {
             // var length=res.data.lessons[global.index].session.length-1
             var newRegSession = res.data.reg_lessons[
@@ -397,7 +399,7 @@ function initializationMessengerCode() {
           .patch(`http://localhost:3000/api/user/setcertificate`, {
             userId: this.user.userId,
             reg_lessonId: this.reg_lesson._id
-          })
+          },this.headers)
           .then(res => {
             this.reg_lesson.passed = true;
           })
@@ -417,7 +419,7 @@ function initializationMessengerCode() {
           courseId: this.courseId,
           lessonId: this.lessonId,
           sessionId: session._id
-        })
+        },this.headers)
         .then(res => {
           var a = 0;
           var duration = parseInt(session.duration) * 60;
@@ -489,7 +491,7 @@ function initializationMessengerCode() {
             date: reg_session.date,
             sessionId: reg_session.sessionId,
             tryCount
-          })
+          },this.headers)
           .then(res => {
             reg_session.passed = res.data.passed;
             reg_session.score = res.data.score;
@@ -539,7 +541,7 @@ function initializationMessengerCode() {
           sessionId: session._id,
           lessonId: this.lessonId,
           courseId: this.courseId
-        })
+        },this.headers)
         .then(res => {
           // console.log(res.data);
           this.$refs["my-modal"].show();
@@ -579,7 +581,11 @@ function initializationMessengerCode() {
   mounted() {},
   created() {
     this.user = JSON.parse(this.$cookie.get("authorization"));
-
+    this.headers = {
+      headers: {
+        Authorization: `Bearer ${this.$cookie.get("jwt")}`
+      }
+    };
     //TODO: if not cookie redirect login
     if (global == undefined) {
       this.$router.push("/teacher");
@@ -595,7 +601,7 @@ function initializationMessengerCode() {
       .post(`http://localhost:3000/api/session/showall`, {
         courseId: this.courseId,
         lessonId: this.lessonId
-      })
+      },this.headers)
       .then(res => {
         this.sessions = res.data;
         var index = [];

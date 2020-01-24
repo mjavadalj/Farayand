@@ -92,6 +92,8 @@ import html2canvas from "html2canvas";
 export default {
   data() {
     return {
+      jwt: null,
+      headers: null,
       locationClasses: "messenger-fixed messenger-on-bottom messenger-on-right",
       reg_lessons: null,
       user: {},
@@ -137,13 +139,14 @@ export default {
     deleteRegLesson(reg_lesson, index) {
       this.$swal
         .fire({
-          title: "Are you sure?",
+          title: `${reg_lesson.lessonTitle}`,
           text: "حذف درس",
           type: "warning",
           showCancelButton: true,
           confirmButtonColor: "#3085d6",
           cancelButtonColor: "#d33",
-          confirmButtonText: "Yes, delete it!"
+          cancelButtonText: "لغو",
+          confirmButtonText: "حذف"
         })
         .then(result => {
           if (result.value) {
@@ -152,7 +155,11 @@ export default {
               reg_lessonId: reg_lesson._id
             };
             this.axios
-              .patch("http://localhost:3000/api/user/reg/delete", body)
+              .patch(
+                "http://localhost:3000/api/user/reg/delete",
+                body,
+                this.headers
+              )
               .then(res => {
                 this.reg_lessons = res.data.reg_lessons;
               })
@@ -169,7 +176,6 @@ export default {
           name: "cert"
         });
       }
-
     }
   },
   mounted() {
@@ -177,13 +183,22 @@ export default {
   },
   created() {
     this.user = JSON.parse(this.$cookie.get("authorization"));
+    this.headers = {
+      headers: {
+        Authorization: `Bearer ${this.$cookie.get("jwt")}`
+      }
+    };
     console.log(this.user);
 
     //TODO: if not cookie redirect login
     this.axios
-      .post(`http://localhost:3000/api/user/reg/show`, {
-        userId: this.user.userId
-      })
+      .post(
+        `http://localhost:3000/api/user/reg/show`,
+        {
+          userId: this.user.userId
+        },
+        this.headers
+      )
       .then(res => {
         console.log("res.data");
         console.log(res.data);

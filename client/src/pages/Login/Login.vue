@@ -80,6 +80,8 @@ export default {
           const jwt = loginResponse.data.jwt;
           const decoded = this.$jwt.decode(jwt);
           this.$cookie.set("authorization", JSON.stringify(decoded));
+          this.$cookie.set("jwt", jwt);
+          
           switch (decoded.role) {
             case "student":
               this.$router.push("/");

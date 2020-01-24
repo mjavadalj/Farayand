@@ -17,6 +17,8 @@
         v-on:keyup="search"
       />
     </div>
+    <h6 style="font-family:samim" class="text-center just-text">
+    </h6>
     <div
       id="table_data"
       class="table-resposive"
@@ -34,7 +36,6 @@
             <td>{{teacher.name}}</td>
             <td id="numeric-td">{{index+1}}</td>
           </tr>
-          
         </tbody>
       </table>
     </div>
@@ -53,7 +54,7 @@
           <table id="dtBasicExample" align="center" class="table">
             <thead>
               <tr>
-                <th class>نام</th>
+                <th class>نام استاد</th>
                 <th class>#</th>
               </tr>
             </thead>
@@ -154,11 +155,12 @@ function initializationMessengerCode() {
       Message: FlatMessage
     };
   }.call(window));
-}
-/* eslint-enable *//* eslint-disable */
-export default {
+} /* eslint-disable */
+/* eslint-enable */ export default {
   data() {
     return {
+      jwt: null,
+      headers: null,
       teacherSelected: null,
       courseSelected: null,
       courses: {},
@@ -173,9 +175,13 @@ export default {
   methods: {
     showCourses(teacher) {
       this.axios
-        .post(`http://localhost:3000/api/user/course/showall`, {
-          user: teacher._id
-        })
+        .post(
+          `http://localhost:3000/api/user/course/showall`,
+          {
+            user: teacher._id
+          },
+          this.headers
+        )
         .then(res => {
           this.courses = res.data;
           this.teacherSelected = teacher;
@@ -187,9 +193,13 @@ export default {
     },
     showLessons(course) {
       this.axios
-        .post(`http://localhost:3000/api/lesson/showall`, {
-          courseId: course._id
-        })
+        .post(
+          `http://localhost:3000/api/lesson/showall`,
+          {
+            courseId: course._id
+          },
+          this.headers
+        )
         .then(res => {
           this.$refs["my-modal"].hide();
           this.lessons = res.data;
@@ -204,13 +214,14 @@ export default {
       this.$refs["my-modal2"].hide();
       this.$swal
         .fire({
-          title: "Are you sure?",
+          title: `${lesson.title}`,
           text: "می خواهید در این درس ثبت نام کنید؟",
           type: "warning",
           showCancelButton: true,
           confirmButtonColor: "#3085d6",
           cancelButtonColor: "#d33",
-          confirmButtonText: "Yes, delete it!"
+          confirmButtonText: "ثبت نام",
+          cancelButtonText: "لغو"
         })
         .then(result => {
           if (result.value) {
@@ -225,7 +236,11 @@ export default {
               teacherId: this.teacherSelected._id
             };
             this.axios
-              .patch(`http://localhost:3000/api/user/lesson/register`, body)
+              .patch(
+                `http://localhost:3000/api/user/lesson/register`,
+                body,
+                this.headers
+              )
               .then(res => {
                 if (res.data == null) {
                   this.$swal.fire({
@@ -274,38 +289,41 @@ export default {
 
   async created() {
     this.user = JSON.parse(this.$cookie.get("authorization"));
-    this.axios
-      .post(`http://localhost:3000/api/user/show`, {
-        userId: this.user.userId
-      })
-      .then(res => {
-        this.userData = res.data;
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    this.headers = {
+      headers: {
+        Authorization: `Bearer ${this.$cookie.get("jwt")}`
+      }
+    };
 
     try {
       await this.axios
-        .get(`http://localhost:3000/api/user/teacher/showall`)
+        .post(
+          `http://localhost:3000/api/user/show`,
+          {
+            userId: this.user.userId
+          },
+          this.headers
+        )
+        .then(res => {
+          this.userData = res.data;
+          console.log(this.userData);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+      console.log(this.user);
+
+      await this.axios
+        .post(
+          `http://localhost:3000/api/user/student/showTeachers`,
+          {
+            university: this.userData.university[0]
+          },
+          this.headers
+        )
         .then(res => {
           console.log(res.data);
-
           this.teachers = res.data;
-          // var temp = {};
-          // this.teachers.forEach(teacher => {
-          //   this.axios
-          //     .post(`http://localhost:3000/api/user/course/showall`, {
-          //       teacherId: teacher._id
-          //     })
-          //     .then(res => {
-          //       temp[teacher._id] = res.data;
-          //       this.courses = temp;
-          //     })
-          //     .catch(err => {
-          //       console.log(err);
-          //     });
-          // });
         })
         .catch(err => {
           console.log(err);

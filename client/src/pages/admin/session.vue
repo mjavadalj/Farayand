@@ -91,6 +91,8 @@ import pdf from "vue-pdf";
 export default {
   data() {
     return {
+      jwt: null,
+      headers: null,
       course: null,
       lesson: null,
       sessions: null,
@@ -300,21 +302,26 @@ export default {
         return;
       }
       console.log(this.courseId);
+      var session = {
+        title: formValues2.title,
+        content: formValues2.content,
+        secondChance: formValues2.secondChance,
+        duration: parseInt(formValues2.duration),
+        minScore: parseInt(formValues2.minScore),
+        userQCount: parseInt(formValues2.userQCount),
+        starting_page: parseInt(formValues2.starting_page),
+        ending_page: parseInt(formValues2.ending_page)
+      };
       this.axios
-        .patch(`http://localhost:3000/api/session/add`, {
-          courseId: this.courseId,
-          lessonId: this.lessonId,
-          session: {
-            title: formValues2.title,
-            content: formValues2.content,
-            secondChance: formValues2.secondChance,
-            duration: parseInt(formValues2.duration),
-            minScore: parseInt(formValues2.minScore),
-            userQCount: parseInt(formValues2.userQCount),
-            starting_page: parseInt(formValues2.starting_page),
-            ending_page: parseInt(formValues2.ending_page)
-          }
-        })
+        .patch(
+          `http://localhost:3000/api/session/add`,
+          {
+            courseId: this.courseId,
+            lessonId: this.lessonId,
+            session
+          },
+          this.headers
+        )
         .then(res => {
           this.$swal.fire({
             type: "success",
@@ -323,7 +330,11 @@ export default {
           });
           console.log("res.data");
           console.log(res.data);
-          this.sessions = res.data.lessons[0].sessions;
+          session["date"] = new Date(Date.now());
+          console.log(session);
+          console.log(this.sessions);
+
+          this.sessions.push(session);
         })
         .catch(err => {
           console.log(err);
@@ -332,22 +343,27 @@ export default {
     deleteSession(session) {
       this.$swal
         .fire({
-          title: "Are you sure?",
+          title: `حذف جلسه ${session.title}`,
           text: "جلسه به همراه تمامی آزمون ها حذف می شود",
           type: "warning",
           showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "Yes, delete it!"
+          cancelButtonText: "بازگشت",
+          cancelButtonColor: "#3085d6",
+          confirmButtonColor: "#d33",
+          confirmButtonText: "حذف"
         })
         .then(result => {
           if (result.value) {
             this.axios
-              .patch(`http://localhost:3000/api/session/delete/`, {
-                courseId: this.course._id,
-                lessonId: this.lesson._id,
-                sessionId: session._id
-              })
+              .patch(
+                `http://localhost:3000/api/session/delete/`,
+                {
+                  courseId: this.course._id,
+                  lessonId: this.lesson._id,
+                  sessionId: session._id
+                },
+                this.headers
+              )
               .then(res => {
                 let userIndex = this.sessions.indexOf(session);
                 this.sessions.splice(userIndex, 1);
@@ -503,19 +519,23 @@ export default {
         return;
       }
       this.axios
-        .patch(`http://localhost:3000/api/session/edit`, {
-          courseId: this.courseId,
-          lessonId: this.lesson._id,
-          sessionId: session._id,
-          title: formValues2.title,
-          content: formValues2.content,
-          duration: formValues2.duration,
-          minScore: formValues2.minScore,
-          userQCount: formValues2.userQCount,
-          secondChance: formValues2.secondChance,
-          starting_page: formValues2.starting_page,
-          ending_page: formValues2.ending_page
-        })
+        .patch(
+          `http://localhost:3000/api/session/edit`,
+          {
+            courseId: this.courseId,
+            lessonId: this.lesson._id,
+            sessionId: session._id,
+            title: formValues2.title,
+            content: formValues2.content,
+            duration: formValues2.duration,
+            minScore: formValues2.minScore,
+            userQCount: formValues2.userQCount,
+            secondChance: formValues2.secondChance,
+            starting_page: formValues2.starting_page,
+            ending_page: formValues2.ending_page
+          },
+          this.headers
+        )
         .then(res => {
           this.$swal.fire({
             type: "success",
@@ -540,8 +560,8 @@ export default {
         });
     },
     download(session) {
-      if (session.files.length==0){
-        return
+      if (session.files.length == 0) {
+        return;
       }
       this.src = session.files[0].name;
       this.numPages = [];
@@ -564,10 +584,14 @@ export default {
     this.courseId = global.courseId;
     this.lessonId = global.lessonId;
     this.axios
-      .post(`http://localhost:3000/api/session/showall`, {
-        courseId: this.courseId,
-        lessonId: this.lessonId
-      })
+      .post(
+        `http://localhost:3000/api/session/showall`,
+        {
+          courseId: this.courseId,
+          lessonId: this.lessonId
+        },
+        this.headers
+      )
       .then(res => {
         this.sessions = res.data;
         console.log(res.data);
@@ -578,7 +602,13 @@ export default {
         console.log(err);
       });
   },
-  created() {},
+  created() {
+    this.headers = {
+      headers: {
+        Authorization: `Bearer ${this.$cookie.get("jwt")}`
+      }
+    };
+  },
   components: {
     pdf
   }

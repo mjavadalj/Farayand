@@ -9,6 +9,8 @@
         پنل
         <span class="text-warning">استاد</span>
       </router-link>
+      <br>
+      <h6 class="samim">{{user.name}}</h6>
     </header>
     <ul class="nav">
       <NavLink
@@ -26,13 +28,6 @@
         isHeader
       />
       <NavLink
-        header="گواهی ها"
-        link="/teacher/certificate"
-        iconName="flaticon-list"
-        index="certificate"
-        isHeader
-      />
-      <NavLink
         header="آزمون استاد"
         link="/teacher/course"
         iconName="fa fa-database"
@@ -44,6 +39,13 @@
         link="/teacher/mylesson"
         iconName="fa fa-list"
         index="course"
+        isHeader
+      />
+      <NavLink
+        header="استعلام گواهی"
+        link="/teacher/check"
+        iconName="fa fa-check"
+        index="check"
         isHeader
       />
       <NavLink
@@ -74,6 +76,7 @@ export default {
   components: { NavLink },
   data() {
     return {
+      user:null,
       alerts: [
         {
           id: 0,
@@ -117,6 +120,7 @@ export default {
     }
   },
   created() {
+    this.user = JSON.parse(this.$cookie.get("authorization"));
     this.setActiveByRoute();
   },
   computed: {

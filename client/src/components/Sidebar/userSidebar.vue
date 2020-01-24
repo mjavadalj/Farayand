@@ -9,6 +9,7 @@
         پنل
         <span class="text-warning">دانشجو</span>
       </router-link>
+      <h6 class="samim">{{user.name}}</h6>
     </header>
     <ul class="nav">
       <NavLink header="خانه" link="/home" iconName="fa fa-home" index="course" isHeader />
@@ -62,6 +63,7 @@ export default {
   components: { NavLink },
   data() {
     return {
+      user:null,
       alerts: [
         {
           id: 0,
@@ -105,6 +107,7 @@ export default {
     }
   },
   created() {
+    this.user = JSON.parse(this.$cookie.get("authorization"));
     this.setActiveByRoute();
   },
   computed: {

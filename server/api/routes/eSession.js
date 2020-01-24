@@ -2,55 +2,76 @@ const express = require("express");
 const router = express.Router();
 const sessionController = require("../controllers/session");
 const multer = require("multer");
-
-// const storage = multer.diskStorage({
-//   destination: (req, file, callBack) => {
-//     callBack(null, __dirname + "../../../files");
-//   },
-//   filename: (req, file, callBack) => {      
-//     callBack(null, `${req.body.sessionId}.${file.originalname}`);
-//   }
-// });
-
-// const fileFilter = (req, file, callBack) => {
-//   if (
-//     file.mimetype === "video/mp4" ||
-//     file.mimetype === "application/zip" ||
-//     file.mimetype === "application/pdf"
-//   ) {
-//     callBack(null, true);
-//   } else {
-//     callBack(new Error("not supported"), false);
-//   }
-// };
-
-// const upload = multer({
-//   storage: storage,
-//   limits: {
-//     fileSize: 1024 * 1024 * 50
-//   },
-//   fileFilter
-// });
+const passport = require("passport");
+const auth = require("../middlewares/authintication");
 
 //show all sessions
-router.post("/showall", sessionController.showAllSessions);
+router.post(
+  "/showall",
+  passport.authenticate("jwt", {
+    session: false
+  }),
+  sessionController.showAllSessions
+);
 
 //show all questions
-router.post("/showallquestions", sessionController.showAllQuestions);
+router.post(
+  "/showallquestions",
+  passport.authenticate("jwt", {
+    session: false
+  }),
+  sessionController.showAllQuestions
+);
 //show randonm questions
-router.post("/showrandonmquestions", sessionController.showRandomQuestions);
+router.post(
+  "/showrandonmquestions",
+  passport.authenticate("jwt", {
+    session: false
+  }),
+  sessionController.showRandomQuestions
+);
 //add session
-router.patch("/add", sessionController.addASession);
+router.patch(
+  "/add",
+  passport.authenticate("jwt", {
+    session: false
+  }),
+  auth.isAdmin,
+  sessionController.addASession
+);
 //edit a session
-router.patch("/edit", sessionController.editASession);
+router.patch(
+  "/edit",
+  passport.authenticate("jwt", {
+    session: false
+  }),
+  auth.isAdmin,
+  sessionController.editASession
+);
 //delete a session
-router.patch("/delete", sessionController.deleteSingleSession);
+router.patch(
+  "/delete",
+  passport.authenticate("jwt", {
+    session: false
+  }),
+  auth.isAdmin,
+  sessionController.deleteSingleSession
+);
 //delete all sessions
-router.patch("/deleteall", sessionController.deleteAllSessons);
-router.post("/checkquiz", sessionController.checkQuiz);
-
-// router.post("/addFile", upload.single("file"), sessionController.addFile);
-// router.post("/showfiles", sessionController.showFiles);
-// router.patch("/deletefile", sessionController.deleteFile);
+router.patch(
+  "/deleteall",
+  passport.authenticate("jwt", {
+    session: false
+  }),
+  auth.isAdmin,
+  sessionController.deleteAllSessons
+);
+router.post(
+  "/checkquiz",
+  passport.authenticate("jwt", {
+    session: false
+  }),
+  sessionController.checkQuiz
+);
 
 module.exports = router;

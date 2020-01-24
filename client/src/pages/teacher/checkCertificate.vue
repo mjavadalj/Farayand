@@ -36,7 +36,6 @@
         </thead>
         <tbody id="myTable">
           <tr v-for="(certificate,index) in certificates" :key="certificate._id">
-            
             <td id="numeric-td">{{new Date(certificate.date) | moment("jYYYY/jM/jD | HH:mm ")}}</td>
             <td>{{certificate.finalScore}}</td>
             <td>{{certificate.lessonTitle}}</td>
@@ -71,9 +70,13 @@ export default {
       //TOOD: handle this
       if (this.nationalcode) {
         this.axios
-          .post(`http://localhost:3000/api/user/reg/show/certificates`, {
-            nationalcode: this.nationalcode
-          },this.headers)
+          .post(
+            `http://localhost:3000/api/user/teacher/checkCertificate`,
+            {
+              nationalcode: this.nationalcode
+            },
+            this.headers
+          )
           .then(res => {
             if (res.data.length == 0) {
               return alert("برای این کد ملی هیچ گواهی صادر نشده است");

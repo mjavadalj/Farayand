@@ -158,11 +158,12 @@ function initializationMessengerCode() {
       Message: FlatMessage
     };
   }.call(window));
-}
-/* eslint-enable *//* eslint-disable */
-export default {
+} /* eslint-disable */
+/* eslint-enable */ export default {
   data() {
     return {
+      jwt: null,
+      headers: null,
       locationClasses: "messenger-fixed messenger-on-bottom messenger-on-right",
       courses: null,
       courseCount: 0,
@@ -224,7 +225,7 @@ export default {
       this.axios
         .post(
           `http://localhost:3000/api/course/showall?skip=${this.page *
-            this.maxInPage}&limit=${this.maxInPage}&r=!a&exception=students`
+            this.maxInPage}&limit=${this.maxInPage}&r=!a&exception=students`,{},this.headers
         )
         .then(res => {
           this.courses = res.data;
@@ -241,7 +242,7 @@ export default {
       this.axios
         .post(
           `http://localhost:3000/api/course/showall?skip=${this.page *
-            this.maxInPage}&limit=${this.maxInPage}&r=!a&exception=students`
+            this.maxInPage}&limit=${this.maxInPage}&r=!a&exception=students`,{},this.headers
         )
         .then(res => {
           this.courses = res.data;
@@ -255,7 +256,7 @@ export default {
       this.axios
         .post(
           `http://localhost:3000/api/course/showall?skip=${this.page *
-            this.maxInPage}&limit=${this.maxInPage}&r=!a&exception=students`
+            this.maxInPage}&limit=${this.maxInPage}&r=!a&exception=students`,{},this.headers
         )
         .then(res => {
           this.courses = res.data;
@@ -270,7 +271,7 @@ export default {
       }
       this.axios
         .get(
-          `http://localhost:3000/api/course/find?title=${this.searchInput}&r=!a`
+          `http://localhost:3000/api/course/find?title=${this.searchInput}&r=!a`,this.headers
         )
         .then(res => {
           this.searchMode = true;
@@ -294,7 +295,7 @@ export default {
       this.axios
         .post(`http://localhost:3000/api/lesson/showall`, {
           courseId: course._id
-        })
+        },this.headers)
         .then(res => {
           this.courseSelected = course;
           this.lessons = res.data;
@@ -315,13 +316,14 @@ export default {
     lessonRegister(lesson) {
       this.$swal
         .fire({
-          title: "Are you sure?",
+          title: `درس ${lesson.title}`,
           text: "می خواهید در این درس ثبت نام کنید؟",
           type: "warning",
           showCancelButton: true,
           confirmButtonColor: "#3085d6",
+          cancelButtonText: "خیر",
           cancelButtonColor: "#d33",
-          confirmButtonText: "Yes, delete it!"
+          confirmButtonText: "ثبت نام"
         })
         .then(result => {
           if (result.value) {
@@ -336,13 +338,13 @@ export default {
               teacherId: this.courseSelected.creator._id
             };
             this.axios
-              .patch(`http://localhost:3000/api/user/lesson/register`, body)
+              .patch(`http://localhost:3000/api/user/lesson/register`, body,this.headers)
               .then(res => {
                 console.log(res.data);
                 if (res.data == null) {
                   this.$swal.fire({
                     type: "warning",
-                    title: "!",
+                    title: `درس ${lesson.title}`,
                     text: " شما قبلا  در این درس ثبت نام کردید"
                   });
                   this.hideModal();
@@ -364,12 +366,16 @@ export default {
   },
   mounted() {},
   created() {
-    for (var i = 1; i < 1000; i++)
-        window.clearInterval(i);
+    this.headers = {
+      headers: {
+        Authorization: `Bearer ${this.$cookie.get("jwt")}`
+      }
+    };
+    for (var i = 1; i < 1000; i++) window.clearInterval(i);
     this.user = JSON.parse(this.$cookie.get("authorization"));
     //TODO: if not cookie redirect login// this.initCharts();
     this.axios
-      .get(`http://localhost:3000/api/course/count?r=!a`)
+      .get(`http://localhost:3000/api/course/count?r=!a`,this.headers)
       .then(res => {
         this.courseCount = res.data;
       })
@@ -379,7 +385,7 @@ export default {
     this.axios
       .post(
         `http://localhost:3000/api/course/showall?skip=${this.page *
-          this.maxInPage}&limit=${this.maxInPage}&r=!a&exception=students`
+          this.maxInPage}&limit=${this.maxInPage}&r=!a&exception=students`,{},this.headers
       )
       .then(res => {
         // console.log("res.data");

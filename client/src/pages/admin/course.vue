@@ -201,12 +201,12 @@ function initializationMessengerCode() {
       Message: FlatMessage
     };
   }.call(window));
-}
-/* eslint-enable *//* eslint-disable */
-
-export default {
+} /* eslint-disable */
+/* eslint-enable */ export default {
   data() {
     return {
+      jwt: null,
+      headers: null,
       locationClasses: "messenger-fixed messenger-on-bottom messenger-on-right",
       courses: null,
       courseCount: 0,
@@ -217,7 +217,7 @@ export default {
       searchMode: false,
       temp: null,
       limit: "",
-      adminUser:null
+      adminUser: null
     };
   },
   methods: {
@@ -330,12 +330,16 @@ export default {
         return;
       }
       this.axios
-        .post(`http://localhost:3000/api/course/add`, {
-          creator: this.adminUser.userId,
-          title: formValues2.title,
-          content: formValues2.content,
-          limitation: formValues2.limitation
-        })
+        .post(
+          `http://localhost:3000/api/course/add`,
+          {
+            // creator: this.adminUser.userId,
+            title: formValues2.title,
+            content: formValues2.content,
+            limitation: formValues2.limitation
+          },
+          this.headers
+        )
         .then(res => {
           this.$swal.fire({
             type: "success",
@@ -363,9 +367,13 @@ export default {
         .then(result => {
           if (result.value) {
             this.axios
-              .post(`http://localhost:3000/api/course/delete/`, {
-                courseId: course._id
-              })
+              .post(
+                `http://localhost:3000/api/course/delete/`,
+                {
+                  courseId: course._id
+                },
+                this.headers
+              )
               .then(res => {
                 let userIndex = this.courses.indexOf(course);
                 this.courses.splice(userIndex, 1);
@@ -454,12 +462,16 @@ export default {
       }
       // TODO: university ezafe she
       this.axios
-        .patch(`http://localhost:3000/api/course/edit`, {
-          courseId: course._id,
-          content: formValues.content,
-          title: formValues.title,
-          limitation: formValues.limitation
-        })
+        .patch(
+          `http://localhost:3000/api/course/edit`,
+          {
+            courseId: course._id,
+            content: formValues.content,
+            title: formValues.title,
+            limitation: formValues.limitation
+          },
+          this.headers
+        )
         .then(res => {
           Object.keys(formValues).forEach(item => {
             if (course[item] != undefined) {
@@ -482,10 +494,14 @@ export default {
         flag = true;
       }
       this.axios
-        .patch(`http://localhost:3000/api/course/edit`, {
-          courseId: course._id,
-          publishable: flag
-        })
+        .patch(
+          `http://localhost:3000/api/course/edit`,
+          {
+            courseId: course._id,
+            publishable: flag
+          },
+          this.headers
+        )
         .then(res => {
           course.publishable = flag;
           this.$swal.fire({
@@ -512,7 +528,11 @@ export default {
         query += `&select=${this.limit}`;
       }
       this.axios
-        .post(`http://localhost:3000/api/course/showall?${query}`)
+        .post(
+          `http://localhost:3000/api/course/showall?${query}`,
+          {},
+          this.headers
+        )
         .then(res => {
           this.courses = res.data;
         })
@@ -545,7 +565,11 @@ export default {
         query += `&select=${this.limit}`;
       }
       this.axios
-        .post(`http://localhost:3000/api/course/showall?${query}`)
+        .post(
+          `http://localhost:3000/api/course/showall?${query}`,
+          {},
+          this.headers
+        )
         .then(res => {
           this.courses = res.data;
         })
@@ -563,7 +587,8 @@ export default {
       }
       this.axios
         .get(
-          `http://localhost:3000/api/course/find?title=${this.searchInput}${query}`
+          `http://localhost:3000/api/course/find?title=${this.searchInput}${query}`,
+          this.headers
         )
         .then(res => {
           this.searchMode = true;
@@ -610,7 +635,7 @@ export default {
       }
 
       this.axios
-        .get(`http://localhost:3000/api/course/count?${query}`)
+        .get(`http://localhost:3000/api/course/count?${query}`, this.headers)
         .then(res => {
           this.courseCount = res.data;
         })
@@ -620,7 +645,9 @@ export default {
       this.axios
         .post(
           `http://localhost:3000/api/course/showall?skip=${this.page *
-            this.maxInPage}&limit=${this.maxInPage}&${query}`
+            this.maxInPage}&limit=${this.maxInPage}&${query}`,
+          {},
+          this.headers
         )
         .then(res => {
           this.courses = res.data;
@@ -631,12 +658,16 @@ export default {
     },
     clicked() {}
   },
-  mounted() {
-  },
+  mounted() {},
   created() {
-    this.adminUser=JSON.parse(this.$cookie.get("authorization"));
+    this.adminUser = JSON.parse(this.$cookie.get("authorization"));
+    this.headers = {
+      headers: {
+        Authorization: `Bearer ${this.$cookie.get("jwt")}`
+      }
+    };
     this.axios
-      .get(`http://localhost:3000/api/course/count`)
+      .get(`http://localhost:3000/api/course/count`, this.headers)
       .then(res => {
         this.courseCount = res.data;
       })
@@ -646,10 +677,12 @@ export default {
     this.axios
       .post(
         `http://localhost:3000/api/course/showall?skip=${this.page *
-          this.maxInPage}&limit=${this.maxInPage}`
+          this.maxInPage}&limit=${this.maxInPage}`,
+        {},
+        this.headers
       )
       .then(res => {
-        this.courses = res.data;        
+        this.courses = res.data;
         $("button")
           .not("#fixedbutton")
           .click(function() {

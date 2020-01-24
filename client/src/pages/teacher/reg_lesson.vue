@@ -129,14 +129,14 @@ function initializationMessengerCode() {
       Message: FlatMessage
     };
   }.call(window));
-} /* eslint-disable */
-/* eslint-enable */ //user
-//5d8b01ad21f2fd2db8f9b917
-//teacher
+} /* eslint-disable */ //user //5d8b01ad21f2fd2db8f9b917
+/* eslint-enable */ //teacher
 //5d983723f0fd300f6068a9ee
 export default {
   data() {
     return {
+      jwt: null,
+      headers: null,
       locationClasses: "messenger-fixed messenger-on-bottom messenger-on-right",
       reg_lessons: null,
       user: {}
@@ -179,13 +179,14 @@ export default {
     deleteRegLesson(reg_lesson, index) {
       this.$swal
         .fire({
-          title: "Are you sure?",
+          title: `${reg_lesson.lessonTitle}`,
           text: "حذف درس",
           type: "warning",
           showCancelButton: true,
           confirmButtonColor: "#3085d6",
           cancelButtonColor: "#d33",
-          confirmButtonText: "Yes, delete it!"
+          cancelButtonText: "لغو",
+          confirmButtonText: "حذف"
         })
         .then(result => {
           if (result.value) {
@@ -194,7 +195,11 @@ export default {
               reg_lessonId: reg_lesson._id
             };
             this.axios
-              .patch("http://localhost:3000/api/user/reg/delete", body)
+              .patch(
+                "http://localhost:3000/api/user/reg/delete",
+                body,
+                this.headers
+              )
               .then(res => {
                 this.reg_lessons = res.data.reg_lessons;
               })
@@ -210,9 +215,8 @@ export default {
         this.$router.push({
           name: "cert"
         });
-      }
-      else{
-        alert('111')
+      } else {
+        alert("111");
       }
     }
   },
@@ -220,13 +224,22 @@ export default {
     // this.initCharts();
   },
   created() {
+    this.headers = {
+      headers: {
+        Authorization: `Bearer ${this.$cookie.get("jwt")}`
+      }
+    };
     for (var i = 1; i < 1000; i++) window.clearInterval(i);
     this.user = JSON.parse(this.$cookie.get("authorization"));
     //TODO: if not cookie redirect login
     this.axios
-      .post(`http://localhost:3000/api/user/reg/show`, {
-        userId: this.user.userId
-      })
+      .post(
+        `http://localhost:3000/api/user/reg/show`,
+        {
+          userId: this.user.userId
+        },
+        this.headers
+      )
       .then(res => {
         console.log("res.data");
         console.log(res.data);

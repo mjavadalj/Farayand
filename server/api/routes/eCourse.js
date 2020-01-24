@@ -8,33 +8,105 @@ const passport = require("passport");
 const auth = require("../middlewares/authintication");
 //TODO: LEAN()
 /* COURSE*/
+
+// passport.authenticate("jwt", {
+//     session: false
+//   }),
+//   auth.isAdmin,
 //add new embed course
-router.post("/add", courseController.addCourse);
+router.post(
+  "/add",
+  passport.authenticate("jwt", {
+    session: false
+  }),
+  auth.isAdmin,
+  courseController.addCourse
+);
 
 //Show all embed courses
 //TODO: auth
-router.post("/showall", courseController.showAllCourses);
+router.post(
+  "/showall",
+  passport.authenticate("jwt", {
+    session: false
+  }),
+  courseController.showAllCourses
+);
 
 //Show an embed course
-router.get("/show/", courseController.showSingleCourse);
+//TODO: checkmore
+router.get(
+  "/show",
+  passport.authenticate("jwt", {
+    session: false
+  }),
+  auth.isAdmin,
+  courseController.showSingleCourse
+);
 
 //Delete all embed courses
-router.delete("/deleteall",auth.isAdmin, courseController.deleteAllCourses);
+router.delete(
+  "/deleteall",
+  passport.authenticate("jwt", {
+    session: false
+  }),
+  auth.isAdmin,
+  courseController.deleteAllCourses
+);
 
 //Delete an embed course
-router.post("/delete",auth.isAdmin, courseController.deleteACourse);
+router.post(
+  "/delete",
+  passport.authenticate("jwt", {
+    session: false
+  }),
+  auth.isAdmin,
+  courseController.deleteACourse
+);
 
 //edit an embed course
-router.patch("/edit",auth.isAdmin, courseController.editACourse);
+router.patch(
+  "/edit",
+  passport.authenticate("jwt", {
+    session: false
+  }),
+  auth.isAdmin,
+  courseController.editACourse
+);
 
 //add teacher to course
-router.patch("/user/add", courseController.addTeacherToCourse);
+router.patch(
+  "/user/add",
+  passport.authenticate("jwt", {
+    session: false
+  }),
+  auth.isTeacher,
+  courseController.addTeacherToCourse
+);
 //delete teacher from course
-router.patch("/user/delete", courseController.deleteTeacherFromCourse);
+router.patch(
+  "/user/delete",
+  passport.authenticate("jwt", {
+    session: false
+  }),
+  auth.isTeacher,
+  courseController.deleteTeacherFromCourse
+);
 //course count
-router.get("/count", courseController.courseConut);
+router.get(
+  "/count",
+  passport.authenticate("jwt", {
+    session: false
+  }),
+  courseController.courseConut
+);
 //search by course title
-router.get("/find", courseController.searchCourse);
-
+router.get(
+  "/find",
+  passport.authenticate("jwt", {
+    session: false
+  }),
+  courseController.searchCourse
+);
 
 module.exports = router;

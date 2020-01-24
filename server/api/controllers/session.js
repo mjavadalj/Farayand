@@ -73,7 +73,9 @@ module.exports.addASession = (req, res) => {
     .exec()
     .then(result => {
       createFile(result.lessons[0].files,()=>{})
-      handler(result, res, 200);
+      console.log(result);
+      
+      handler({status:"updated"}, res, 200);
     })
     .catch(err => {
       handler(err, res, 500);
@@ -447,7 +449,7 @@ module.exports.checkQuiz = (req, res) => {
       score = Math.ceil((correctAnswer / Qlength) * 100);
       passed = score >= req.body.minScore;
       find = {
-        _id: req.body.userId,
+        _id: req.user.userId,
         "reg_lessons._id": req.body.reg_lessonId,
         "reg_lessons.reg_sessions._id": req.body.reg_sessionId
       };

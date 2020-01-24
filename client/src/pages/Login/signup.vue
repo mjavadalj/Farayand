@@ -243,50 +243,35 @@ export default {
         phoneNumber,
         email,
         gender,
-        role
-      };
+        role,
+        uniId:uniId
+      };      
       this.axios
         .post("http://localhost:3000/api/user/signup", body)
         .then(result => {
-          // console.log(result.data.user);
           this.axios
-            .patch(
-              `http://localhost:3000/api/user/${
-                role == "student" ? "user" : role
-              }/adduni`,
-              {
-                userId: result.data.user._id,
-                uniId
-              }
-            )
-            .then(res => {
-              // console.log(res);
-              this.axios
-                .post("http://localhost:3000/api/user/signin", {
-                  nationalcode,
-                  password
-                })
-                .then(loginResponse => {
-                  const jwt = loginResponse.data.jwt;
-                  const decoded = this.$jwt.decode(jwt);
-                  this.$cookie.set("authorization", JSON.stringify(decoded));
-                  switch (decoded.role) {
-                    case "student":
-                      this.$router.push("/");
-                      break;
-                    case "teacher":
-                      this.$router.push("/teacher");
-                      break;
-                    case "admin":
-                      this.$router.push("/app/course");
-                      break;
-                  }
-                })
-                .catch(loginError => {});
+            .post("http://localhost:3000/api/user/signin", {
+              nationalcode,
+              password
             })
-            .catch(err => {
-              console.log(err.message);
-            });
+            .then(loginResponse => {
+              const jwt = loginResponse.data.jwt;
+              const decoded = this.$jwt.decode(jwt);
+              this.$cookie.set("authorization", JSON.stringify(decoded));
+              this.$cookie.set("jwt", jwt);
+              switch (decoded.role) {
+                case "student":
+                  this.$router.push("/");
+                  break;
+                case "teacher":
+                  this.$router.push("/teacher");
+                  break;
+                case "admin":
+                  this.$router.push("/app/course");
+                  break;
+              }
+            })
+            .catch(loginError => {});
         })
         .catch(err => {
           console.log(err.message);
