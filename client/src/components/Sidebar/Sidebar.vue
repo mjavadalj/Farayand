@@ -44,6 +44,13 @@
         index="uni"
         isHeader
       />
+      <NavLink
+        header="لیست بسیج اساتید"
+        link="/app/checkConfirmed"
+        iconName="fa fa-list"
+        index="checkConfirmed"
+        isHeader
+      />
       
       <!-- <NavLink
         header="مدیریت استان ها"

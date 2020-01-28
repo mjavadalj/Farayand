@@ -6,6 +6,10 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const jwtSecret = config.get("app.webServer.jwtSecret");
 const { validationResult } = require("express-validator");
+const mailer = require("../middlewares/mailer");
+const randomString = require("randomstring");
+const Confirmed = require("../models/confirmed");
+
 const handler = (json, res, code) => {
   res.status(code).json(json);
 };
@@ -69,104 +73,120 @@ module.exports.signup = (req, res) => {
       message: validationResult(req).errors[0].msg
     });
   }
-  User.find({
-    $or: [
-      { email: req.body.email },
-      { nationalcode: req.body.nationalcode },
-      { phoneNumber: req.body.phoneNumber }
-    ]
-  }).then(user => {
-    if (user.length > 0) {
-      return res.status(200).json({
-        code: 0,
-        message: "با این اطلاعات ثبت نام صورت گرفته است"
-      });
-    } else {
-      bcrypt.hash(req.body.password, 10, (err, hash) => {
-        if (err) {
-          return res.status(200).json({
-            code: 0,
-            message: "مشکلی پیش آمد، دوباره تلاش کنید"
-          });
-        } else if (req.body.role != "teacher" && req.body.role != "student") {
-          return res.status(200).json({
-            code: 0,
-            message: "مجاز به ثبت نام نمی باشید"
-          });
-        } else {
-          new User({
-            _id: mongoose.Types.ObjectId(),
-            name: req.body.name,
-            role: req.body.role,
-            confirmed: true,
-            nationalcode: req.body.nationalcode,
-            password: hash,
-            phoneNumber: req.body.phoneNumber,
-            gender: req.body.gender,
-            email: req.body.email
-          })
-            .save()
-            .then(user => {
-              if (user.role == "teacher") {
-                User.findByIdAndUpdate(
-                  user._id,
-                  {
-                    $addToSet: {
-                      university: {
-                        $each: req.body.uniId
-                      }
-                      // university: req.body.uniId
+  Confirmed.findOne({
+    nationalcode: req.body.nationalcode
+  })
+    .exec()
+    .then(confirmed => {
+      if (!confirmed) {
+        return res.status(200).json({
+          code: 0,
+          message: "شما در لیست بسیج اساتید قرار نگرفته اید"
+        });
+      } else {
+        User.find({
+          $or: [
+            { email: req.body.email },
+            { nationalcode: req.body.nationalcode },
+            { phoneNumber: req.body.phoneNumber }
+          ]
+        }).then(user => {
+          if (user.length > 0) {
+            return res.status(200).json({
+              code: 0,
+              message: "با این اطلاعات ثبت نام صورت گرفته است"
+            });
+          } else {
+            bcrypt.hash(req.body.password, 10, (err, hash) => {
+              if (err) {
+                return res.status(200).json({
+                  code: 0,
+                  message: "مشکلی پیش آمد، دوباره تلاش کنید"
+                });
+              } else if (
+                req.body.role != "teacher" &&
+                req.body.role != "student"
+              ) {
+                return res.status(200).json({
+                  code: 0,
+                  message: "مجاز به ثبت نام نمی باشید"
+                });
+              } else {
+                new User({
+                  _id: mongoose.Types.ObjectId(),
+                  name: req.body.name,
+                  role: req.body.role,
+                  confirmed: true,
+                  nationalcode: req.body.nationalcode,
+                  password: hash,
+                  phoneNumber: req.body.phoneNumber,
+                  gender: req.body.gender,
+                  email: req.body.email
+                })
+                  .save()
+                  .then(user => {
+                    if (user.role == "teacher") {
+                      User.findByIdAndUpdate(
+                        user._id,
+                        {
+                          $addToSet: {
+                            university: {
+                              $each: req.body.uniId
+                            }
+                            // university: req.body.uniId
+                          }
+                        },
+                        { new: true }
+                      )
+                        .exec()
+                        .then(result => {
+                          return res.status(200).json({
+                            code: 1,
+                            message: "با موفقیت ثبت نام کردید"
+                          });
+                        })
+                        .catch(err => {
+                          handler(err, res, 500);
+                        });
+                    } else if (user.role == "student") {
+                      User.findByIdAndUpdate(
+                        user._id,
+                        {
+                          $set: {
+                            university: req.body.uniId
+                          }
+                        },
+                        { new: true }
+                      )
+                        .exec()
+                        .then(result => {
+                          return res.status(200).json({
+                            code: 1,
+                            message: "با موفقیت ثبت نام کردید"
+                          });
+                        })
+                        .catch(err => {
+                          handler(err, res, 500);
+                        });
                     }
-                  },
-                  { new: true }
-                )
-                  .exec()
-                  .then(result => {
-                    return res.status(200).json({
-                      code: 1,
-                      message: "با موفقیت ثبت نام کردید"
-                    });
                   })
                   .catch(err => {
-                    handler(err, res, 500);
-                  });
-              } else if (user.role == "student") {
-                User.findByIdAndUpdate(
-                  user._id,
-                  {
-                    $set: {
-                      university: req.body.uniId
-                    }
-                  },
-                  { new: true }
-                )
-                  .exec()
-                  .then(result => {
                     return res.status(200).json({
-                      code: 1,
-                      message: "با موفقیت ثبت نام کردید"
+                      code: 0,
+                      message: "مشکلی پیش آمد، دوباره تلاش کنید"
                     });
-                  })
-                  .catch(err => {
-                    handler(err, res, 500);
                   });
               }
-            })
-            .catch(err => {
-              return res.status(200).json({
-                code: 0,
-                message: "مشکلی پیش آمد، دوباره تلاش کنید"
-              });
             });
-        }
-      });
-      // .catch(err => { // ? is this shit?
-      //   return res.status(500).json({
-      //     err
-      //   });
-      // });
-    }
-  });
+            // .catch(err => { // ? is this shit?
+            //   return res.status(500).json({
+            //     err
+            //   });
+            // });
+          }
+        });
+      }
+    });
 };
 module.exports.signin = (req, res) => {
   //
@@ -749,6 +769,59 @@ module.exports.changeUNI = (req, res) => {
     })
     .catch(err => {
       return res.status(404).json(err);
+    });
+};
+module.exports.resetPassword = (req, res) => {
+  User.findOne({
+    email: req.body.email
+  })
+    .exec()
+    .then(user => {
+      if (!user) {
+        return res.status(200).json({
+          code: 0,
+          message: "هیچ کاربری با ایم ایمیل ثبت نام نکرده است"
+        });
+      } else {
+        const newPassword = randomString.generate({
+          capitalization: "lowercase",
+          length: 8
+        });
+        var text = `رمز جدید شما\n${newPassword}`;
+        mailer
+          .forgetPassword(req.body.email, "درخواست تغییر رمز", text)
+          .then(result => {
+            console.log(result);
+            bcrypt.hash(newPassword, 10, (err, hash) => {
+              if (err) {
+                return res.status(200).json({
+                  code: 0,
+                  message: "مشکلی پیش آمد، دوباره تلاش کنید"
+                });
+              }
+              if (hash) {
+                user.password = hash;
+                user
+                  .save()
+                  .then(result => {
+                    return res.status(200).json({
+                      code: 1,
+                      message: "رمز جدید به ایمیل شما ارسال شد"
+                    });
+                  })
+                  .catch(err => {
+                    console.log(err);
+                  });
+              }
+            });
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+    })
+    .catch(err => {
+      console.log(err);
     });
 };
 //TODO: select -password

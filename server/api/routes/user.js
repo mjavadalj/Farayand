@@ -179,4 +179,11 @@ router.patch(
   }),
   userController.changeUNI
 );
+router.post(
+  "/forgetpassword",
+  userController.resetPassword
+);
+
+
+
 module.exports = router;

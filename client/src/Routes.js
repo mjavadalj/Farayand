@@ -48,6 +48,7 @@ import SignUp from "./pages/Login/signup.vue";
 import Edit from "./pages/edit/edit.vue";
 import landing_page from "./pages/landing_page.vue";
 import cert from "./pages/certificate.vue";
+import checkConfirmed from "./pages/admin/checkConfirmed.vue";
 
 Vue.use(Router);
 
@@ -79,6 +80,11 @@ export default new Router({
       name: "Layout",
       component: Layout,
       children: [
+        {
+          path: "checkConfirmed",
+          name: "checkConfirmed",
+          component: checkConfirmed
+        },
         {
           path: "check",
           name: "check",

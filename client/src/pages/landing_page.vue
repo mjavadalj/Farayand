@@ -41,10 +41,13 @@
               </div>
               <div class="clearfix">
                 <div class="btn-toolbar float-right">
+                  <b-button @click="showModal" type="reset" size="sm" variant="inverse">
+                    <span class="lalezar">رمز خود را فراموش کردم</span>
+                  </b-button>
                   <b-button @click="signup" type="reset" size="sm" variant="default">
                     <span class="lalezar">ثبت نام کنید</span>
                   </b-button>
-                  <b-button type="submit" size="sm" variant="inverse">
+                  <b-button type="submit" size="sm" variant="primary">
                     <span class="lalezar">ورود</span>
                   </b-button>
                 </div>
@@ -57,6 +60,31 @@
           <img src="../assets/image/1.png" width="300px" class="img-fluid" alt="Responsive image" />
         </div>
       </div>
+    </div>
+    <div id="modaaal">
+      <b-modal id="my-modal" ref="my-modal" scrollable hide-footer title>
+        <div class="d-block text-center xtx-b">
+          <span>
+            <h3>ایمیل خود را وارد کنید</h3>
+          </span>
+        </div>
+        <br />
+        <br />
+        <div>
+          <input
+            class="form-control no-border iranyekan-fn"
+            ref="email"
+            required
+            type="email"
+            name="email"
+            placeholder="ایمیلی که با آن ثبت نام کردید را وارد کنید"
+          />
+          <br />
+          <b-button @click="sendMail" size="sm" variant="primary">
+            <span class="lalezar">تغییر رمز</span>
+          </b-button>
+        </div>
+      </b-modal>
     </div>
   </div>
 </template>
@@ -161,6 +189,21 @@ export default {
     },
     onSlideEnd(slide) {
       this.sliding = false;
+    },
+    showModal() {
+      this.$refs["my-modal"].show();
+    },
+    sendMail() {
+      const email = this.$refs.email.value;
+      this.axios
+        .post("http://localhost:3000/api/user/forgetpassword", {
+          email
+        })
+        .then(result => {
+          this.$refs["my-modal"].hide();
+          alert(result.data.message)
+        })
+        .catch(loginError => {});
     }
   },
   mounted() {},

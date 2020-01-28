@@ -6,9 +6,9 @@
             "baseUrl": "http://localhost:3000"
         },
         "mail": {
-            "mail": "",
-            "password": "",
-            "servise": ""
+            "mail": "basijgofteman@gmail.com",
+            "password": "basij303",
+            "service": "gmail"
         }
     },
     "noSql": {
