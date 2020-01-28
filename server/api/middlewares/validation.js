@@ -9,17 +9,17 @@ exports.signUp = [
     check('email')
         .isEmail()
         .normalizeEmail()
-        .withMessage('email is not valid')
+        .withMessage('ایمیل صحیح نمی باشد')
         .isLength({
             max: 50
         })
-        .withMessage("email can't be more than 50 characters long")
+        .withMessage("ایمیل نمی تواند از 50 حرف بیشتر باشد")
         .custom((email) => {
             return Users.find({
                 email: email
             }).then((res) => {
                 if (res.length) {
-                    return Promise.reject('Email already in use');
+                    return Promise.reject('ایمیل قبلا استفاده شده است');
                 }
             });
         }),
@@ -27,10 +27,10 @@ exports.signUp = [
     // nationalcode validation
     check('nationalcode')
         .isLength({
-            min: 2,
-            max: 32
+            min: 10,
+            max: 10
         })
-        .withMessage('nationalcode must be  between 2 and 32 characters long'),
+        .withMessage('کد ملی باید 10 رقم باشد'),
     // name validation
     // check('name')
     //     .isLength({
@@ -44,9 +44,9 @@ exports.signUp = [
         .isLength({
             min: 6
         })
-        .withMessage('password must be at least 6 characters long')
+        .withMessage('رمز عبور حداقل باید 6 حرف داشه باشد')
         .matches(/\d/)
-        .withMessage('password must contain a number'),
+        .withMessage('رمز عبور باید شامل عدد هم باشد'),
 
     // check('password').custom((valuee, {
     //     req

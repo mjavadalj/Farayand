@@ -77,21 +77,26 @@ export default {
       this.axios
         .post("http://localhost:3000/api/user/signin", body)
         .then(loginResponse => {
-          const jwt = loginResponse.data.jwt;
-          const decoded = this.$jwt.decode(jwt);
-          this.$cookie.set("authorization", JSON.stringify(decoded));
-          this.$cookie.set("jwt", jwt);
-          
-          switch (decoded.role) {
-            case "student":
-              this.$router.push("/");
-              break;
-            case "teacher":
-              this.$router.push("/teacher");
-              break;
-            case "admin":
-              this.$router.push("/app/course");
-              break;
+          if (loginResponse.data.code == 1) {
+            const jwt = loginResponse.data.jwt;
+            const decoded = this.$jwt.decode(jwt);
+            this.$cookie.set("authorization", JSON.stringify(decoded));
+            this.$cookie.set("jwt", jwt);
+
+            switch (decoded.role) {
+              case "student":
+                this.$router.push("/");
+                break;
+              case "teacher":
+                this.$router.push("/teacher");
+                break;
+              case "admin":
+                this.$router.push("/app/course");
+                break;
+            }
+          }
+          else{
+            alert(loginResponse.data.message)
           }
         })
         .catch(loginError => {});
@@ -103,7 +108,7 @@ export default {
       //   this.$router.push('/app/main/analytics');
       // }
     },
-    signup(){
+    signup() {
       this.$router.push("/signup");
     }
   },

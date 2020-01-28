@@ -21,7 +21,7 @@
               <b-alert class="alert-sm" variant="danger" :show="!!errorMessage">{{errorMessage}}</b-alert>
               <div class="form-group">
                 <input
-                  class="form-control no-border lalezar"
+                  class="form-control no-border iranyekan-fn"
                   ref="nationalcode"
                   required
                   type="text"
@@ -31,7 +31,7 @@
               </div>
               <div class="form-group">
                 <input
-                  class="form-control no-border lalezar"
+                  class="form-control no-border iranyekan-fn-lgt"
                   ref="password"
                   required
                   type="password"
@@ -130,21 +130,25 @@ export default {
       this.axios
         .post("http://localhost:3000/api/user/signin", body)
         .then(loginResponse => {
-          const jwt = loginResponse.data.jwt;
-          const decoded = this.$jwt.decode(jwt);
-          this.$cookie.set("authorization", JSON.stringify(decoded));
-          this.$cookie.set("jwt", jwt);
+          if (loginResponse.data.code == 1) {
+            const jwt = loginResponse.data.jwt;
+            const decoded = this.$jwt.decode(jwt);
+            this.$cookie.set("authorization", JSON.stringify(decoded));
+            this.$cookie.set("jwt", jwt);
 
-          switch (decoded.role) {
-            case "student":
-              this.$router.push("/");
-              break;
-            case "teacher":
-              this.$router.push("/teacher");
-              break;
-            case "admin":
-              this.$router.push("/app/course");
-              break;
+            switch (decoded.role) {
+              case "student":
+                this.$router.push("/");
+                break;
+              case "teacher":
+                this.$router.push("/teacher");
+                break;
+              case "admin":
+                this.$router.push("/app/course");
+                break;
+            }
+          } else {
+            alert(loginResponse.data.message);
           }
         })
         .catch(loginError => {});

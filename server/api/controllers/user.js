@@ -64,24 +64,35 @@ module.exports.showAllUsers = (req, res) => {
 module.exports.signup = (req, res) => {
   if (validationResult(req).errors.length > 0) {
     console.log(validationResult(req).errors);
-    return res.status(401).json(validationResult(req));
+    return res.status(200).json({
+      code: 0,
+      message: validationResult(req).errors[0].msg
+    });
   }
   User.find({
-    $or: [{ email: req.body.email }, { nationalcode: req.body.nationalcode }]
+    $or: [
+      { email: req.body.email },
+      { nationalcode: req.body.nationalcode },
+      { phoneNumber: req.body.phoneNumber }
+    ]
   }).then(user => {
     if (user.length > 0) {
-      return res.status(401).json({
-        message: "email already exist"
+      return res.status(200).json({
+        code: 0,
+        message: "با این اطلاعات ثبت نام صورت گرفته است"
       });
     } else {
       bcrypt.hash(req.body.password, 10, (err, hash) => {
         if (err) {
-          return res.status(500).json({
-            err,
-            message: "cannot hash"
+          return res.status(200).json({
+            code: 0,
+            message: "مشکلی پیش آمد، دوباره تلاش کنید"
           });
         } else if (req.body.role != "teacher" && req.body.role != "student") {
-          return handler({ error: "role not supported" }, res, 500);
+          return res.status(200).json({
+            code: 0,
+            message: "مجاز به ثبت نام نمی باشید"
+          });
         } else {
           new User({
             _id: mongoose.Types.ObjectId(),
@@ -96,11 +107,7 @@ module.exports.signup = (req, res) => {
           })
             .save()
             .then(user => {
-              console.log(req.body);
-
               if (user.role == "teacher") {
-                console.log(req.body.uniId);
-
                 User.findByIdAndUpdate(
                   user._id,
                   {
@@ -115,7 +122,10 @@ module.exports.signup = (req, res) => {
                 )
                   .exec()
                   .then(result => {
-                    res.status(200).json(result);
+                    return res.status(200).json({
+                      code: 1,
+                      message: "با موفقیت ثبت نام کردید"
+                    });
                   })
                   .catch(err => {
                     handler(err, res, 500);
@@ -132,21 +142,20 @@ module.exports.signup = (req, res) => {
                 )
                   .exec()
                   .then(result => {
-                    res.status(200).json(result);
+                    return res.status(200).json({
+                      code: 1,
+                      message: "با موفقیت ثبت نام کردید"
+                    });
                   })
                   .catch(err => {
                     handler(err, res, 500);
                   });
               }
-              // return res.status(200).json({
-              //   message: "sign up compelete",
-              //   user
-              // });
             })
             .catch(err => {
-              return res.status(500).json({
-                err,
-                message: "what"
+              return res.status(200).json({
+                code: 0,
+                message: "مشکلی پیش آمد، دوباره تلاش کنید"
               });
             });
         }
@@ -167,15 +176,16 @@ module.exports.signin = (req, res) => {
     .exec()
     .then(user => {
       if (!user) {
-        return res.status(401).json({
-          message: "nationalcode not exist"
+        return res.status(200).json({
+          code: 0,
+          message: "کاربری با این کد ملی یافت نشد"
         });
       } else {
         bcrypt.compare(req.body.password, user.password, (err, same) => {
           if (err || !same) {
-            return res.status(500).json({
-              message: "cannot compare",
-              same
+            return res.status(200).json({
+              code: 0,
+              message: "رمز اشتباه است"
             });
           } else if (same) {
             const jwtpayload = {
@@ -199,7 +209,7 @@ module.exports.signin = (req, res) => {
                   throw new Error("error in jwt");
                 } else {
                   return res.status(200).json({
-                    done: true,
+                    code: 1,
                     jwt: encoded
                   });
                 }
@@ -352,7 +362,7 @@ module.exports.deleteAllUsers = (req, res) => {
 };
 module.exports.showAllTeachers = (req, res) => {
   User.find({ role: "teacher" })
-    .select("-reg_lessons")
+    .select("name email phoneNumber university name date confirmed")
     .populate("university")
     .sort("-date")
     .exec()
@@ -365,7 +375,7 @@ module.exports.showAllTeachers = (req, res) => {
 };
 module.exports.showAllStudents = (req, res) => {
   User.find({ role: "student" })
-    .select("-reg_lessons")
+    .select("name email phoneNumber university name date confirmed")
     .populate("university")
     .exec()
     .then(result => {
@@ -449,6 +459,7 @@ module.exports.showAUser = (req, res) => {
   User.findById(req.user.userId)
     .select("-reg_lessons")
     .select("-password")
+    .populate("university")
     .exec()
     .then(result => {
       res.status(200).json(result);
@@ -536,7 +547,7 @@ module.exports.showUserCertificates = (req, res) => {
         courseTitle: "$reg_lessons.courseTitle",
         lessonTitle: "$reg_lessons.lessonTitle",
         finalScore: "$reg_lessons.finalScore",
-        date: "$date"
+        date: "$reg_lessons.date"
       }
     }
   ])
@@ -707,7 +718,7 @@ module.exports.setCertificate = (req, res) => {
 };
 module.exports.showUniTeachers = (req, res) => {
   User.find({ role: "teacher", university: mong(req.body.university) })
-    .select("-reg_lessons")
+    .select("name email")
     .populate("university")
     .sort("-date")
     .exec()

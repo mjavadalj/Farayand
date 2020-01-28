@@ -15,7 +15,7 @@
         type="text"
         id="myInput"
         class="form-control"
-        placeholder="جستجو"
+        placeholder="کد ملی دانشجو یا استاد مورد نظر را وارد کنید"
         aria-label="Search"
         aria-describedby="basic-addon1"
         v-model="nationalcode"

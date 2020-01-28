@@ -6,31 +6,31 @@
     <b-button style="margin:10px;" @click="makeCanvas" type="reset" size="sm" variant="default">
       <span class="lalezar">دانلود</span>
     </b-button>
-    <div class="print" style="height:500px;width:800px; margin:0 auto;" id="print">
-      <div style="margin-top:-40px;">
-        <h1 class="xtx-b text-center">بسمه تعالی</h1>
+    <div class="print" style="height:1600px;width:1221px; margin:0 auto;" id="print">
+      <div style="padding-top:50px;">
+        <h1 style="font-size:6em;color:black !important;" class="xtx-b text-center">بسمه تعالی</h1>
       </div>
-      <div style="margin-top:60px;">
-        <p class="text-center just-text" style="font-family:iranyekan-fn-lgt;font-size:1.3em;">
-          گواهی می شود {{getRole(user.role)}}
-        </p>
-        <p class="text-center just-text" style="font-family:iranyekan-fn-lgt;font-size:1.3em;">
+      <div class="just-text" style="width:800px;margin:0 auto;margin-top:300px;">
+        <p
+          class="just-text"
+          style="font-family:iranyekan-fn;font-size:2.7em; color:black !important;"
+        >گواهی می شود </p>
+        <p
+          class="just-text"
+          style="font-family:iranyekan-fn;font-size:2.7em; color:black !important;line-height: 2;"
+        >{{getRole(user.role)}}
           {{getGender(user.gender)}}
           {{user.name}}
           با کد ملی
           {{user.nationalcode}}
-        </p>
-        <p class="text-center just-text" style="font-family:iranyekan-fn-lgt;font-size:1.3em;">
           درس
-          {{reg_lesson.lessonTitle}} را از دوره
+          {{reg_lesson.lessonTitle}} را  از دوره
           {{reg_lesson.courseTitle}}
           در
           {{reg_lesson.reg_sessions.length}} جلسه
-        </p>
-        <p class="text-center just-text" style="font-family:iranyekan-fn-lgt;font-size:1.3em;">
           با نمره
           {{reg_lesson.finalScore}}
-          با موفقیت پشت سر گذاشت
+          با موفقیت پشت سر گذاشته است
         </p>
       </div>
       <br />
@@ -39,12 +39,13 @@
       <br />
       <br />
 
-      
-      <div style="margin:5px;">
-        <img src="../assets/image/basij-logo.png" width="100" alt />
-        <h6 style="font-family:iranyekan-fn-lgt;" class="text-center just-text">{{ Date.now() | moment("jYYYY/jM/jD")}}</h6>
-        <h6 class="text-center just-text">www.basijgofteman.ir</h6>
-        
+      <div style="margin-top:200px;margin-left:50px;">
+        <img src="../assets/image/basij-logo.png" width="300" alt />
+        <p
+          style="font-family:iranyekan-fn-lgt;font-size:2.7em;"
+          class="text-center just-text"
+        >{{ Date.now() | moment("jYYYY/jM/jD")}}</p>
+        <p style="font-size:2.7em;" class="text-center just-text">www.basijgofteman.ir</p>
       </div>
     </div>
 
@@ -58,7 +59,8 @@ import { global } from "@/main.js";
 export default {
   data() {
     return {
-      jwt:null,headers:null,
+      jwt: null,
+      headers: null,
       output: null,
       ok: false,
       reg_lesson: null,
@@ -89,12 +91,11 @@ export default {
     back() {
       this.$router.push("/");
     },
-    getRole(role){
-      if (role=="student"){
-        return 'دانشجوی گرامی'
-      }
-      else if (role=='teacher'){
-        return 'استاد گرامی'
+    getRole(role) {
+      if (role == "student") {
+        return "دانشجوی گرامی";
+      } else if (role == "teacher") {
+        return "استاد گرامی";
       }
     }
   },
@@ -142,5 +143,14 @@ export default {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%); */
+}
+#print {
+  background-image: url("../assets/image/cert2.png");
+  /* background-repeat: no-repeat;
+  background-size: contain; */
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  background-size: cover;
+  -o-background-size: cover;
 }
 </style>

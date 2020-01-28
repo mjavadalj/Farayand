@@ -12,7 +12,7 @@
     </div>
     <div style="margin-bottom:5px;" class="text-center">
       <button
-      v-if="(role == 'teacher' && selectedUniversities.length != 0)||(role == 'student' && university != null)"
+        v-if="(role == 'teacher' && selectedUniversities.length != 0)||(role == 'student' && university != null)"
         id="teacher"
         style="margin:2px;font-family:lalezar"
         class="btn btn-outline-secondary"
@@ -21,6 +21,7 @@
       >ذخیره تغییرات</button>
     </div>
     <h6 style="font-family:samim" class="text-center just-text">{{describe(role)}}</h6>
+    <h6 id="current-uni" style="font-family:samim" class="text-center just-text">{{unis(role)}}</h6>
     <div id="modaaal">
       <b-modal id="my-modal" ref="my-modal" no-close-on-backdrop scrollable hide-footer title>
         <div v-if="role=='teacher'" class="container text-center">
@@ -93,6 +94,7 @@
 export default {
   data() {
     return {
+      userData: null,
       user: null,
       role: null,
       jwt: null,
@@ -215,19 +217,37 @@ export default {
                 this.headers
               )
               .then(result => {
-                console.log(result);
+                // console.log(result);
+                this.$swal.fire({
+                  type: "success",
+                  title: "موفق",
+                  text: "اطلاعات شما با موفقیت ویرایش شد"
+                });
               })
-              .catch(loginError => {
-                  
-              });
+              .catch(loginError => {});
           }
         });
     },
     describe(role) {
       if (role == "teacher") {
-        return "دانشگاه های انتخابی جایگزین دانشگاه های قبلی می شوند.";
+        return "دانشگاه های انتخابی جایگزین دانشگاه های فعلی می شوند.";
       } else if (role == "student") {
-        return "دانشگاه انتخابی جایگزین دانشگاه  قبلی می شود.";
+        return "دانشگاه انتخابی جایگزین دانشگاه  فعلی می شود.";
+      }
+    },
+    unis(role) {
+      if (role == "teacher") {
+        var str = "دانشگاه های فعلی شما: ";
+        for (let index = 0; index < this.userData.university.length; index++) {
+          if (index != this.userData.university.length - 1) {
+            str += `${this.userData.university[index].name} و `;
+          } else {
+            str += `${this.userData.university[index].name}`;
+          }
+        }
+        return str;
+      } else if (role == "student") {
+        return `دانشگاه فعلی شما: ${this.userData.university[0].name}`;
       }
     }
   },
@@ -239,6 +259,21 @@ export default {
     };
     this.user = JSON.parse(this.$cookie.get("authorization"));
     this.role = this.user.role;
+    this.axios
+      .post(
+        `http://localhost:3000/api/user/show`,
+        {
+          userId: this.user.userId
+        },
+        this.headers
+      )
+      .then(res => {
+        this.userData = res.data;
+        console.log(this.userData);
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }
 };
 </script>

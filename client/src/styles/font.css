@@ -62,6 +62,12 @@
   font-family: "iranyekan-fn";
   src: url("../fonts/IRANYekanMediumFaNum.ttf");
 }
+.iranyekan-fn {
+  font-family: iranyekan-fn !important;
+}
+.iranyekan-fn-lgt {
+  font-family: iranyekan-fn-lgt !important;
+}
 .samim {
   font-family: samim;
 }
@@ -130,4 +136,7 @@ tbody{
 #numeric-td{
   font-family: iranyekan-fn-lgt !important;
   font-size: 1.1em;
+}
+.swal2-popup {
+  font-family: iranyekan-fn-lgt !important;
 }

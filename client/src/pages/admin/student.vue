@@ -29,33 +29,17 @@
       <table id="dtBasicExample" align="center" class="table">
         <thead>
           <tr>
-            <th class>عملیات</th>
             <th class>وضعیت دانشجو</th>
             <th class>ایمیل</th>
             <th class>شماره همراه</th>
             <th class>تاریخ عضویت</th>
             <th class>دانشگاه</th>
-            <th class>کد ملی</th>
             <th class>نام</th>
             <th class>#</th>
           </tr>
         </thead>
         <tbody id="myTable">
           <tr v-for="(user,index) in users" :key="user._id">
-            <td>
-              <i
-                v-if="user.confirmed"
-                @click="confirmUser(user)"
-                class="fa fa-check action-icon"
-                style="font-size: 1.5em;"
-              />
-              <i
-                v-else
-                @click="confirmUser(user)"
-                class="fa fa-ban action-icon"
-                style="font-size: 1.5em;"
-              />
-            </td>
             <td>
               <button
                 v-if="!user.confirmed"
@@ -74,7 +58,6 @@
             <td id="numeric-td">{{user.phoneNumber}}</td>
             <td id="numeric-td">{{ new Date(user.date) | moment("jYYYY/jM/jD | HH:mm ")}}</td>
             <td>{{retUni(user.university)}}</td>
-            <td id="numeric-td">{{user.nationalcode}}</td>
             <td>{{user.name}}</td>
             <td id="numeric-td">{{index+1}}</td>
           </tr>

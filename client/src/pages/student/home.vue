@@ -17,7 +17,10 @@
         v-on:keyup="search"
       />
     </div>
+    <h6 style="font-family:samim" class="text-center just-text"></h6>
     <h6 style="font-family:samim" class="text-center just-text">
+      لیست زیر بر اساس دانشگاه شما تکمیل شده است. می توانید از بخش
+      <span style="color:#d33;" class="curs" @click="push()">ویرایش اطلاعات</span>، دانشگاه خود را تغییر دهید.
     </h6>
     <div
       id="table_data"
@@ -27,12 +30,14 @@
       <table id="dtBasicExample" align="center" class="table">
         <thead>
           <tr>
-            <th class>نام</th>
+            <th class>ایمیل</th>
+            <th class>نام استاد</th>
             <th class>#</th>
           </tr>
         </thead>
         <tbody id="myTable">
           <tr v-for="(teacher,index) in teachers" :key="teacher._id" @click="showCourses(teacher)">
+            <td>{{teacher.email}}</td>
             <td>{{teacher.name}}</td>
             <td id="numeric-td">{{index+1}}</td>
           </tr>
@@ -54,7 +59,7 @@
           <table id="dtBasicExample" align="center" class="table">
             <thead>
               <tr>
-                <th class>نام استاد</th>
+                <th class>نام</th>
                 <th class>#</th>
               </tr>
             </thead>
@@ -283,6 +288,9 @@ function initializationMessengerCode() {
         );
       });
       console.log(value);
+    },
+    push() {
+      return this.$router.push("/edit");
     }
   },
   mounted() {},
@@ -317,7 +325,7 @@ function initializationMessengerCode() {
         .post(
           `http://localhost:3000/api/user/student/showTeachers`,
           {
-            university: this.userData.university[0]
+            university: this.userData.university[0]._id
           },
           this.headers
         )

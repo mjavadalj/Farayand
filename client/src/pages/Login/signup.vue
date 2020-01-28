@@ -244,34 +244,44 @@ export default {
         email,
         gender,
         role,
-        uniId:uniId
-      };      
+        uniId: uniId
+      };
       this.axios
         .post("http://localhost:3000/api/user/signup", body)
         .then(result => {
-          this.axios
-            .post("http://localhost:3000/api/user/signin", {
-              nationalcode,
-              password
-            })
-            .then(loginResponse => {
-              const jwt = loginResponse.data.jwt;
-              const decoded = this.$jwt.decode(jwt);
-              this.$cookie.set("authorization", JSON.stringify(decoded));
-              this.$cookie.set("jwt", jwt);
-              switch (decoded.role) {
-                case "student":
-                  this.$router.push("/");
-                  break;
-                case "teacher":
-                  this.$router.push("/teacher");
-                  break;
-                case "admin":
-                  this.$router.push("/app/course");
-                  break;
-              }
-            })
-            .catch(loginError => {});
+          if (result.data.code == 1) {
+            this.axios
+              .post("http://localhost:3000/api/user/signin", {
+                nationalcode,
+                password
+              })
+              .then(loginResponse => {
+                if (loginResponse.data.code == 1) {
+                  const jwt = loginResponse.data.jwt;
+                  const decoded = this.$jwt.decode(jwt);
+                  this.$cookie.set("authorization", JSON.stringify(decoded));
+                  this.$cookie.set("jwt", jwt);
+
+                  switch (decoded.role) {
+                    case "student":
+                      this.$router.push("/");
+                      break;
+                    case "teacher":
+                      this.$router.push("/teacher");
+                      break;
+                    case "admin":
+                      this.$router.push("/app/course");
+                      break;
+                  }
+                } else {
+                  alert(loginResponse.data.message);
+                }
+              })
+              .catch(loginError => {});
+          }
+          else{
+            alert(result.data.message)
+          }
         })
         .catch(err => {
           console.log(err.message);

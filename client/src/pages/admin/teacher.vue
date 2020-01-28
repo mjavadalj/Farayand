@@ -33,34 +33,18 @@
       <table id="dtBasicExample" align="center" class="table">
         <thead>
           <tr>
-            <th class>عملیات</th>
             <!-- <th class>id</th> -->
             <th class>وضعیت استاد</th>
             <th class>ایمیل</th>
             <th class>شماره همراه</th>
             <th class>تاریخ عضویت</th>
             <th class>دانشگاه</th>
-            <th class>کد ملی</th>
             <th class>نام</th>
             <th class>#</th>
           </tr>
         </thead>
         <tbody id="myTable">
           <tr v-for="(teacher,index) in teachers" :key="teacher._id">
-            <td>
-              <i
-                v-if="teacher.confirmed"
-                @click="confirmUser(teacher)"
-                class="fa fa-check action-icon"
-                style="font-size: 1.5em;"
-              />
-              <i
-                v-else
-                @click="confirmUser(teacher)"
-                class="fa fa-ban action-icon"
-                style="font-size: 1.5em;"
-              />
-            </td>
             <!-- <td>{{teacher._id}}</td> -->
             <td>
               <button
@@ -89,7 +73,6 @@
                 </p>
               </div>
             </td>
-            <td id="numeric-td">{{teacher.nationalcode}}</td>
             <td>{{teacher.name}}</td>
             <td id="numeric-td">{{index+1}}</td>
           </tr>
