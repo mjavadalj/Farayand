@@ -51,7 +51,7 @@ export default {
 
 <style >
 .pic {
-  background: url("../assets/image/form1.jpg") no-repeat center center fixed;
+  /* background: url("../assets/image/form1.jpg") no-repeat center center fixed; */
   /* -webkit-background-size: cover;
   -moz-background-size: cover;
   background-size: cover;

@@ -4,24 +4,7 @@ import TeacherLayout from "@/components/Layout/teacherLayout";
 import UserLayout from "@/components/Layout/userLayout";
 import Layout from "@/components/Layout/Layout";
 import ErrorPage from "@/pages/Error/Error";
-// Core
-import TypographyPage from "@/pages/Typography/Typography";
 
-// Tables
-import TablesBasicPage from "@/pages/Tables/Basic";
-
-// Maps
-import GoogleMapPage from "@/pages/Maps/Google";
-
-// Main
-import AnalyticsPage from "@/pages/Dashboard/Dashboard";
-
-// Charts
-import ChartsPage from "@/pages/Charts/Charts";
-
-// Ui
-import IconsPage from "@/pages/Icons/Icons";
-import NotificationsPage from "@/pages/Notifications/Notifications";
 //teacher
 import Teacher from "@/pages/admin/teacher";
 //certificate
@@ -115,45 +98,11 @@ export default new Router({
           name: "course",
           component: Course
         },
-        {
-          path: "dashboard",
-          name: "AnalyticsPage",
-          component: AnalyticsPage
-        },
-        {
-          path: "typography",
-          name: "TypographyPage",
-          component: TypographyPage
-        },
+
         {
           path: "teacher",
           name: "teacher",
           component: Teacher
-        },
-        {
-          path: "components/icons",
-          name: "IconsPage",
-          component: IconsPage
-        },
-        {
-          path: "notifications",
-          name: "NotificationsPage",
-          component: NotificationsPage
-        },
-        {
-          path: "components/charts",
-          name: "ChartsPage",
-          component: ChartsPage
-        },
-        {
-          path: "tables",
-          name: "TablesBasicPage",
-          component: TablesBasicPage
-        },
-        {
-          path: "components/maps",
-          name: "GoogleMapPage",
-          component: GoogleMapPage
         },
         {
           path: "student",
