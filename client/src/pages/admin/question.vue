@@ -7,7 +7,7 @@
       <b-breadcrumb-item active>جلسه {{session.title}}</b-breadcrumb-item>
       <b-breadcrumb-item active>سوالات</b-breadcrumb-item>
     </b-breadcrumb>
-    <h1 class="display-3 text-right">{{session.title}}</h1>
+    <!-- <h3 class="display-3 text-right">{{session.title}}</h3> -->
     <div
       v-for="(question,index) in questions"
       :key="question._id"
@@ -427,7 +427,6 @@ export default {
     },
     upload() {
       var formatData = new FormData();
-      //TODO: key value
       formatData.append("sessionId", this.session._id);
       formatData.append("lessonId", this.lesson._id);
       formatData.append("courseId", this.course._id);

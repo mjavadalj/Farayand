@@ -2,7 +2,7 @@
   <div>
     <b-breadcrumb>
       <b-breadcrumb-item>راهنما</b-breadcrumb-item>
-      <b-breadcrumb-item active>درس های ثبت نام شده</b-breadcrumb-item>
+      <b-breadcrumb-item active>بررسی گواهی های دانشجویان</b-breadcrumb-item>
     </b-breadcrumb>
     <div class="input-group mb-3">
       <div class="input-group-prepend">

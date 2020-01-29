@@ -4,6 +4,10 @@
       <b-breadcrumb-item>راهنما</b-breadcrumb-item>
       <b-breadcrumb-item active>دوره ها</b-breadcrumb-item>
     </b-breadcrumb>
+    <h6
+      style="font-family:samim"
+      class="text-center just-text"
+    >دانشجویان شما دوره هایی را مشاهده می کنند که شما در آن ثبت نام کرده باشید</h6>
     <div class="input-group mb-3">
       <div style="cursor: pointer;" class="input-group-prepend" @click="searchCourses">
         <span class="input-group-text" id="basic-addon1">
@@ -207,7 +211,9 @@ function initializationMessengerCode() {
       this.axios
         .post(
           `http://localhost:3000/api/course/showall?skip=${this.page *
-            this.maxInPage}&limit=${this.maxInPage}&r=!a&exception=teachers`,{},this.headers
+            this.maxInPage}&limit=${this.maxInPage}&r=!a&exception=teachers`,
+          {},
+          this.headers
         )
         .then(res => {
           this.courses = res.data;
@@ -224,7 +230,9 @@ function initializationMessengerCode() {
       this.axios
         .post(
           `http://localhost:3000/api/course/showall?skip=${this.page *
-            this.maxInPage}&limit=${this.maxInPage}&r=!a&exception=teachers`,{},this.headers
+            this.maxInPage}&limit=${this.maxInPage}&r=!a&exception=teachers`,
+          {},
+          this.headers
         )
         .then(res => {
           this.courses = res.data;
@@ -238,8 +246,9 @@ function initializationMessengerCode() {
       this.axios
         .post(
           `http://localhost:3000/api/course/showall?skip=${this.page *
-            this.maxInPage}&limit=${this.maxInPage}&r=!a&exception=teachers`,{}
-            ,this.headers
+            this.maxInPage}&limit=${this.maxInPage}&r=!a&exception=teachers`,
+          {},
+          this.headers
         )
         .then(res => {
           this.courses = res.data;
@@ -259,10 +268,14 @@ function initializationMessengerCode() {
     },
     courseRegister(course, index) {
       this.axios
-        .patch(`http://localhost:3000/api/course/user/add`, {
-          courseId: course._id,
-          teacherId: this.user.userId
-        },this.headers)
+        .patch(
+          `http://localhost:3000/api/course/user/add`,
+          {
+            courseId: course._id,
+            teacherId: this.user.userId
+          },
+          this.headers
+        )
         .then(res => {
           this.flag = true;
 
@@ -283,7 +296,8 @@ function initializationMessengerCode() {
       }
       this.axios
         .get(
-          `http://localhost:3000/api/course/find?title=${this.searchInput}&r=!a`,this.headers
+          `http://localhost:3000/api/course/find?title=${this.searchInput}&r=!a`,
+          this.headers
         )
         .then(res => {
           this.searchMode = true;
@@ -313,9 +327,8 @@ function initializationMessengerCode() {
     };
     for (var i = 1; i < 1000; i++) window.clearInterval(i);
     this.user = JSON.parse(this.$cookie.get("authorization"));
-    //TODO: if not cookie redirect login
     this.axios
-      .get(`http://localhost:3000/api/course/count?r=!a`,this.headers)
+      .get(`http://localhost:3000/api/course/count?r=!a`, this.headers)
       .then(res => {
         this.courseCount = res.data;
       })
@@ -325,7 +338,9 @@ function initializationMessengerCode() {
     this.axios
       .post(
         `http://localhost:3000/api/course/showall?skip=${this.page *
-          this.maxInPage}&limit=${this.maxInPage}&r=!a&exception=teachers`,{},this.headers
+          this.maxInPage}&limit=${this.maxInPage}&r=!a&exception=teachers`,
+        {},
+        this.headers
       )
       .then(res => {
         // console.log("res.data");

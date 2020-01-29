@@ -137,7 +137,7 @@ function initializationMessengerCode() {
       Message: FlatMessage
     };
   }.call(window));
-} /* eslint-disable */ //#FAFBFF //TODO: filter uni select same
+} /* eslint-disable */ //#FAFBFF
 /* eslint-enable */ export default {
   data() {
     return {

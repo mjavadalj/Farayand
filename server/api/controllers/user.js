@@ -273,7 +273,6 @@ module.exports.lessonRegister = (req, res) => {
       handler(err, res, 500);
     });
 };
-//TODO: score=0
 module.exports.sessionRegister = (req, res) => {
   find = {
     $and: [
@@ -294,7 +293,7 @@ module.exports.sessionRegister = (req, res) => {
           passed: req.body.passed,
           anotherChanceDate: req.body.anotherChanceDate,
           tryCount: req.body.tryCount,
-          score: req.body.score
+          score: 0
         }
       }
     },
@@ -611,7 +610,6 @@ module.exports.teacherCheckCertificate = (req, res) => {
     });
 };
 module.exports.addTeacherUni = (req, res) => {
-  //TODO: check role, only teachers
   User.findByIdAndUpdate(
     req.user.userId,
     {

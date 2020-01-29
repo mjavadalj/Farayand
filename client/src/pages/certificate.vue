@@ -130,7 +130,7 @@ export default {
   font-family: iranyekan-fn-lgt !important;
 }
 .idk {
-  background: url("../assets/image/3.png");
+  /* background: url("../assets/image/3.png"); */
   /* -webkit-background-size: cover;
   -moz-background-size: cover;
   background-size: cover;

@@ -2,7 +2,7 @@
   <div>
     <b-breadcrumb>
       <b-breadcrumb-item>صفحه مدیریت</b-breadcrumb-item>
-      <b-breadcrumb-item active>دوره ها</b-breadcrumb-item>
+      <b-breadcrumb-item active>دوره های انتخاب شده</b-breadcrumb-item>
     </b-breadcrumb>
     <div class="input-group mb-3">
       <div class="input-group-prepend">
@@ -194,7 +194,6 @@ function initializationMessengerCode() {
     };
     for (var i = 1; i < 1000; i++) window.clearInterval(i);
     this.user = JSON.parse(this.$cookie.get("authorization"));
-    //TODO: if not cookie redirect login
     this.axios
       .post(`http://localhost:3000/api/user/course/showall`, {
         user: this.user.userId
@@ -207,17 +206,8 @@ function initializationMessengerCode() {
       .catch(err => {
         console.log(err);
       });
-    //TODO: delete below
-    this.axios
-      .post(`http://localhost:3000/api/user/show`, {
-        userId: this.adminUser.userId
-      },this.headers)
-      .then(res => {
-        this.teacher = res.data;
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    
+    
   }
 };
 </script>

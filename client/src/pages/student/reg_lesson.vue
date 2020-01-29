@@ -190,7 +190,6 @@ export default {
     };
     console.log(this.user);
 
-    //TODO: if not cookie redirect login
     this.axios
       .post(
         `http://localhost:3000/api/user/reg/show`,

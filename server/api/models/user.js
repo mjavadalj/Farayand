@@ -41,5 +41,3 @@ const userSchema = mongoose.Schema({
 });
 
 module.exports = mongoose.model("User", userSchema);
-//default null for testing
-//TODO: add sessionLength to reg_lesson

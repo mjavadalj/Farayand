@@ -6,7 +6,6 @@ const moment = require("moment-jalaali");
 const courseController = require("../controllers/course");
 const passport = require("passport");
 const auth = require("../middlewares/authintication");
-//TODO: LEAN()
 /* COURSE*/
 
 // passport.authenticate("jwt", {
@@ -24,7 +23,6 @@ router.post(
 );
 
 //Show all embed courses
-//TODO: auth
 router.post(
   "/showall",
   passport.authenticate("jwt", {
@@ -34,7 +32,6 @@ router.post(
 );
 
 //Show an embed course
-//TODO: checkmore
 router.get(
   "/show",
   passport.authenticate("jwt", {

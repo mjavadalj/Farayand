@@ -3,7 +3,6 @@ const router = express.Router();
 const geoController = require('../controllers/geo');
 const passport = require("passport");
 const auth = require("../middlewares/authintication");
-//TODO: delete???
 //show all
 router.get('/showall', geoController.showAll)
 //show all provinces

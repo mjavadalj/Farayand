@@ -6,7 +6,7 @@
       <b-breadcrumb-item active>درس {{lesson.title}}</b-breadcrumb-item>
       <b-breadcrumb-item active>جلسه ها</b-breadcrumb-item>
     </b-breadcrumb>
-    <h1 class="display-3 text-right">{{lesson.title}}</h1>
+    <!-- <h3 class="display-3 text-right">{{lesson.title}}</h3> -->
     <div class="input-group mb-3">
       <div class="input-group-prepend">
         <span class="input-group-text" id="basic-addon1">
@@ -35,7 +35,7 @@
             <th class>حداقل نمره قبولی</th>
             <th class>تعداد سوال</th>
             <!-- <th class>سوال دانشجو</th> -->
-            <th class>عنوان</th>
+            <th class>عنوان جلسه</th>
             <th class>#</th>
           </tr>
         </thead>

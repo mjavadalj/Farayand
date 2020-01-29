@@ -2,7 +2,7 @@
   <div id="users">
     <b-breadcrumb>
       <b-breadcrumb-item>راهنما</b-breadcrumb-item>
-      <b-breadcrumb-item active>دانشجویان</b-breadcrumb-item>
+      <b-breadcrumb-item active>اطلاعات دانشجویان</b-breadcrumb-item>
     </b-breadcrumb>
     <div class="input-group mb-3">
       <div class="input-group-prepend">
@@ -162,7 +162,6 @@ const { Messenger } = window; /* eslint-disable */
   },
   mounted() {
   },
-  //TODO: delete add edit delete methods
   methods: {
     async confirmUser(user) {
       var flag = false;

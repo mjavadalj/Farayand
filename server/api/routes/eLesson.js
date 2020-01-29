@@ -35,7 +35,6 @@ const upload = multer({
 //show all lessons
 router.post("/showall", lessonController.showAllLessons);
 //show a lesson
-//TODO: check more
 router.get(
   "/show",
   passport.authenticate("jwt", {

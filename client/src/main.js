@@ -59,5 +59,3 @@ export const global = new Vue({
     user:null
   }
 });
-
-//TODO: swal2 css edit

@@ -1,15 +1,15 @@
-@font-face {
+/* @font-face {
   font-family: "iransans-bold";
   src: url("../fonts/IRANSans-Bold-web.ttf");
-}
-@font-face {
+} */
+/* @font-face {
   font-family: "yekan";
   src: url("../fonts/Yekan.ttf");
 }
 @font-face {
   font-family: "iransans-light";
   src: url("../fonts/IRANSans-Light-web.ttf");
-}
+} */
 @font-face {
   font-family: "iranyekan";
   src: url("../fonts/iranyekan.woff");
@@ -18,26 +18,26 @@
   font-family: "iranyekan-bold";
   src: url("../fonts/iranyekan_bold.woff");
 }
-@font-face {
+/* @font-face {
   font-family: "gilory";
   src: url("../fonts/Gilroylight.woff");
-}
-@font-face {
+} */
+/* @font-face {
   font-family: "gilory-b";
   src: url("../fonts/Gilroy-Bold.woff");
-}
+} */
 @font-face {
   font-family: "lelezar";
   src: url("../fonts/Lalezar-Regular.ttf");
 }
-@font-face {
+/* @font-face {
   font-family: "vazir";
   src: url("../fonts/Vazir.woff");
-}
-@font-face {
+} */
+/* @font-face {
   font-family: "byekan";
   src: url("../fonts/BYekan.woff");
-}
+} */
 @font-face {
   font-family: "samim";
   src: url("../fonts/Samim.woff2");
@@ -80,31 +80,31 @@
 .samimb {
   font-family: samimb;
 }
-.iransans {
+/* .iransans {
   font-family: iransans;
-}
-.iransans-b {
+} */
+/* .iransans-b {
   font-family: iransans-bold;
   font-size: 10pt;
-}
+} */
 .iranyekan {
   font-family: iranyekan;
 }
 .iranyekan-bold {
   font-family: iranyekan-bold;
 }
-.yekan {
+/* .yekan {
   font-family: yekan;
   font-size: 1.25em;
-}
-.gilory {
+} */
+/* .gilory {
   font-family: gilory;
   font-size: 1.25em;
-}
-.gilory-b {
+} */
+/* .gilory-b {
   font-family: gilory-b;
   font-size: 1.25em;
-}
+} */
 .lalezar {
   font-family: lelezar;
 }
@@ -138,5 +138,9 @@ tbody{
   font-size: 1.1em;
 }
 .swal2-popup {
+  font-family: iranyekan-fn-lgt !important;
+  direction: rtl;
+}
+input{
   font-family: iranyekan-fn-lgt !important;
 }

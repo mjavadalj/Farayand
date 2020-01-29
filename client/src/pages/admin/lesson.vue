@@ -5,7 +5,8 @@
       <b-breadcrumb-item active>دوره {{course.title}}</b-breadcrumb-item>
       <b-breadcrumb-item active>درس ها</b-breadcrumb-item>
     </b-breadcrumb>
-    <h1 class="display-3 text-right">{{course.title}}</h1>
+    <!-- <h2 class="display-3 text-right">{{course.title}}</h2> -->
+    <!-- <h4 style="font-family:samim" class="text-center just-text">{{course.title}}</h4> -->
     <div class="input-group mb-3">
       <div class="input-group-prepend">
         <span class="input-group-text" id="basic-addon1">
@@ -30,7 +31,7 @@
             <th class>عملیات</th>
             <th class>تاریخ</th>
             <th class>تعداد جلسه</th>
-            <th class>عنوان</th>
+            <th class>عنوان درس</th>
             <th class>#</th>
           </tr>
         </thead>
@@ -107,7 +108,7 @@
                 </td>
                 <td>{{file.type}}</td>
                 <td>
-                  <a :href="file.name+'#page=3'" target="_blank">{{file.name.split('.')[1]}}</a>
+                  <a :href="file.name" target="_blank">{{file.name.split('.')[1]}}</a>
                 </td>
                 <td>{{index+1}}</td>
               </tr>
@@ -402,7 +403,6 @@ export default {
         return;
       }
       var formatData = new FormData();
-      //TODO: key value
       formatData.append("lessonId", this.selectedLesson._id);
       formatData.append("courseId", this.courseId);
       formatData.append("file", this.uploadedFile);
@@ -451,7 +451,6 @@ export default {
     };
   }
 };
-//TODO: router push role
 </script>
 <style>
 tr:hover {

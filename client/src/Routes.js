@@ -64,7 +64,7 @@ export default new Router({
       component: Layout,
       children: [
         {
-          path: "checkConfirmed",
+          path: "confirmed",
           name: "checkConfirmed",
           component: checkConfirmed
         },

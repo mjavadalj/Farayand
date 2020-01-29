@@ -63,7 +63,7 @@
             <th class>تاریخ</th>
             <th class>تعداد درس</th>
             <th class>استاد</th>
-            <th class>عنوان</th>
+            <th class>عنوان دوره</th>
             <th class>#</th>
           </tr>
         </thead>
@@ -460,7 +460,6 @@ function initializationMessengerCode() {
       if (formValues == undefined || formValues.ok == false) {
         return;
       }
-      // TODO: university ezafe she
       this.axios
         .patch(
           `http://localhost:3000/api/course/edit`,

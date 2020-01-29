@@ -46,7 +46,7 @@
       />
       <NavLink
         header="لیست بسیج اساتید"
-        link="/app/checkConfirmed"
+        link="/app/confirmed"
         iconName="fa fa-list"
         index="checkConfirmed"
         isHeader

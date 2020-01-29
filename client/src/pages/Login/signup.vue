@@ -201,7 +201,6 @@ export default {
     };
   },
   methods: {
-    //TODO: query uni
     signup() {
       // console.log(this.selectedUniversities);
       // console.log(this.university);
@@ -222,7 +221,6 @@ export default {
       } else {
         return;
       }
-      //TODO: add university
       const nationalcode = this.$refs.nationalcode.value;
       const password = this.$refs.password.value;
       const name = this.$refs.name.value;

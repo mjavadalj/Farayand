@@ -4,6 +4,7 @@
       <b-breadcrumb-item>راهنما</b-breadcrumb-item>
       <b-breadcrumb-item active>لیست بسیج اساتید</b-breadcrumb-item>
     </b-breadcrumb>
+    <h6 style="font-family:samim" class="text-center just-text">تنها اساتیدی که کد ملیشان در این لیست باشد قادر به ثبت نام در سایت می باشند</h6>
     <div class="input-group mb-3">
       <div class="input-group-prepend">
         <span class="input-group-text" id="basic-addon1">

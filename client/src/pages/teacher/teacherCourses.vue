@@ -2,7 +2,7 @@
   <div>
     <b-breadcrumb>
       <b-breadcrumb-item>راهنما</b-breadcrumb-item>
-      <b-breadcrumb-item active>انتخاب درس</b-breadcrumb-item>
+      <b-breadcrumb-item active>انتخاب درس جهت آزمون استاد</b-breadcrumb-item>
     </b-breadcrumb>
     <div class="input-group mb-3">
       <div style="cursor: pointer;" class="input-group-prepend" @click="searchCourses">
@@ -373,7 +373,6 @@ function initializationMessengerCode() {
     };
     for (var i = 1; i < 1000; i++) window.clearInterval(i);
     this.user = JSON.parse(this.$cookie.get("authorization"));
-    //TODO: if not cookie redirect login// this.initCharts();
     this.axios
       .get(`http://localhost:3000/api/course/count?r=!a`,this.headers)
       .then(res => {

@@ -71,7 +71,7 @@ router.get(
 );
 //edit user
 //TODO: important
-router.patch("/edit", userController.editUser);
+// router.patch("/edit", userController.editUser);
 //delete a user
 router.post(
   "/delete",

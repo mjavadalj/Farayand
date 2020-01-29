@@ -297,9 +297,9 @@ function initializationMessengerCode() {
       // reg_session.passed
       if (reg_session.passed) {
         return alert("شما در این آزمون پذیرفته شده اید");
-      } else if (now > chance) {
+      } else if (now < chance) {
         return alert("باید تا تاریخ ذکر شده منتظر بمانید");
-      } else if (true) {
+      } else {
         this.showQuestions(
           reg_session,
           this.deletedSessions[reg_session.sessionId]
@@ -307,6 +307,9 @@ function initializationMessengerCode() {
       }
     },
     addToRegSession(e, session, index) {
+      if (e.target.nodeName == "I") {
+        return;
+      }
       var passedAll = this.reg_sessions.find(reg_session => {
         return reg_session.passed == false;
       });
@@ -321,9 +324,7 @@ function initializationMessengerCode() {
       //   );
       // });
 
-      if (e.target.nodeName == "I") {
-        return;
-      }
+      
       // if (find) {
       //   return alert("ابتدا تمامی فایل های آموزشی را دریافت کنید و به مدت 10 دقیقه منتظر بمانید");
       // }
@@ -334,40 +335,23 @@ function initializationMessengerCode() {
       };
       var date = new Date();
       var newDate = date.addDays(parseInt(session.secondChance));
-      //TODO: delete below
       if (session.questionLength == 0) {
-        this.axios
-          .patch(`http://localhost:3000/api/user/session/register`, {
-            userId: this.user.userId,
-            reg_lessonId: this.reg_lesson._id,
-            sessionId: session._id,
-            title: session.title,
-            passed: true,
-            anotherChanceDate: newDate,
-            score: 100
-          },this.headers)
-          .then(res => {
-            // var length=res.data.lessons[global.index].session.length-1
-            var newRegSession = res.data.reg_lessons[
-              global.index
-            ].reg_sessions.slice(-1)[0];
-            this.reg_sessions.push(newRegSession);
-            this.sessions.splice(index, 1);
-          })
-          .catch(err => {
-            console.log(err);
-          });
+        alert('برای این جلسه هیچ آزمونی تهیه نشده است')
       } else {
         this.axios
-          .patch(`http://localhost:3000/api/user/session/register`, {
-            userId: this.user.userId,
-            reg_lessonId: this.reg_lesson._id,
-            sessionId: session._id,
-            title: session.title,
-            passed: false,
-            anotherChanceDate: newDate,
-            score: 0
-          },this.headers)
+          .patch(
+            `http://localhost:3000/api/user/session/register`,
+            {
+              userId: this.user.userId,
+              reg_lessonId: this.reg_lesson._id,
+              sessionId: session._id,
+              title: session.title,
+              passed: false,
+              anotherChanceDate: newDate,
+              score: 0
+            },
+            this.headers
+          )
           .then(res => {
             // var length=res.data.lessons[global.index].session.length-1
             var newRegSession = res.data.reg_lessons[
@@ -396,18 +380,21 @@ function initializationMessengerCode() {
         alert("باید در تمامی آزمون ها پذیرفته شوید تا گواهی برای شما صادر شود");
       } else {
         this.axios
-          .patch(`http://localhost:3000/api/user/setcertificate`, {
-            userId: this.user.userId,
-            reg_lessonId: this.reg_lesson._id
-          },this.headers)
+          .patch(
+            `http://localhost:3000/api/user/setcertificate`,
+            {
+              userId: this.user.userId,
+              reg_lessonId: this.reg_lesson._id
+            },
+            this.headers
+          )
           .then(res => {
             this.reg_lesson.passed = true;
           })
           .catch(err => {
-            alert("باید در تمام جلسات پذیرفته شوید");
+            return alert("باید در تمام جلسات پذیرفته شوید");
           });
 
-        //TODO: certificate
       }
     },
     showQuestions(reg_session, session) {
@@ -415,11 +402,15 @@ function initializationMessengerCode() {
       this.selectedRegSession = reg_session;
       this.selectedSession = session;
       this.axios
-        .post(`http://localhost:3000/api/session/showrandonmquestions`, {
-          courseId: this.courseId,
-          lessonId: this.lessonId,
-          sessionId: session._id
-        },this.headers)
+        .post(
+          `http://localhost:3000/api/session/showrandonmquestions`,
+          {
+            courseId: this.courseId,
+            lessonId: this.lessonId,
+            sessionId: session._id
+          },
+          this.headers
+        )
         .then(res => {
           var a = 0;
           var duration = parseInt(session.duration) * 60;
@@ -478,20 +469,24 @@ function initializationMessengerCode() {
           }
         });
         this.axios
-          .post(`http://localhost:3000/api/session/checkquiz`, {
-            answerBody,
-            courseId: this.reg_lesson.courseId,
-            lessonId: this.reg_lesson.lessonId,
-            minScore: session.minScore,
-            userId: this.user.userId,
-            reg_lessonId: this.reg_lesson._id,
-            reg_sessionId: reg_session._id,
-            anotherChanceDate: reg_session.anotherChanceDate,
-            title: reg_session.title,
-            date: reg_session.date,
-            sessionId: reg_session.sessionId,
-            tryCount
-          },this.headers)
+          .post(
+            `http://localhost:3000/api/session/checkquiz`,
+            {
+              answerBody,
+              courseId: this.reg_lesson.courseId,
+              lessonId: this.reg_lesson.lessonId,
+              minScore: session.minScore,
+              userId: this.user.userId,
+              reg_lessonId: this.reg_lesson._id,
+              reg_sessionId: reg_session._id,
+              anotherChanceDate: reg_session.anotherChanceDate,
+              title: reg_session.title,
+              date: reg_session.date,
+              sessionId: reg_session.sessionId,
+              tryCount
+            },
+            this.headers
+          )
           .then(res => {
             reg_session.passed = res.data.passed;
             reg_session.score = res.data.score;
@@ -528,7 +523,6 @@ function initializationMessengerCode() {
         return;
       }
       var dt = new Date();
-      //TODO: make it 10
       dt.setMinutes(dt.getMinutes() + 1);
       localStorage.setItem(file._id + this.user.userId, dt);
     },
@@ -537,11 +531,15 @@ function initializationMessengerCode() {
         return "ابتدا باید جلسات قبلی را کامل کنید";
       }
       this.axios
-        .post(`http://localhost:3000/api/session/showfiles`, {
-          sessionId: session._id,
-          lessonId: this.lessonId,
-          courseId: this.courseId
-        },this.headers)
+        .post(
+          `http://localhost:3000/api/session/showfiles`,
+          {
+            sessionId: session._id,
+            lessonId: this.lessonId,
+            courseId: this.courseId
+          },
+          this.headers
+        )
         .then(res => {
           // console.log(res.data);
           this.$refs["my-modal"].show();
@@ -586,22 +584,23 @@ function initializationMessengerCode() {
         Authorization: `Bearer ${this.$cookie.get("jwt")}`
       }
     };
-    //TODO: if not cookie redirect login
     if (global == undefined) {
       this.$router.push("/teacher");
     }
-    //TODO: user info
     this.reg_lesson = global.lesson;
     this.reg_sessions = global.lesson.reg_sessions;
     this.courseId = global.lesson.courseId;
     this.lessonId = global.lesson.lessonId;
-    console.log(this.reg_sessions);
 
     this.axios
-      .post(`http://localhost:3000/api/session/showall`, {
-        courseId: this.courseId,
-        lessonId: this.lessonId
-      },this.headers)
+      .post(
+        `http://localhost:3000/api/session/showall`,
+        {
+          courseId: this.courseId,
+          lessonId: this.lessonId
+        },
+        this.headers
+      )
       .then(res => {
         this.sessions = res.data;
         var index = [];

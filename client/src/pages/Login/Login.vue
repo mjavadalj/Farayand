@@ -70,10 +70,6 @@ export default {
         nationalcode,
         password
       };
-      //TODO: jome, inja cookie ro set kon, jwt ya harchiz dg, push kon be pagesh bar asas role
-
-      // ? Done , I think
-
       this.axios
         .post("http://localhost:3000/api/user/signin", body)
         .then(loginResponse => {

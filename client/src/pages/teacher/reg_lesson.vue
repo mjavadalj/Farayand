@@ -231,7 +231,6 @@ export default {
     };
     for (var i = 1; i < 1000; i++) window.clearInterval(i);
     this.user = JSON.parse(this.$cookie.get("authorization"));
-    //TODO: if not cookie redirect login
     this.axios
       .post(
         `http://localhost:3000/api/user/reg/show`,

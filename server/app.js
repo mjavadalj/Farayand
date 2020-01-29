@@ -12,7 +12,6 @@ app.use(cors())
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-//TODO: user access
 app.use('/files', express.static(__dirname + '/files'))
 app.use('/api', router);
 
