@@ -13,13 +13,6 @@
     </header>
     <ul class="nav">
       <NavLink header="خانه" link="/home" iconName="fa fa-home" index="course" isHeader />
-      <!-- <NavLink
-        header="صفحه اصلی"
-        link="/main"
-        iconName="fa fa-home"
-        index="main"
-        isHeader
-      /> -->
       <NavLink
         header="درس های ثبت نام شده"
         link="/mylesson"
@@ -28,27 +21,7 @@
         isHeader
       />
       <NavLink header="ویرایش اطلاعات" link="/edit" iconName="fa fa-edit" index="edit" isHeader />
-      <button
-        id="logout"
-        style="margin:2px;font-family:lalezar"
-        class="btn btn-outline-danger active"
-        type="button"
-        @click="logout()"
-      >خروج</button>
-      <!-- <NavLink
-        header="My Courses"
-        link="/teacher/course"
-        iconName="fa fa-tasks"
-        index="course"
-        isHeader
-      />
-      <NavLink
-        header="My Certificates"
-        link="/app/certificate"
-        iconName="flaticon-list"
-        index="certificate"
-        isHeader
-      />-->
+      <b-button @click="logout()" class="logout-btn" variant="outline-danger">خروج</b-button>
     </ul>
   </nav>
 </template>
@@ -63,7 +36,7 @@ export default {
   components: { NavLink },
   data() {
     return {
-      user:null,
+      user: null,
       alerts: [
         {
           id: 0,

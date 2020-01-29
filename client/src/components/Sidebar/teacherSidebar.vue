@@ -55,13 +55,7 @@
         index="edit"
         isHeader
       />
-      <button
-        id="logout"
-        style="margin:2px;font-family:lalezar"
-        class="btn btn-outline-danger active"
-        type="button"
-        @click="logout()"
-      >خروج</button>
+      <b-button @click="logout()" class="logout-btn" variant="outline-danger">خروج</b-button>
     </ul>
   </nav>
 </template>

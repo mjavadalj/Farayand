@@ -51,62 +51,8 @@
         index="checkConfirmed"
         isHeader
       />
-      
-      <!-- <NavLink
-        header="مدیریت استان ها"
-        link="/app/geo"
-        iconName="fa fa-globe"
-        index="geo"
-        isHeader
-      /> -->
       <br><br>
-      <button
-        id="logout"
-        style="margin:2px;font-family:lalezar"
-        class="btn btn-outline-danger active"
-        type="button"
-        @click="logout()"
-      >خروج</button>
-      <!-- <NavLink
-        header="Dashboard"
-        link="/app/dashboard"
-        iconName="flaticon-home"
-        index="dashboard"
-        isHeader
-      />
-      <NavLink
-        header="Typography"
-        link="/app/typography"
-        iconName="flaticon-list"
-        index="typography"
-        isHeader
-      />
-      <NavLink
-        header="Tables Basic"
-        link="/app/tables"
-        iconName="flaticon-equal-1"
-        index="tables"
-        isHeader
-      />
-      <NavLink
-        header="Notifications"
-        link="/app/notifications"
-        iconName="flaticon-star"
-        index="notifications"
-        isHeader
-      />
-      <NavLink
-        :activeItem="activeItem"
-        header="Components"
-        link="/app/components"
-        iconName="flaticon-network"
-        index="components"
-        :childrenLinks="[
-          { header: 'Chartsxx', link: '/app/components/charts' },
-          { header: 'Icons', link: '/app/components/icons' },
-          { header: 'Maps', link: '/app/components/maps' },
-        ]"
-      /> -->
+      <b-button @click="logout()" class="logout-btn" variant="outline-danger">خروج</b-button>
     </ul>
     
   </nav>

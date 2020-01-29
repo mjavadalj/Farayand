@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-breadcrumb>
-      <b-breadcrumb-item>صفحه مدیریت</b-breadcrumb-item>
+      <b-breadcrumb-item>راهنما</b-breadcrumb-item>
       <b-breadcrumb-item active>دوره های انتخاب شده</b-breadcrumb-item>
     </b-breadcrumb>
     <div class="input-group mb-3">

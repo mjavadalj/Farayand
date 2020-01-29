@@ -11,7 +11,7 @@
         <div class="text-center">
           <h5 class="logo">
             <i style="margin-right:5px;" class="fa fa-circle text-gray" />
-            <span class="lalezar" style="color:#F2F2F2;">بسیج اساتید</span>
+            <span class="lalezar" style="color:#F2F2F2;">بسیج اساتید استان مازندران</span>
             <i style="margin-left:5px;" class="fa fa-circle text-warning" />
           </h5>
         </div>

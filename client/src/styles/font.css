@@ -111,7 +111,6 @@
 thead {
   font-family: lelezar;
   font-size: 1.25em;
-  
 }
 tbody {
   font-family: lelezar;
@@ -119,21 +118,19 @@ tbody {
 
 .form-control,
 .form-control-label,
-.display-3{
+.display-3 {
   font-family: lalezar;
 }
-.breadcrumb
-{
-  font-family: samim;
-
-}
-a{
+.breadcrumb {
   font-family: samim;
 }
-tbody{
+a {
+  font-family: samim;
+}
+tbody {
   font-family: iranyekan-fn-lgt !important;
 }
-#numeric-td{
+#numeric-td {
   font-family: iranyekan-fn-lgt !important;
   font-size: 1.1em;
 }
@@ -141,6 +138,12 @@ tbody{
   font-family: iranyekan-fn-lgt !important;
   direction: rtl !important;
 }
-input{
+input {
   font-family: iranyekan-fn-lgt !important;
+}
+.logout-btn {
+  left: 12px;
+  bottom: 0;
+  position: relative;
+  font-family:lalezar;
 }
