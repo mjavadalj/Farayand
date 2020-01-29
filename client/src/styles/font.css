@@ -139,7 +139,7 @@ tbody{
 }
 .swal2-popup {
   font-family: iranyekan-fn-lgt !important;
-  direction: rtl;
+  direction: rtl !important;
 }
 input{
   font-family: iranyekan-fn-lgt !important;
