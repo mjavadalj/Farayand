@@ -29,7 +29,7 @@
     "jquery": "^3.3.1",
     "jquery-sparkline": "2.4.0",
     "jquery-ui": "^1.12.1",
-    "jspdf": "^1.5.3",
+    "jspdf": "^2.3.1",
     "line-awesome": "github:icons8/line-awesome",
     "messenger": "git+https://github.com/HubSpot/messenger.git#v1.4.2",
     "napa": "^3.0.0",
